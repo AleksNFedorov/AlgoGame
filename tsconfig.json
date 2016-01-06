@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "outDir": "../js",
+        "rootDir": "./",
+        "removeComments": true,
+        "module": "commonjs",
+        "target": "es5",
+        "noImplicitAny": false,
+        "sourceMap": false
+    },
+    "files": [
+        "boot.ts",
+        "common.ts",
+        "constants.ts",
+        "events.ts",
+        "game.ts",
+        "menuState.ts",
+        "levels/binarySearch/binarySearch.ts"
+    ]
+}
