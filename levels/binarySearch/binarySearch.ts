@@ -177,22 +177,30 @@ module BinarySearch {
     class BoxLine {
         
         private _boxes: BoxContainer[] = [];
+        private _boxToFind: Phaser.Group;
         private _boxLine: Phaser.Group;
         private _game: AlgoGame;
         private _boxClickedCallback: Function;
         
-        constructor(game: AlgoGame, boxClickedCallback:Function, sequence: number[]) {
+        constructor(game: AlgoGame, boxClickedCallback:Function, sequence: number[], elementToFindIndex: number) {
             this._game = game;
             this._boxClickedCallback = boxClickedCallback;
-            this.init(sequence);
+            this.init(sequence, elementToFindIndex);
         };
         
-        private init(seqeunce: number[]) {
+        private init(seqeunce: number[], elementToFindIndex: number) {
             this._boxLine = this._game.add.group();
             this._boxLine.x = 20;
             this._boxLine.y = 300;
 
             this._boxes = this.createBoxes(seqeunce);
+            
+            
+            //Creating element to find box
+            this._boxToFind = this.createElementToFindBox(seqeunce[elementToFindIndex]);
+            this._boxToFind.x = 20;
+            this._boxToFind.y = 200;
+
         };
         
         public hideBoxesOutOf(from: number, to: number) {
@@ -209,11 +217,13 @@ module BinarySearch {
             var boxContainer: BoxContainer = this._boxes[boxIndex];
             var boxGroup: Phaser.Group = boxContainer.boxGroup;
 
-            this._game.add.tween(boxGroup).to({y:boxGroup.y - 5}, 400, Phaser.Easing.Exponential.Out, true);
+            this._game.add.tween(boxGroup).to({y:boxGroup.y - 4}, 
+                Constants.BS_BOX_HILIGHT_INTERVAL, 
+                Phaser.Easing.Exponential.Out, true);
         };
         
         public selectBox(boxIndex: number) {
-            this._boxes[boxIndex].boxGroup.alpha = 0.2;
+            this.higlightBox(boxIndex);
         };
         
         private createBoxes(seqeunce: number[]): BoxContainer[] {
@@ -222,7 +232,7 @@ module BinarySearch {
             var boxInterval = 1000/seqeunce.length;
             
             for(var index = 0; index < seqeunce.length; ++index) {
-                var boxContainer: BoxContainer = this.createBox(index, seqeunce[index]);
+                var boxContainer: BoxContainer = this.createBoxWithIndex(index, seqeunce[index]);
                 this._boxLine.add(boxContainer.boxAndTextGroup);
                 boxContainer.boxAndTextGroup.x = boxInterval * index;
                 boxContainer.boxAndTextGroup.y = 0;
@@ -233,9 +243,10 @@ module BinarySearch {
             return boxes;
         };
         
-        private createBox(index: number, value:number): BoxContainer {
+        private createBoxWithIndex(index: number, value:number): BoxContainer {
             
             var boxAndTextGroup: Phaser.Group = this._game.add.group();
+            
             var boxGroup = this._game.add.group();
             var box: Phaser.Sprite =  this._game.add.sprite(0,0, 'box');
             var boxKeyText: Phaser.Text = this._game.add.text(box.height/2, box.width/2 , "" + value, Constants.CONTROL_PANEL_MESSAGE_STYLE);
@@ -253,10 +264,29 @@ module BinarySearch {
             
             box.inputEnabled = true;
             boxKeyText.inputEnabled = true;
+            
             box.events.onInputDown.add(boxClicked);
             boxKeyText.events.onInputDown.add(boxClicked);
             
             return new BoxContainer(boxGroup, boxAndTextGroup);
+        };
+        
+        private createElementToFindBox(value: number) {
+
+            var boxGroup = this._game.add.group();
+
+            var box: Phaser.Sprite =  this._game.add.sprite(0,0, 'box');
+            var boxKeyText: Phaser.Text = this._game.add.text(box.height/2, box.width/2 , "" + value, Constants.CONTROL_PANEL_MESSAGE_STYLE);
+            boxKeyText.anchor.setTo(0.5);
+            
+            boxGroup.add(box);
+            boxGroup.add(boxKeyText);
+
+            box.inputEnabled = true;
+            boxKeyText.inputEnabled = true;
+        
+            return boxGroup;
+
         };
         
         private createBoxClickCallback(index: number): Function {
@@ -272,6 +302,7 @@ module BinarySearch {
             
             this._boxes = [];
             this._boxLine.destroy();
+            this._boxToFind.destroy();
         }
     }
     
@@ -284,11 +315,14 @@ module BinarySearch {
         
         private _reinitOnPlay: boolean;
         
+        private _stepsPassed: number = 0;
+        
         constructor(game: AlgoGame) {
             super(game);
             this.addEventListener(Events.STAGE_INITIALIZED);
             this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
             this.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
+            
         };
         
         dispatchEvent(event: any, param1: any) {
@@ -297,8 +331,7 @@ module BinarySearch {
             
             switch(event.type) {
                 case Events.STAGE_INITIALIZED:
-                    this.reinitGame();
-                    this._reinitOnPlay = false;
+                    this.initGame();
                     break;
                 case Events.CONTROL_PANEL_EVENT_PLAY:
                     if (this._gameStepTimer != null && this._gameStepTimer.paused) {
@@ -319,15 +352,28 @@ module BinarySearch {
             
         };
         
+        private initGame() : void {
+            this.reinitGame();
+            this._reinitOnPlay = false;
+            
+            var gameStaistics: Common.GamePlayInfo = new Common.GamePlayInfo(2000, Constants.BS_PRACTISE_TO_OPEN_TEST, this._stepsPassed);
+            
+            this._game.eventBus.dispatch(
+                Events.GAME_CREATED, 
+                this, 
+                gameStaistics);
+        }
+        
         private reinitGame(): void {
             
             this.destroyTempObjects();
             
-            this._algorithm = new BinarySearchAlgorithm(14);
+            this._algorithm = new BinarySearchAlgorithm(14 + BinarySearchAlgorithm.getRandomInteger(0,6));
             
-            this._boxLine = new BoxLine(this._game, this.boxClicked.bind(this), this._algorithm.sequence);
-            
-            this._game.eventBus.dispatch(Events.GAME_INITIALIZED, this);
+            this._boxLine = new BoxLine(this._game,     
+                this.boxClicked.bind(this), 
+                this._algorithm.sequence, 
+                this._algorithm.elementToFindIndex);
             
             console.log("Element to find index [" + this._algorithm.elementToFindIndex + "]");
         };
@@ -336,9 +382,11 @@ module BinarySearch {
             
             this._algorithmStep = this._algorithm.nextStep;
             this._gameStepTimer = this._game.time.create(false);
-            this._gameStepTimer.repeat(Constants.BS_PR_STEP_TIME, 10, this.clickBox, this);
+            this.addTimerEvents();
+            this._game.eventBus.dispatch(Events.GAME_STARTED, this, this._stepsPassed);
+
             this._gameStepTimer.start();
-            
+
         };
         
         private clickBox() {
@@ -351,9 +399,13 @@ module BinarySearch {
             var step: BinarySearchStep = this._algorithmStep;
             
             if (index == step.elementIndex) {
-                this._boxLine.higlightBox(step.elementIndex);
                 this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
-                this._game.eventBus.dispatch(Events.GAME_CORRECT_STEP_DONE, this);
+                this._boxLine.selectBox(step.elementIndex);
+                this._stepsPassed++
+                this._game.eventBus.dispatch(
+                    Events.GAME_CORRECT_STEP_DONE, 
+                    this, 
+                    this._stepsPassed);
                 
                 if (step.isLast) {
                     this._gameStepTimer.stop();
@@ -362,10 +414,16 @@ module BinarySearch {
                     console.log("Game finished");
                 } else {
                     this._algorithmStep = this._algorithm.nextStep;
+                    this.addTimerEvents();
                 }
             } else {
                 this._game.eventBus.dispatch(Events.GAME_WRONG_STEP_DONE, this);
             }
+        };
+        
+        private addTimerEvents(): void {
+            this._gameStepTimer.removeAll();
+            this._gameStepTimer.repeat(Constants.BS_PR_STEP_TIME, 0, this.clickBox, this);
         };
         
         destroy(): void {

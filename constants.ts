@@ -5,6 +5,8 @@ class Constants {
     static GAME_HEIGHT:number = 768;
     static GAME_BACKGROUND:string = "#483D8B";
     
+
+    
     //State names
     static STATE_BOOT = "boot";
     static STATE_PRELOAD = "preload";
@@ -12,8 +14,9 @@ class Constants {
     static STATE_SEARCH_BINARY_SEARCH_P = "bsp";
     static STATE_SEARCH_BINARY_SEARCH_T = "bst";
 
-    //level menu
+    //Assets
     static MENU_BUTTON_ATTLAS = "menuButtons";
+    static PROGRESS_BARS_ATTLAS = "progressBars";
     
     //Text
     static CONTROL_PANEL_MESSAGE_STYLE = { 
@@ -21,7 +24,6 @@ class Constants {
         boundsAlignH: "center", 
         boundsAlignV: "middle" 
     };
-
     
     //Binary search 
     static BS_MIN_SEQ_NUMBER = 1;
@@ -29,5 +31,6 @@ class Constants {
     static BS_MAX_ELEMENTS_IN_SEQ = 20;
     static BS_BOX_HILIGHT_INTERVAL = 300;
     static BS_PR_STEP_TIME = 2000;
+    static BS_PRACTISE_TO_OPEN_TEST = 100;
     
 }

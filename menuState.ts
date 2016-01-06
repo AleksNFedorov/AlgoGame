@@ -14,6 +14,12 @@ class Preload extends Phaser.State {
         // Put actual assets load code here
         this.load.spritesheet(Constants.MENU_BUTTON_ATTLAS, '/assets/images/menuButtons.png', 136, 136);
         
+        this.game.load.atlas(Constants.PROGRESS_BARS_ATTLAS,
+        '/assets/images/bars.png',
+        '/assets/images/bars.json',
+        Phaser.Loader.TEXTURE_ATLAS_JSON_ARRAY);
+
+        
         // Tmp images
         this.load.image('box', '/assets/images/box.png');
 
@@ -32,9 +38,12 @@ class MenuState extends Phaser.State {
     private _menu: Common.Menu;
     private _controlPanel: Common.PractisePanel;
     private _gamePlay: BinarySearch.GamePlay;
+    private _progressPanel: Common.ProgressPanel;
     
     shutdown(): void {
       this._menu.destroy();  
+      this._controlPanel.destroy();
+      this._gamePlay.destroy();
       this._menu = null;
     };
 
@@ -45,6 +54,7 @@ class MenuState extends Phaser.State {
         this._menu = new Common.Menu(game);
         this._controlPanel = new Common.PractisePanel(game);
         this._gamePlay = new BinarySearch.GamePlay(game);
+        this._progressPanel = new Common.ProgressPanel(game);
         
         game.eventBus.dispatch(Events.STAGE_INITIALIZED, this);
         
