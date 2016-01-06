@@ -151,7 +151,7 @@ module Common {
         private _pauseButton: Button;
         
         constructor(game: AlgoGame) {
-         super(game);  
+            super(game);  
         };
         
        createElements():void {
@@ -175,6 +175,7 @@ module Common {
         initEventListners(): void {
             super.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
             super.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
+            super.addEventListener(Events.GAME_END);
         };
         
         dispatchEvent(event: any, param1: any) {
@@ -184,6 +185,7 @@ module Common {
                     this._pauseButton.activate();
                     break;
                 case Events.CONTROL_PANEL_EVENT_PAUSE:
+                case Events.GAME_END:
                     this._playButton.activate();
                     this._pauseButton.deactivate();
                     break;

@@ -17,5 +17,13 @@ class Events {
     static CONTROL_PANEL_EVENT_PLAY = "cpPlay";
     static CONTROL_PANEL_EVENT_PAUSE = "cpPause";
     static CONTROL_PANEL_EVENT_STOP = "cpStop";
+    
+
+    //General game play events
+    static GAME_INITIALIZED = "GameInit";
+    static GAME_END = "GameEnd";
+    static GAME_CORRECT_STEP_DONE = "GameCorrectStepDone";
+    static GAME_WRONG_STEP_DONE = "GameWrongStepDone";
+    
 
 }

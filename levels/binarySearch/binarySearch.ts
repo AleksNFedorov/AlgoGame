@@ -40,6 +40,10 @@ module BinarySearch {
             return this._operation;  
         };
         
+        public toString(): string {
+          return "[" + this._elementIndex + "][" + this._startIndex + "][" + this._endIndex + "]";  
+        };
+        
     };
     
     class BinarySearchAlgorithm  {
@@ -58,6 +62,7 @@ module BinarySearch {
         
         public get nextStep(): BinarySearchStep {
             this._nextStep = this.evaluateNextStep();
+            console.log("Next step - " + this._nextStep.toString());
             return this._nextStep;
         };
         
@@ -274,36 +279,102 @@ module BinarySearch {
 
         private _boxLine: BoxLine;
         private _algorithm: BinarySearchAlgorithm;
+        private _algorithmStep: BinarySearchStep;
+        private _gameStepTimer: Phaser.Timer;
+        
+        private _reinitOnPlay: boolean;
         
         constructor(game: AlgoGame) {
             super(game);
             this.addEventListener(Events.STAGE_INITIALIZED);
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
         };
         
         dispatchEvent(event: any, param1: any) {
             
             console.log("Menu event cought [" + event.type + "]");
             
+            switch(event.type) {
+                case Events.STAGE_INITIALIZED:
+                    this.reinitGame();
+                    this._reinitOnPlay = false;
+                    break;
+                case Events.CONTROL_PANEL_EVENT_PLAY:
+                    if (this._gameStepTimer != null && this._gameStepTimer.paused) {
+                        //mid-game pause
+                        this._gameStepTimer.resume();
+                    } else {
+                        if (this._reinitOnPlay) {
+                            //non-first iteration
+                            this.reinitGame();
+                        };
+                        this.startGame();
+                    }
+                    break;
+                case Events.CONTROL_PANEL_EVENT_PAUSE:
+                    this._gameStepTimer.pause();
+                    break;
+            }
+            
+        };
+        
+        private reinitGame(): void {
+            
+            this.destroyTempObjects();
+            
             this._algorithm = new BinarySearchAlgorithm(14);
             
             this._boxLine = new BoxLine(this._game, this.boxClicked.bind(this), this._algorithm.sequence);
             
+            this._game.eventBus.dispatch(Events.GAME_INITIALIZED, this);
+            
             console.log("Element to find index [" + this._algorithm.elementToFindIndex + "]");
         };
         
-        public boxClicked(index: number) {
+        private startGame(): void {
+            
+            this._algorithmStep = this._algorithm.nextStep;
+            this._gameStepTimer = this._game.time.create(false);
+            this._gameStepTimer.repeat(Constants.BS_PR_STEP_TIME, 10, this.clickBox, this);
+            this._gameStepTimer.start();
+            
+        };
+        
+        private clickBox() {
+            this.boxClicked(this._algorithmStep.elementIndex);
+        };
+        
+        private boxClicked(index: number) {
             console.log("Box clicked [" + index + "]");
-            var step:BinarySearchStep = this._algorithm.nextStep;
             
-            console.log(" Step data [" + step.elementIndex + "][" + step.startIndex + "][" + step.endIndex + "][" + step.isLast + "]");
+            var step: BinarySearchStep = this._algorithmStep;
             
-            this._boxLine.higlightBox(step.elementIndex);
-            this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
+            if (index == step.elementIndex) {
+                this._boxLine.higlightBox(step.elementIndex);
+                this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
+                this._game.eventBus.dispatch(Events.GAME_CORRECT_STEP_DONE, this);
+                
+                if (step.isLast) {
+                    this._gameStepTimer.stop();
+                    this._reinitOnPlay = true;
+                    this._game.eventBus.dispatch(Events.GAME_END, this);
+                    console.log("Game finished");
+                } else {
+                    this._algorithmStep = this._algorithm.nextStep;
+                }
+            } else {
+                this._game.eventBus.dispatch(Events.GAME_WRONG_STEP_DONE, this);
+            }
         };
         
         destroy(): void {
             super.destroy();
-            
+            this.destroyTempObjects();
+        };
+        
+        private destroyTempObjects():void {
+          this._algorithm = null;
             if (this._boxLine != null) {
                 this._boxLine.destroy();            
             };
