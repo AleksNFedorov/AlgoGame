@@ -2,6 +2,8 @@
 
 module Common {
     
+    export enum GameState {PAUSED = 0, RUNNING = 1, CREATED = 2, END = 3};
+    
     export class GamePlayInfo {
         
         private _stepWaitTime: number;
@@ -344,12 +346,12 @@ module Common {
           this._maxProgressValue = maxProgressValue;
         };
         
-        public setValue(newValue: number, suffix: string): void {
+        public setValue(newValue: number, textValue: string): void {
         
             var completines = newValue/this._maxProgressValue;
         
             this._progressImage.width = this._maxProgressWidth * completines;
-            this._progressText.text = newValue + suffix;
+            this._progressText.text = textValue;
         };
     }
     
@@ -357,29 +359,93 @@ module Common {
     
         private _topProgressBar: ProgressBar;
         private _bottomProgressBar: ProgressBar;
+        
+        private _timer: Phaser.Timer;
+        private _maxTimeValue: number;
+        private _timerStep: number;
+        
+        private _gameStarted: boolean = false;
+        private _gamePaused: boolean = false;
       
         constructor(game:AlgoGame) {
             super(game);
             
-            this._topProgressBar = new ProgressBar(game, "slice27_27.png", "slice16_16.png", "Step time");
-            this._bottomProgressBar = new ProgressBar(game, "slice27_27.png", "slice35_35.png", "Steps done");
+            this.createProgressBars();
             
+            this.addEventListener(Events.GAME_CREATED);
+            this.addEventListener(Events.GAME_STARTED);
+            this.addEventListener(Events.GAME_END);
+            this.addEventListener(Events.GAME_CORRECT_STEP_DONE);
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
+            
+            this._timer = this._game.time.create(false);
+            this._timer.start();
+
+        };
+        
+        private createProgressBars(): void {
+        
+            this._topProgressBar = new ProgressBar(this._game, "slice27_27.png", "slice16_16.png", "Step time");
             this._topProgressBar.x = 800;
             this._topProgressBar.y = 100;
             
+            this._bottomProgressBar = new ProgressBar(this._game, "slice27_27.png", "slice35_35.png", "Steps done");
             this._bottomProgressBar.x = 800;
             this._bottomProgressBar.y = 160;
             
-            this.addEventListener(Events.GAME_CREATED);
         };
         
+        private scheduleUpdates(): void {
+          
+            var updatesCount = this._maxTimeValue/Constants.GAME_TIME_PROGRESS_UPDATE_INTERVAL;
+            this._timerStep = 0;
+            this._timer.repeat(Constants.GAME_TIME_PROGRESS_UPDATE_INTERVAL, updatesCount, this.updateTimerProgressBar, this);
+            
+        };
+        
+        private updateTimerProgressBar(): void {
+            this._timerStep++;
+            var newValue = this._maxTimeValue - Constants.GAME_TIME_PROGRESS_UPDATE_INTERVAL * this._timerStep;
+            this._topProgressBar.setValue(newValue, "");
+        };
+
         dispatchEvent(event: any, param1: any) {
             switch(event.type) {
+                case Events.GAME_CORRECT_STEP_DONE:
+                    this._timer.removeAll();
+                    this._topProgressBar.setValue(this._maxTimeValue, "");
+                    this._bottomProgressBar.setValue(<number> param1, param1);
+                    this.scheduleUpdates();
+                    break;
+                case Events.CONTROL_PANEL_EVENT_PAUSE:
+                    this._timer.pause();
+                    this._gamePaused = true;
+                    break;
+                case Events.CONTROL_PANEL_EVENT_PLAY:
+                    if (!this._gamePaused)
+                        return;
+                    this._timer.resume();                        
+                    this._gamePaused = false;
+                    break;
+                case Events.GAME_STARTED:
+                    this._topProgressBar.setValue(this._maxTimeValue, "");
+                    this.scheduleUpdates();
+                    this._gameStarted = true;
+                    break;
+                case Events.GAME_END:
+                    this._timer.removeAll();
+                    this._gameStarted = false;
+                    break;
                 case Events.GAME_CREATED:
                     var playInfo: Common.GamePlayInfo = <Common.GamePlayInfo> param1;
                     this._topProgressBar.setMaxValue(playInfo.stepWaitTime);
                     this._bottomProgressBar.setMaxValue(playInfo.totalItertions);
-                    this._bottomProgressBar.setValue(playInfo.doneIterations + 20, "");
+                    this._bottomProgressBar.setValue(playInfo.doneIterations, "");
+                    this._maxTimeValue = playInfo.stepWaitTime;
+                    break;
+                case Events.GAME_STARTED:
+                    this._topProgressBar.setValue(this._maxTimeValue, "");
                     break;
             }
         };

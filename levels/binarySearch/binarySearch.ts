@@ -312,10 +312,10 @@ module BinarySearch {
         private _algorithm: BinarySearchAlgorithm;
         private _algorithmStep: BinarySearchStep;
         private _gameStepTimer: Phaser.Timer;
-        
         private _reinitOnPlay: boolean;
-        
         private _stepsPassed: number = 0;
+        private _gameState: Common.GameState = Common.GameState.CREATED;
+        private _clickedBoxIndex:number = -1;
         
         constructor(game: AlgoGame) {
             super(game);
@@ -347,6 +347,7 @@ module BinarySearch {
                     break;
                 case Events.CONTROL_PANEL_EVENT_PAUSE:
                     this._gameStepTimer.pause();
+                    this._gameState = Common.GameState.PAUSED;
                     break;
             }
             
@@ -386,6 +387,7 @@ module BinarySearch {
             this._game.eventBus.dispatch(Events.GAME_STARTED, this, this._stepsPassed);
 
             this._gameStepTimer.start();
+            this._gameState = Common.GameState.RUNNING;
 
         };
         
@@ -394,6 +396,11 @@ module BinarySearch {
         };
         
         private boxClicked(index: number) {
+            
+            if (this._gameState != Common.GameState.RUNNING) {
+                return;
+            }
+            
             console.log("Box clicked [" + index + "]");
             
             var step: BinarySearchStep = this._algorithmStep;
@@ -411,6 +418,7 @@ module BinarySearch {
                     this._gameStepTimer.stop();
                     this._reinitOnPlay = true;
                     this._game.eventBus.dispatch(Events.GAME_END, this);
+                    this._gameState = Common.GameState.END;
                     console.log("Game finished");
                 } else {
                     this._algorithmStep = this._algorithm.nextStep;
@@ -429,6 +437,7 @@ module BinarySearch {
         destroy(): void {
             super.destroy();
             this.destroyTempObjects();
+            this._gameStepTimer.destroy();
         };
         
         private destroyTempObjects():void {

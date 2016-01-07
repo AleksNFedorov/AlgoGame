@@ -4,6 +4,7 @@ class Constants {
     static GAME_WIDTH:number = 1024;
     static GAME_HEIGHT:number = 768;
     static GAME_BACKGROUND:string = "#483D8B";
+    static GAME_TIME_PROGRESS_UPDATE_INTERVAL = 300;
     
 
     
