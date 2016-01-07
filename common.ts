@@ -2,7 +2,16 @@
 
 module Common {
     
-    export enum GameState {PAUSED = 0, RUNNING = 1, CREATED = 2, END = 3};
+    export enum GameState {PAUSED = 0, RUNNING = 1, CREATED = 2, END = 3, UNKNOWN = 4};
+    
+    export class StateSave {
+        public practiseDone: number = 0;
+        public testsDone: number = 0;
+    };
+    
+    export class IntroSave {
+        public lastShowedInfo:number = 0;
+    };
     
     export class GamePlayInfo {
         
@@ -47,6 +56,8 @@ module Common {
             return this._stepNumber;
         };
     }
+    
+    
     
     export class GameEventComponent {
         
@@ -135,10 +146,13 @@ module Common {
         
         protected _playButton: Button;
         protected _infoText: Phaser.Text;
+        protected _autoStartTimer: Phaser.Timer;
         
         constructor(game: AlgoGame) {
             super(game);
             this.createElements();
+            this._autoStartTimer = game.time.create(false);
+            this._autoStartTimer.start();
         };
         
         createElements(): void {
@@ -162,14 +176,30 @@ module Common {
 
         };
         
+        dispatchEvent(event: any, param1: any) {
+            switch(event.type) {
+                case Events.CONTROL_PANEL_EVENT_PLAY:
+                    this._autoStartTimer.removeAll();
+                    break;
+                case Events.GAME_END:
+                    this._autoStartTimer.repeat(
+                        Constants.GAME_AUTOSTART_INTERVAL, 0, 
+                        this.getCallbackForEventId(Events.CONTROL_PANEL_EVENT_PLAY), 
+                        this);
+                    break;
+            }
+        };
+        
         initEventListners(): void {
-                
+            super.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
+            super.addEventListener(Events.GAME_END);
         };
         
         destroy() {
            super.destroy(); 
-           this._playButton = null;
-           this._infoText = null;
+           this._playButton.destroy();
+           this._infoText.destroy();
+           this._autoStartTimer.destroy();
         };
         
     };
@@ -207,6 +237,7 @@ module Common {
         };
         
         dispatchEvent(event: any, param1: any) {
+            super.dispatchEvent(event, param1);
             switch(event.type) {
                 case Events.CONTROL_PANEL_EVENT_PLAY:
                     this._playButton.deactivate();
@@ -364,8 +395,7 @@ module Common {
         private _maxTimeValue: number;
         private _timerStep: number;
         
-        private _gameStarted: boolean = false;
-        private _gamePaused: boolean = false;
+        private _gameState: Common.GameState = Common.GameState.UNKNOWN;
       
         constructor(game:AlgoGame) {
             super(game);
@@ -415,37 +445,34 @@ module Common {
                 case Events.GAME_CORRECT_STEP_DONE:
                     this._timer.removeAll();
                     this._topProgressBar.setValue(this._maxTimeValue, "");
-                    this._bottomProgressBar.setValue(<number> param1, param1);
+                    this._bottomProgressBar.setValue(<number> param1[0], param1[0]);
                     this.scheduleUpdates();
                     break;
                 case Events.CONTROL_PANEL_EVENT_PAUSE:
                     this._timer.pause();
-                    this._gamePaused = true;
+                    this._gameState = Common.GameState.PAUSED;
                     break;
                 case Events.CONTROL_PANEL_EVENT_PLAY:
-                    if (!this._gamePaused)
+                    if (this._gameState != Common.GameState.PAUSED)
                         return;
                     this._timer.resume();                        
-                    this._gamePaused = false;
+                    this._gameState = Common.GameState.RUNNING;
                     break;
                 case Events.GAME_STARTED:
                     this._topProgressBar.setValue(this._maxTimeValue, "");
                     this.scheduleUpdates();
-                    this._gameStarted = true;
+                    this._gameState = Common.GameState.RUNNING;
                     break;
                 case Events.GAME_END:
                     this._timer.removeAll();
-                    this._gameStarted = false;
+                    this._gameState = Common.GameState.END;
                     break;
                 case Events.GAME_CREATED:
                     var playInfo: Common.GamePlayInfo = <Common.GamePlayInfo> param1;
                     this._topProgressBar.setMaxValue(playInfo.stepWaitTime);
                     this._bottomProgressBar.setMaxValue(playInfo.totalItertions);
-                    this._bottomProgressBar.setValue(playInfo.doneIterations, "");
+                    this._bottomProgressBar.setValue(playInfo.doneIterations, playInfo.doneIterations + "");
                     this._maxTimeValue = playInfo.stepWaitTime;
-                    break;
-                case Events.GAME_STARTED:
-                    this._topProgressBar.setValue(this._maxTimeValue, "");
                     break;
             }
         };
@@ -455,6 +482,7 @@ module Common {
           
           this._topProgressBar.destroy();
           this._bottomProgressBar.destroy();
+          this._timer.destroy();
           
         };
         

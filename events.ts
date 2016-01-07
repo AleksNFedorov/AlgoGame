@@ -25,6 +25,9 @@ class Events {
     static GAME_END = "GameEnd";
     static GAME_CORRECT_STEP_DONE = "GameCorrectStepDone";
     static GAME_WRONG_STEP_DONE = "GameWrongStepDone";
-    
+    //when player attempts to make second step during one step iteration
+    static GAME_MULTI_STEP_DONE = "GameMultiStepDone";
+    //on attempt of making step during pause
+    static GAME_STEP_ON_PAUSE = "GameStepOnPause";
 
 }

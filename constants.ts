@@ -5,8 +5,8 @@ class Constants {
     static GAME_HEIGHT:number = 768;
     static GAME_BACKGROUND:string = "#483D8B";
     static GAME_TIME_PROGRESS_UPDATE_INTERVAL = 300;
+    static GAME_AUTOSTART_INTERVAL = 3000;
     
-
     
     //State names
     static STATE_BOOT = "boot";
@@ -31,7 +31,7 @@ class Constants {
     static BS_MAX_SEQ_NUMBER = 100;
     static BS_MAX_ELEMENTS_IN_SEQ = 20;
     static BS_BOX_HILIGHT_INTERVAL = 300;
-    static BS_PR_STEP_TIME = 2000;
+    static BS_PR_STEP_TIME = 4000;
     static BS_PRACTISE_TO_OPEN_TEST = 100;
     
 }
