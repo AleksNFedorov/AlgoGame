@@ -203,7 +203,8 @@ module StageInfo {
                 [
                     new ShowInfo(
                         Common.GameElements.PRACTISE_CONTROL_PANEL_BUTTON_PLAY,
-                        "Play button description"
+                        "Play button description",
+                        Events.CONTROL_PANEL_EVENT_PLAY
                         ),
                     new ShowInfo(
                         Common.GameElements.PRACTISE_PROGRESS_STEP,

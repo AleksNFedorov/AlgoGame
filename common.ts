@@ -203,6 +203,9 @@ module Common {
                         this.getCallbackForEventId(Events.CONTROL_PANEL_EVENT_PLAY), 
                         this);
                     break;
+                case Events.CONTROL_PANEL_SHOW_TEXT:
+                    this._infoText.text = param1 + "";
+                    break;
                 case Events.STAGE_INFO_SHOW:
                     var infoWidget: InfoWidget = <InfoWidget> param1;
                     switch(infoWidget.getElementId()) {
@@ -218,6 +221,7 @@ module Common {
             super.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
             super.addEventListener(Events.GAME_END);
             super.addEventListener(Events.STAGE_INFO_SHOW);
+            super.addEventListener(Events.CONTROL_PANEL_SHOW_TEXT);
         };
         
         destroy() {
