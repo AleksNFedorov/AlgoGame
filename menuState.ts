@@ -34,7 +34,7 @@ class Preload extends Phaser.State {
     };
 };
 
-class MenuState extends Phaser.State {
+class MenuState extends Common.AlgoGameState {
     
     private _menu: Common.Menu;
     private _controlPanel: Common.PractisePanel;
@@ -52,17 +52,13 @@ class MenuState extends Phaser.State {
 
     create(): void {
         
-        var game:AlgoGame = <AlgoGame> this.game;
+        this._menu = new Common.Menu(this.algoGame);
+        this._controlPanel = new Common.PractisePanel(this.algoGame);
+        this._gamePlay = new BinarySearch.GamePlay(this.algoGame);
+        this._progressPanel = new Common.ProgressPanel(this.algoGame);
+        this._practiseManager = new StageInfo.PractiseManager(this.algoGame);
         
-        this._menu = new Common.Menu(game);
-        this._controlPanel = new Common.PractisePanel(game);
-        this._gamePlay = new BinarySearch.GamePlay(game);
-        this._progressPanel = new Common.ProgressPanel(game);
-        this._practiseManager = new StageInfo.PractiseManager(game);
-        
-        game.eventBus.dispatch(Events.STAGE_INITIALIZED, this);
-        
-        
+        this.algoGame.dispatch(Events.STAGE_INITIALIZED, this);
     };
     
 };

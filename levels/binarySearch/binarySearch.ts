@@ -179,10 +179,10 @@ module BinarySearch {
         private _boxes: BoxContainer[] = [];
         private _boxToFind: Phaser.Group;
         private _boxLine: Phaser.Group;
-        private _game: AlgoGame;
+        private _game: Common.AlgoGame;
         private _boxClickedCallback: Function;
         
-        constructor(game: AlgoGame, boxClickedCallback:Function, sequence: number[], elementToFindIndex: number) {
+        constructor(game: Common.AlgoGame, boxClickedCallback:Function, sequence: number[], elementToFindIndex: number) {
             this._game = game;
             this._boxClickedCallback = boxClickedCallback;
             this.init(sequence, elementToFindIndex);
@@ -317,7 +317,7 @@ module BinarySearch {
         private _stepPerformed: boolean = false;
         protected gameSave: Common.StateSave;
         
-        constructor(game: AlgoGame) {
+        constructor(game: Common.AlgoGame) {
             super(game);
             this.addEventListener(Events.STAGE_INITIALIZED);
             this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
@@ -366,7 +366,7 @@ module BinarySearch {
                     Constants.BS_PRACTISE_TO_OPEN_TEST, 
                     this.gameSave.practiseDone);
             
-            this._game.eventBus.dispatch(
+            this._game.dispatch(
                 Events.GAME_CREATED, 
                 this, 
                 gameStaistics);
@@ -391,7 +391,7 @@ module BinarySearch {
             this._algorithmStep = this._algorithm.nextStep;
             this._gameStepTimer = this._game.time.create(false);
             this.addTimerEvents();
-            this._game.eventBus.dispatch(Events.GAME_STARTED, this, 
+            this._game.dispatch(Events.GAME_STARTED, this, 
                 this.gameSave.practiseDone);
 
             this._gameStepTimer.start();
@@ -406,13 +406,13 @@ module BinarySearch {
         private boxClicked(index: number, addToResult:number = 1, isUser:boolean = true) {
             
             if (this._gameState != Common.GameState.RUNNING) {
-                this._game.eventBus.dispatch(Events.GAME_STEP_ON_PAUSE, this);
+                this._game.dispatch(Events.GAME_STEP_ON_PAUSE, this);
                 return;
             }
             
             if (isUser && this._stepPerformed) {
                 console.log("Unable to make a step");
-                this._game.eventBus.dispatch(Events.GAME_MULTI_STEP_DONE, this);
+                this._game.dispatch(Events.GAME_MULTI_STEP_DONE, this);
                 return;
             }
             
@@ -426,14 +426,14 @@ module BinarySearch {
                 this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
                 this._boxLine.selectBox(step.elementIndex);
                 this.updateGameStatistics(addToResult);
-                this._game.eventBus.dispatch(
+                this._game.dispatch(
                     Events.GAME_CORRECT_STEP_DONE, 
                     this, 
                     [this.gameSave.practiseDone, isUser]);
                 
                 if (step.isLast) {
                     this._gameStepTimer.stop();
-                    this._game.eventBus.dispatch(Events.GAME_END, this);
+                    this._game.dispatch(Events.GAME_END, this);
                     this._gameState = Common.GameState.END;
                     console.log("Game finished");
                 } else {
@@ -442,7 +442,7 @@ module BinarySearch {
                 }
                 this._stepPerformed = false;
             } else {
-                this._game.eventBus.dispatch(Events.GAME_WRONG_STEP_DONE, this);
+                this._game.dispatch(Events.GAME_WRONG_STEP_DONE, this);
             }
         };
         

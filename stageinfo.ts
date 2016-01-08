@@ -40,12 +40,12 @@ module StageInfo {
         private _cursorSprite: Phaser.Sprite;
         private _infoToShow: ShowInfo;
         
-        constructor(game: AlgoGame, infoToShow: ShowInfo, closeCallback?: Function) {
+        constructor(game: Common.AlgoGame, infoToShow: ShowInfo, closeCallback?: Function) {
             this._infoToShow = infoToShow;
             this._cursorSprite = this.createSprite(game, closeCallback);
         }
         
-        private createSprite(game: AlgoGame, closeCallback?: Function): Phaser.Sprite {
+        private createSprite(game: Common.AlgoGame, closeCallback?: Function): Phaser.Sprite {
             var cursorSprite = game.add.sprite(-100, -100, 'cursor');
             cursorSprite.scale.setTo(0.3);
             game.world.bringToTop(cursorSprite);
@@ -73,7 +73,7 @@ module StageInfo {
             switch(quarter) {
                 case Quarter.TOPRIGHT:
                     this._cursorSprite.x = element.x - this._cursorSprite.width - 10;
-                    this._cursorSprite.y = element.y + element.height + 10;
+                    this._cursorSprite.y = element.y + element.height - 10;
                     this._cursorSprite.angle = 90;
                     this._cursorSprite.anchor.setTo(0.2, 0.8);
                     break;
@@ -126,7 +126,7 @@ module StageInfo {
         private _requestedShowWidget: InfoWidget;
         private _infoToShowIndex: number;
         
-        constructor(game: AlgoGame, stageType: Common.StageType, infoToShow: ShowInfo[]) {
+        constructor(game: Common.AlgoGame, stageType: Common.StageType, infoToShow: ShowInfo[]) {
             super(game);
             this._infoToShow = infoToShow;
             this._stageType = stageType;
@@ -169,10 +169,10 @@ module StageInfo {
                 super.addEventListener(newShowInfo.eventToHide);
             }
             
-            this._game.eventBus.dispatch(Events.CONTROL_PANEL_SHOW_TEXT, this, 
+            this._game.dispatch(Events.CONTROL_PANEL_SHOW_TEXT, this, 
                 newShowInfo.descriptionText);
                 
-            this._game.eventBus.dispatch(Events.STAGE_INFO_SHOW, this, 
+            this._game.dispatch(Events.STAGE_INFO_SHOW, this, 
                 this._requestedShowWidget);
         }
         
@@ -198,7 +198,7 @@ module StageInfo {
     
     export class PractiseManager extends Manager {
         
-        constructor(game: AlgoGame) {
+        constructor(game: Common.AlgoGame) {
             super(game, Common.StageType.PRACTISE,
                 [
                     new ShowInfo(

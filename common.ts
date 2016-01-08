@@ -1,5 +1,7 @@
 /// <reference path="./lib/phaser.d.ts" />
 
+declare var store: Store;
+
 module Common {
     
     export enum GameState {PAUSED = 0, RUNNING = 1, CREATED = 2, END = 3, UNKNOWN = 4};
@@ -75,6 +77,69 @@ module Common {
         getElementId(): number;
     }
     
+    class GameEvent {
+        constructor(
+            public eventId: string, 
+            public caller: any, 
+            public param?: any) {}
+    }
+    
+    export class AlgoGameState extends Phaser.State {
+        
+        private _game: AlgoGame;
+        private _eventsToProcess: Phaser.LinkedList = new Phaser.LinkedList();
+        
+        public dispatch(eventId: string, caller: any, param?: any) {
+            console.log("New event dispatched by state");
+            var newEvent: GameEvent = new GameEvent(eventId, caller, param);
+            this._eventsToProcess.add(newEvent);
+        }
+        
+        public init(): void {
+            this._game = <AlgoGame> this.game;
+        }
+        
+        public update(): void {
+            if (this._eventsToProcess.first != null) {
+                var eventToProcess = this._eventsToProcess.first;
+                this._eventsToProcess.remove(eventToProcess);
+                this._game.eventBus.dispatch(
+                    eventToProcess.eventId,
+                    eventToProcess.caller,
+                    eventToProcess.param
+                );
+            }
+        }
+        
+        public get algoGame(): AlgoGame {
+            return this._game;
+        }
+    }
+    
+    export class AlgoGame extends Phaser.Game {
+    
+        private _eventBus:EventBusClass;
+        private _store: Store = store;
+        
+        constructor(gameWidth: number, gameHeight: number, mode: number, tag: string) {
+            super(gameWidth, gameHeight, mode, tag);
+            this._eventBus = new EventBusClass();
+        };
+        
+        public dispatch(eventId: string, caller: any, param?: any): void {
+            var state: AlgoGameState = <AlgoGameState> this.state.states[this.state.current];
+            state.dispatch(eventId, caller, param);
+        }
+        
+        get store() : Store {
+            return this._store;   
+        }
+        
+        get eventBus(): EventBusClass {
+            return this._eventBus;
+        }
+    }
+
     export class GameEventComponent {
         
         protected _game: AlgoGame;
@@ -109,7 +174,7 @@ module Common {
             
             return function() {
                 console.log("Event created " + eventId);
-                this._game.eventBus.dispatch(eventId, this, param);
+                this._game.dispatch(eventId, this, param);
             };
         };
         
