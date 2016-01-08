@@ -17,6 +17,7 @@ class Events {
     static CONTROL_PANEL_EVENT_PLAY = "cpPlay";
     static CONTROL_PANEL_EVENT_PAUSE = "cpPause";
     static CONTROL_PANEL_EVENT_STOP = "cpStop";
+    static CONTROL_PANEL_SHOW_TEXT = "cpShowText";
     
 
     //General game play events
@@ -29,5 +30,7 @@ class Events {
     static GAME_MULTI_STEP_DONE = "GameMultiStepDone";
     //on attempt of making step during pause
     static GAME_STEP_ON_PAUSE = "GameStepOnPause";
-
+    
+    //Stage info manager events
+    static STAGE_INFO_SHOW = "ShowStageInfo";
 }

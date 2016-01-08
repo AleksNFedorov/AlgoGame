@@ -3,14 +3,27 @@
 module Common {
     
     export enum GameState {PAUSED = 0, RUNNING = 1, CREATED = 2, END = 3, UNKNOWN = 4};
+    export enum StageType {MENU = 0, PRACTISE = 1, EXAM = 2, UNKNOWN = 3};
+    
+    export enum GameElements {
+        LEVEL_BUTTON = 0,
+        LEVEL_PROGRESS = 1,
+        MENU_BUTTON_BACK = 2,
+        MENU_BUTTON_DESCRIPTION = 3,
+        MENU_BUTTON_OBJECTIVES = 4,
+        MENU_BUTTON_PRACTISE = 5,
+        MENU_BUTTON_EXAM = 6,
+        PRACTISE_PROGRESS_STEP = 7,
+        PRACTISE_PROGRESS_COMPLETION = 8,
+        PRACTISE_CONTROL_PANEL_BUTTON_PLAY = 9,
+        PRACTISE_CONTROL_PANEL_BUTTON_PAUS = 10,
+        PRACTISE_CONTROL_PANEL_TEXT = 11,
+        GAME_AREA = 12
+    };
     
     export class StateSave {
         public practiseDone: number = 0;
         public testsDone: number = 0;
-    };
-    
-    export class IntroSave {
-        public lastShowedInfo:number = 0;
     };
     
     export class GamePlayInfo {
@@ -57,7 +70,10 @@ module Common {
         };
     }
     
-    
+    export interface InfoWidget {
+        showFor(element: any): void;
+        getElementId(): number;
+    }
     
     export class GameEventComponent {
         
@@ -187,12 +203,21 @@ module Common {
                         this.getCallbackForEventId(Events.CONTROL_PANEL_EVENT_PLAY), 
                         this);
                     break;
+                case Events.STAGE_INFO_SHOW:
+                    var infoWidget: InfoWidget = <InfoWidget> param1;
+                    switch(infoWidget.getElementId()) {
+                        case GameElements.PRACTISE_CONTROL_PANEL_BUTTON_PLAY:
+                            infoWidget.showFor(this._playButton);
+                            break;
+                    }
+                    break;
             }
         };
         
         initEventListners(): void {
             super.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
             super.addEventListener(Events.GAME_END);
+            super.addEventListener(Events.STAGE_INFO_SHOW);
         };
         
         destroy() {
@@ -231,6 +256,7 @@ module Common {
         };
 
         initEventListners(): void {
+            super.initEventListners();
             super.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
             super.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
             super.addEventListener(Events.GAME_END);
@@ -305,14 +331,14 @@ module Common {
                 frames);
         };
         
-        private initEventListners():void {
-            
-          super.addEventListener(Events.MENU_EVENT_GO_MENU);  
-          super.addEventListener(Events.MENU_EVENT_OPEN_ALGO_DESCR);  
-          super.addEventListener(Events.MENU_EVENT_SHOW_LEVEL_OBJECT);  
-          super.addEventListener(Events.MENU_EVENT_GO_PRACTISE);  
-          super.addEventListener(Events.MENU_EVENT_GO_TEST);  
-          
+        initEventListners():void {
+            super.addEventListener(Events.MENU_EVENT_GO_MENU);  
+            super.addEventListener(Events.MENU_EVENT_OPEN_ALGO_DESCR);  
+            super.addEventListener(Events.MENU_EVENT_SHOW_LEVEL_OBJECT);  
+            super.addEventListener(Events.MENU_EVENT_GO_PRACTISE);  
+            super.addEventListener(Events.MENU_EVENT_GO_TEST);  
+            super.addEventListener(Events.MENU_EVENT_GO_TEST);  
+            super.addEventListener(Events.STAGE_INFO_SHOW);
         };
     }    
     
@@ -408,6 +434,7 @@ module Common {
             this.addEventListener(Events.GAME_CORRECT_STEP_DONE);
             this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
             this.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
+            this.addEventListener(Events.STAGE_INFO_SHOW);
             
             this._timer = this._game.time.create(false);
             this._timer.start();
@@ -474,6 +501,15 @@ module Common {
                     this._bottomProgressBar.setValue(playInfo.doneIterations, playInfo.doneIterations + "");
                     this._maxTimeValue = playInfo.stepWaitTime;
                     break;
+                case Events.STAGE_INFO_SHOW:
+                    var infoWidget: InfoWidget = <InfoWidget> param1;
+                    switch(infoWidget.getElementId()) {
+                        case GameElements.PRACTISE_PROGRESS_STEP:
+                            infoWidget.showFor(this._topProgressBar);
+                            break;
+                    }
+                    break;
+                    
             }
         };
         

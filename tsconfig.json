@@ -15,6 +15,7 @@
         "events.ts",
         "game.ts",
         "menuState.ts",
+        "stageinfo.ts",
         "levels/binarySearch/binarySearch.ts"
     ]
 }

@@ -1,12 +1,12 @@
 /// <reference path="common.ts" />
+/// <reference path="stageinfo.ts" />
 
 class Preload extends Phaser.State {
     
     private preloadBar:Phaser.Sprite;
     
     preload() {
-        
-        
+
         this.preloadBar = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'preloadbar');
         this.preloadBar.anchor.setTo(0.5);
         this.load.setPreloadSprite(this.preloadBar);
@@ -22,6 +22,7 @@ class Preload extends Phaser.State {
         
         // Tmp images
         this.load.image('box', '/assets/images/box.png');
+        this.load.image('cursor', '/assets/images/cursor.png');
 
 
         this.load.onLoadComplete.add(this._onLoadComplete, this);
@@ -39,11 +40,13 @@ class MenuState extends Phaser.State {
     private _controlPanel: Common.PractisePanel;
     private _gamePlay: BinarySearch.GamePlay;
     private _progressPanel: Common.ProgressPanel;
+    private _practiseManager: StageInfo.PractiseManager;
     
     shutdown(): void {
       this._menu.destroy();  
       this._controlPanel.destroy();
       this._gamePlay.destroy();
+      this._practiseManager.destroy();
       this._menu = null;
     };
 
@@ -55,6 +58,7 @@ class MenuState extends Phaser.State {
         this._controlPanel = new Common.PractisePanel(game);
         this._gamePlay = new BinarySearch.GamePlay(game);
         this._progressPanel = new Common.ProgressPanel(game);
+        this._practiseManager = new StageInfo.PractiseManager(game);
         
         game.eventBus.dispatch(Events.STAGE_INITIALIZED, this);
         

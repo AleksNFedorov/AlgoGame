@@ -1,11 +1,12 @@
 class Constants {
     
     //Game general 
-    static GAME_WIDTH:number = 1024;
-    static GAME_HEIGHT:number = 768;
-    static GAME_BACKGROUND:string = "#483D8B";
+    static GAME_WIDTH: number = 1024;
+    static GAME_HEIGHT: number = 768;
+    static GAME_BACKGROUND: string = "#483D8B";
     static GAME_TIME_PROGRESS_UPDATE_INTERVAL = 300;
     static GAME_AUTOSTART_INTERVAL = 3000;
+    static GAME_SHOW_INFO_SAVE_ID = "showInfo";
     
     
     //State names
