@@ -8,6 +8,14 @@ class Constants {
     static GAME_AUTOSTART_INTERVAL = 3000;
     static GAME_SHOW_INFO_SAVE_ID = "showInfo";
     
+    //Game Menu
+    static MENU_POSITION_X = 0;
+    static MENU_POSITION_Y = 0;
+    
+    //Game Progress Bar
+    static PROGRESS_BAR_POSITION_X = 800;
+    static PROGRESS_BAR_POSITION_Y = 100;
+    
     
     //State names
     static STATE_BOOT = "boot";

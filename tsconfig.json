@@ -9,14 +9,17 @@
         "sourceMap": false
     },
     "files": [
+        "components/common.ts",
+        "components/menu.ts",
+        "components/progresspanel.ts",
+        "components/controlpanel.ts",
+        "components/stageinfo.ts",
+        "components/modalwindow.ts",
         "boot.ts",
-        "common.ts",
         "constants.ts",
         "events.ts",
         "game.ts",
         "menuState.ts",
-        "stageinfo.ts",
-        "modalwindow.ts",
         "levels/binarySearch/binarySearch.ts"
     ]
 }

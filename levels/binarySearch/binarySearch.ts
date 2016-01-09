@@ -1,4 +1,4 @@
-/// <reference path="../../common.ts" />
+/// <reference path="../../components/common.ts" />
 
 module BinarySearch {
     
