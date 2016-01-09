@@ -170,12 +170,14 @@ module Common {
             this._game.eventBus.removeEventListener(eventId, this.dispatchEvent, this);  
         };
         
+        initEventListners(): void {}
+        
         getCallbackForEventId(eventId: string, param?: any) {
             
             return function() {
                 console.log("Event created " + eventId);
                 this._game.dispatch(eventId, this, param);
-            };
+            }.bind(this);
         };
         
     };
@@ -186,8 +188,9 @@ module Common {
         private _inactiveFrame: number;
         private _callback: Function;
         
-        constructor(game:AlgoGame, callback: Function, context:any, frames:number[]) {
-            super(game, 0,0, Constants.MENU_BUTTON_ATTLAS, callback, context, 
+        constructor(game:AlgoGame, frames:number[]) {
+            super(game, 0,0, Constants.MENU_BUTTON_ATTLAS,
+            this.onButtonDown, this, 
             frames[0],
             frames[1],
             frames[2],
@@ -195,7 +198,6 @@ module Common {
             );
             this._activeFrames = frames;
             this._inactiveFrame = frames[4];
-            this._callback = callback;
         };
         
         activate(): void {
@@ -218,8 +220,12 @@ module Common {
             );
         };
         
-        get callback(): Function {
-            return this._callback;
+        private onButtonDown(): void {
+            this._callback();
+        }
+        
+        set callback(callback: Function) {
+            this._callback = callback;
         };
     }
 
@@ -238,15 +244,12 @@ module Common {
         
         createElements(): void {
             
-            this._playButton = new Button(this._game,
-                this.getCallbackForEventId(Events.CONTROL_PANEL_EVENT_PLAY),
-                this,
-                [46, 46, 50, 46, 35]
-                );
+            this._playButton = new Button(this._game, [46, 46, 50, 46, 35] );
                 
             this._playButton.x = 100;
             this._playButton.y = 500;
             this._playButton.scale.setTo(0.3);
+            this._playButton.callback = this.getCallbackForEventId(Events.CONTROL_PANEL_EVENT_PLAY);
 
             this._game.add.existing(this._playButton);
             
@@ -283,6 +286,7 @@ module Common {
         };
         
         initEventListners(): void {
+            super.initEventListners();
             super.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
             super.addEventListener(Events.GAME_END);
             super.addEventListener(Events.STAGE_INFO_SHOW);
@@ -309,15 +313,12 @@ module Common {
        createElements():void {
             super.createElements();
             
-            this._pauseButton = new Button(this._game,
-                this.getCallbackForEventId(Events.CONTROL_PANEL_EVENT_PAUSE),
-                this,
-                [61,61,37,61, 65]
-                );
+            this._pauseButton = new Button(this._game, [61,61,37,61, 65]);
 
             this._pauseButton.x = 50;
             this._pauseButton.y = 500;
             this._pauseButton.scale.setTo(0.3);
+            this._pauseButton.callback = this.getCallbackForEventId(Events.CONTROL_PANEL_EVENT_PAUSE);
             
             this._game.add.existing(this._pauseButton);
             
@@ -363,19 +364,24 @@ module Common {
             super(game);
             this.createButtons();
             this.initEventListners();
-        };
+        }
         
         createButtons(): void {
-            var goBackButton: Button = this.createButton(Events.MENU_EVENT_GO_MENU, [19, 19, 84, 19, 45])
+            var goBackButton: Button = new Button(this._game, [19, 19, 84, 19, 45]);
             goBackButton.x = 50;
             goBackButton.y = 50;
             goBackButton.scale.setTo(0.3);
         
             this._game.add.existing(goBackButton);
         
-            this._menuButtons.push(goBackButton);
+            this._menuButtons[GameElements.MENU_BUTTON_BACK] = goBackButton;
             console.log("Button has been added");
-        };
+        }
+        
+        setCallbackToElement(gameElement: GameElements, callback: Function): void {
+            var button: Button = this._menuButtons[gameElement];
+            button.callback = callback;
+        }
         
         destroy(): void {
             
@@ -391,16 +397,8 @@ module Common {
             
         };
 
-        private createButton(eventid: string, frames: number[]): Button {
-
-            return new Button(
-                this._game, 
-                this.getCallbackForEventId(Events.MENU_EVENT_GO_MENU),
-                this,
-                frames);
-        };
-        
         initEventListners():void {
+            super.initEventListners();
             super.addEventListener(Events.MENU_EVENT_GO_MENU);  
             super.addEventListener(Events.MENU_EVENT_OPEN_ALGO_DESCR);  
             super.addEventListener(Events.MENU_EVENT_SHOW_LEVEL_OBJECT);  

@@ -16,6 +16,7 @@
         "game.ts",
         "menuState.ts",
         "stageinfo.ts",
+        "modalwindow.ts",
         "levels/binarySearch/binarySearch.ts"
     ]
 }

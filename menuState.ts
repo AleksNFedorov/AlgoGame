@@ -1,5 +1,6 @@
 /// <reference path="common.ts" />
 /// <reference path="stageinfo.ts" />
+/// <reference path="modalwindow.ts" />
 
 class Preload extends Phaser.State {
     
@@ -23,7 +24,7 @@ class Preload extends Phaser.State {
         // Tmp images
         this.load.image('box', '/assets/images/box.png');
         this.load.image('cursor', '/assets/images/cursor.png');
-
+        this.load.image('modalBg', '/assets/images/modalBG.png');
 
         this.load.onLoadComplete.add(this._onLoadComplete, this);
     };
@@ -41,6 +42,7 @@ class MenuState extends Common.AlgoGameState {
     private _gamePlay: BinarySearch.GamePlay;
     private _progressPanel: Common.ProgressPanel;
     private _practiseManager: StageInfo.PractiseManager;
+    private _modalWindow: GameModal.ModalWindow;
     
     shutdown(): void {
       this._menu.destroy();  
@@ -52,13 +54,21 @@ class MenuState extends Common.AlgoGameState {
 
     create(): void {
         
+        this._modalWindow = new GameModal.ModalWindow(this.algoGame, "test");
+        
         this._menu = new Common.Menu(this.algoGame);
         this._controlPanel = new Common.PractisePanel(this.algoGame);
         this._gamePlay = new BinarySearch.GamePlay(this.algoGame);
         this._progressPanel = new Common.ProgressPanel(this.algoGame);
         this._practiseManager = new StageInfo.PractiseManager(this.algoGame);
         
+        this._menu.setCallbackToElement(Common.GameElements.MENU_BUTTON_BACK, this.showModalWindow.bind(this));
+        
         this.algoGame.dispatch(Events.STAGE_INITIALIZED, this);
     };
+    
+    showModalWindow(): void {
+        this._modalWindow.show("cursor");
+    }
     
 };
