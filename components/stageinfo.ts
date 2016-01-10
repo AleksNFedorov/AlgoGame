@@ -68,28 +68,28 @@ module StageInfo {
         }
         
         public showFor(element: any): void {
-            var quarter: Quarter = InfoWidget.getQuarter(element.x, element.y);
+            var quarter: Quarter = InfoWidget.getQuarter(element.worldPosition.x, element.worldPosition.y);
             
             switch(quarter) {
                 case Quarter.TOPRIGHT:
-                    this._cursorSprite.x = element.x - this._cursorSprite.width - 10;
-                    this._cursorSprite.y = element.y + element.height - 10;
+                    this._cursorSprite.x = element.worldPosition.x - this._cursorSprite.width - 10;
+                    this._cursorSprite.y = element.worldPosition.y + element.height - 10;
                     this._cursorSprite.angle = 90;
                     this._cursorSprite.anchor.setTo(0.2, 0.8);
                     break;
                 case Quarter.TOPLEFT:
-                    this._cursorSprite.x = element.x + element.width;
-                    this._cursorSprite.y = element.y + element.height;
+                    this._cursorSprite.x = element.worldPosition.x + element.width;
+                    this._cursorSprite.y = element.worldPosition.y + element.height;
                     break;
                 case Quarter.BOTTOMRIGHT:
-                    this._cursorSprite.x = element.x - this._cursorSprite.width - 10;
-                    this._cursorSprite.y = element.y - this._cursorSprite.height + 10;
+                    this._cursorSprite.x = element.worldPosition.x - this._cursorSprite.width - 10;
+                    this._cursorSprite.y = element.worldPosition.y - this._cursorSprite.height + 10;
                     this._cursorSprite.anchor.setTo(1);
                     this._cursorSprite.angle = -210;
                     break;
                 case Quarter.BOTTOMLEFT:
-                    this._cursorSprite.x = element.x + element.width + 10;
-                    this._cursorSprite.y = element.y - this._cursorSprite.height - 10;
+                    this._cursorSprite.x = element.worldPosition.x + element.width + 10;
+                    this._cursorSprite.y = element.worldPosition.y - this._cursorSprite.height - 10;
                     this._cursorSprite.anchor.setTo(0.8);
                     this._cursorSprite.angle = 230;
                     break;
@@ -130,7 +130,6 @@ module StageInfo {
             super(game);
             this._infoToShow = infoToShow;
             this._stageType = stageType;
-            super.addEventListener(Events.STAGE_INITIALIZED);
             
             this._infoSave = game.store.get(Constants.GAME_SHOW_INFO_SAVE_ID) 
                 || new Save();
@@ -138,6 +137,10 @@ module StageInfo {
             if (this._infoSave.gameInfoSaves[this._stageType] == null) {
                 this._infoSave.gameInfoSaves[this._stageType] = -1;
             }
+        }
+        
+        initEventListners(): void {
+            super.addEventListener(Events.STAGE_INITIALIZED);
         }
         
         onInfoShowed(): void {
@@ -184,7 +187,11 @@ module StageInfo {
                     this.sendShowInfoRequest();
                     break;
                 default:
-                    this.onInfoShowed();
+                    if (this._requestedShowWidget != null 
+                        && this._requestedShowWidget.showInfo.eventToHide != null
+                        && event.type == this._requestedShowWidget.showInfo.eventToHide) {
+                            this.onInfoShowed();
+                        }
             }
         }
         

@@ -143,12 +143,58 @@ module Common {
     export class GameEventComponent {
         
         protected _game: AlgoGame;
-        private _listeners: Array<string> = [];
-        
+        private _listeners: Phaser.ArraySet = new Phaser.ArraySet([]);
+        private _gameState: GameState = GameState.UNKNOWN;
+
         constructor(game: AlgoGame) {
             this._game = game;
             this.initEventListners();
         }
+        
+        initEventListners(): void {
+            this.addEventListener(Events.GAME_CREATED);
+            this.addEventListener(Events.GAME_STARTED);
+            this.addEventListener(Events.GAME_END);
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
+        }
+
+        dispatchEvent(event: any, param1: any) {
+            console.log("Menu event cought [" + event.type + "]");
+            switch(event.type) {
+                case Events.CONTROL_PANEL_EVENT_PAUSE:
+                    this._gameState = GameState.PAUSED;
+                    break;
+                case Events.CONTROL_PANEL_EVENT_PLAY:
+                    if (this._gameState != GameState.PAUSED)
+                        return;
+                    this._gameState = GameState.RUNNING;
+                    break;
+                case Events.GAME_CREATED:
+                    this._gameState = GameState.CREATED;
+                    break;
+                case Events.GAME_STARTED:
+                    this._gameState = GameState.RUNNING;
+                    break;
+                case Events.GAME_END:
+                    this._gameState = GameState.END;
+                    break;
+            }
+        };
+        
+        addEventListener(eventId: string): void {
+        
+            if (!this._listeners.exists(eventId)) {
+                this._game.eventBus.addEventListener(eventId, this.dispatchEvent, this);  
+                this._listeners.add(eventId);
+            } else {
+                console.log("Event listener exists [" + eventId + "] ")
+            }                
+        };
+        
+        removeEventListener(eventId: string): void {
+            this._game.eventBus.removeEventListener(eventId, this.dispatchEvent, this);  
+        };
         
         destroy(): void {
         
@@ -156,23 +202,7 @@ module Common {
                 this.removeEventListener(eventId);
             }
         };
-        
-        dispatchEvent(event: any, param1: any) {
-            console.log("Menu event cought [" + event.type + "]");
-        };
-        
-        addEventListener(eventId: string): void {
-        
-            this._game.eventBus.addEventListener(eventId, this.dispatchEvent, this);  
-            this._listeners.push(eventId);
-        };
-        
-        removeEventListener(eventId: string): void {
-            this._game.eventBus.removeEventListener(eventId, this.dispatchEvent, this);  
-        };
-        
-        initEventListners(): void {}
-        
+
         getCallbackForEventId(eventId: string, param?: any) {
             
             return function() {
@@ -181,7 +211,51 @@ module Common {
             }.bind(this);
         };
         
+        protected get gameState(): GameState {
+            return this._gameState;
+        }
+        
     };
+    
+    export class GameComponentContainer extends GameEventComponent {
+    
+        private _componentElements: any[] = [];
+        
+        constructor(game: AlgoGame) {
+            super(game);
+        }
+        
+        initEventListners(): void {
+            super.initEventListners();
+            this.addEventListener(Events.STAGE_INFO_SHOW);
+        }
+        
+        protected addGameElement(elementId: GameElements, element: any): void {
+            this._componentElements[elementId] = element;
+        } 
+
+        dispatchEvent(event: any, param1: any) {
+            super.dispatchEvent(event, param1);
+            switch(event.type) {
+                case Events.STAGE_INFO_SHOW:
+                    var infoWidget: InfoWidget = <InfoWidget> param1;
+                    var element = this._componentElements[infoWidget.getElementId()];
+                    if (element != null) {
+                        infoWidget.showFor(element);
+                    }                        
+                    break;
+            }
+        }
+
+        destroy(): void {
+            super.destroy();         
+            for (var key in this._componentElements) {
+               var value = this._componentElements[key];
+               value.destroy();
+            }
+        }
+
+    }
     
     export class Button extends Phaser.Button {
         

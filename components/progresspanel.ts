@@ -71,7 +71,7 @@ module Common {
         }
     }
     
-    export class ProgressPanel extends GameEventComponent {
+    export class ProgressPanel extends GameComponentContainer {
     
         private _topProgressBar: ProgressBar;
         private _bottomProgressBar: ProgressBar;
@@ -82,8 +82,6 @@ module Common {
         
         private _progressGroup: Phaser.Group;
         
-        private _gameState: Common.GameState = Common.GameState.UNKNOWN;
-      
         constructor(game:AlgoGame) {
             super(game);
             
@@ -109,6 +107,9 @@ module Common {
             this._bottomProgressBar.x = 0;
             this._bottomProgressBar.y = 60;
             this._progressGroup.add(this._bottomProgressBar);
+            
+            this.addGameElement(Common.GameElements.PRACTISE_PROGRESS_STEP, this._topProgressBar);
+
         }
         
         protected createProgressBar(backImage: string, fromImage: string, legendText: string): ProgressBar {
@@ -139,24 +140,20 @@ module Common {
                     this._bottomProgressBar.setValue(<number> param1[0], param1[0]);
                     this.scheduleUpdates();
                     break;
+                case Events.CONTROL_PANEL_EVENT_PLAY:
+                    if (this.gameState == Common.GameState.PAUSED) {
+                        this._timer.resume();                        
+                    }
+                    break;
                 case Events.CONTROL_PANEL_EVENT_PAUSE:
                     this._timer.pause();
-                    this._gameState = Common.GameState.PAUSED;
-                    break;
-                case Events.CONTROL_PANEL_EVENT_PLAY:
-                    if (this._gameState != Common.GameState.PAUSED)
-                        return;
-                    this._timer.resume();                        
-                    this._gameState = Common.GameState.RUNNING;
                     break;
                 case Events.GAME_STARTED:
                     this._topProgressBar.setValue(this._maxTimeValue, "");
                     this.scheduleUpdates();
-                    this._gameState = Common.GameState.RUNNING;
                     break;
                 case Events.GAME_END:
                     this._timer.removeAll();
-                    this._gameState = Common.GameState.END;
                     break;
                 case Events.GAME_CREATED:
                     var playInfo: Common.GamePlayInfo = <Common.GamePlayInfo> param1;
@@ -165,26 +162,14 @@ module Common {
                     this._bottomProgressBar.setValue(playInfo.doneIterations, playInfo.doneIterations + "");
                     this._maxTimeValue = playInfo.stepWaitTime;
                     break;
-                case Events.STAGE_INFO_SHOW:
-                    var infoWidget: InfoWidget = <InfoWidget> param1;
-                    switch(infoWidget.getElementId()) {
-                        case GameElements.PRACTISE_PROGRESS_STEP:
-                            infoWidget.showFor(this._topProgressBar);
-                            break;
-                    }
-                    break;
-                    
-            }
+            };
+            super.dispatchEvent(event, param1);
+
         }
         
         initEventListners(): void {
-
-            this.addEventListener(Events.GAME_CREATED);
-            this.addEventListener(Events.GAME_STARTED);
-            this.addEventListener(Events.GAME_END);
+            super.initEventListners();
             this.addEventListener(Events.GAME_CORRECT_STEP_DONE);
-            this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
-            this.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
             this.addEventListener(Events.STAGE_INFO_SHOW);
         }
 

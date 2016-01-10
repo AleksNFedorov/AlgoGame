@@ -312,9 +312,9 @@ module BinarySearch {
         private _algorithm: BinarySearchAlgorithm;
         private _algorithmStep: BinarySearchStep;
         private _gameStepTimer: Phaser.Timer;
-        private _gameState: Common.GameState = Common.GameState.CREATED;
         private _clickedBoxIndex:number = -1;
         private _stepPerformed: boolean = false;
+        
         protected gameSave: Common.StateSave;
         
         constructor(game: Common.AlgoGame) {
@@ -325,24 +325,24 @@ module BinarySearch {
             
             this.gameSave = game.store.get(Constants.STATE_SEARCH_BINARY_SEARCH_P) 
                 || new Common.StateSave();
+        
+            this._gameStepTimer = this._game.time.create(false);
+            this._gameStepTimer.start();
 
         };
         
         dispatchEvent(event: any, param1: any) {
-            
-            console.log("Menu event cought [" + event.type + "]");
-            
             switch(event.type) {
                 case Events.STAGE_INITIALIZED:
                     this.initGame();
                     break;
                 case Events.CONTROL_PANEL_EVENT_PLAY:
-                    if (this._gameState == Common.GameState.PAUSED) {
+                    console.log("Play event received");
+                    if (this.gameState == Common.GameState.PAUSED) {
                         //mid-game pause
                         this._gameStepTimer.resume();
-                        this._gameState = Common.GameState.RUNNING;
                     } else {
-                        if (this._gameState != Common.GameState.CREATED) {
+                        if (this.gameState != Common.GameState.CREATED) {
                             //non-first iteration
                             this.reinitGame();
                         };
@@ -351,11 +351,10 @@ module BinarySearch {
                     break;
                 case Events.CONTROL_PANEL_EVENT_PAUSE:
                     this._gameStepTimer.pause();
-                    this._gameState = Common.GameState.PAUSED;
                     break;
-            }
-            
-        };
+            };
+            super.dispatchEvent(event, param1);
+        }
         
         private initGame() : void {
             this.reinitGame();
@@ -389,13 +388,9 @@ module BinarySearch {
         private startGame(): void {
             
             this._algorithmStep = this._algorithm.nextStep;
-            this._gameStepTimer = this._game.time.create(false);
             this.addTimerEvents();
             this._game.dispatch(Events.GAME_STARTED, this, 
                 this.gameSave.practiseDone);
-
-            this._gameStepTimer.start();
-            this._gameState = Common.GameState.RUNNING;
 
         };
         
@@ -405,7 +400,7 @@ module BinarySearch {
         
         private boxClicked(index: number, addToResult:number = 1, isUser:boolean = true) {
             
-            if (this._gameState != Common.GameState.RUNNING) {
+            if (this.gameState != Common.GameState.RUNNING) {
                 this._game.dispatch(Events.GAME_STEP_ON_PAUSE, this);
                 return;
             }
@@ -432,9 +427,8 @@ module BinarySearch {
                     [this.gameSave.practiseDone, isUser]);
                 
                 if (step.isLast) {
-                    this._gameStepTimer.stop();
+                    this._gameStepTimer.removeAll();
                     this._game.dispatch(Events.GAME_END, this);
-                    this._gameState = Common.GameState.END;
                     console.log("Game finished");
                 } else {
                     this._algorithmStep = this._algorithm.nextStep;
