@@ -44,12 +44,13 @@ class MenuState extends Common.AlgoGameState {
     private _practiseManager: StageInfo.PractiseManager;
     private _modalWindow: GameModal.ModalWindow;
     
-    shutdown(): void {
-      this._menu.destroy();  
-      this._controlPanel.destroy();
-      this._gamePlay.destroy();
-      this._practiseManager.destroy();
-      this._menu = null;
+    public shutdown(): void {
+        super.shutdown();
+        this._menu.destroy();  
+        this._controlPanel.destroy();
+        this._gamePlay.destroy();
+        this._practiseManager.destroy();
+        this._menu = null;
     };
 
     create(): void {
@@ -63,6 +64,8 @@ class MenuState extends Common.AlgoGameState {
         this._practiseManager = new StageInfo.PractiseManager(this.algoGame);
         
         this._menu.setCallbackToElement(Common.GameElements.MENU_BUTTON_BACK, this.showModalWindow.bind(this));
+        
+        super.create();        
         
         this.algoGame.dispatch(Events.STAGE_INITIALIZED, this);
     };

@@ -64,7 +64,7 @@ module Common {
         
         public setValue(newValue: number, textValue: string): void {
         
-            var completines = newValue/this._maxProgressValue;
+            var completines = Math.min(1, newValue/this._maxProgressValue);
         
             this._progressImage.width = this._maxProgressWidth * completines;
             this._progressText.text = textValue;
@@ -93,28 +93,37 @@ module Common {
             
             this._timer = this._game.time.create(false);
             this._timer.start();
-
         }
         
+        protected initEventListners(): void {
+            this.addEventListener(Events.GAME_CORRECT_STEP_DONE);
+            this.addEventListener(Events.STAGE_INFO_SHOW);
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
+            this.addEventListener(Events.GAME_STARTED);
+            this.addEventListener(Events.GAME_END);
+            this.addEventListener(Events.GAME_CREATED);
+        }
+
         protected createProgressBars(): void {
         
-            this._topProgressBar = this.createProgressBar("slice27_27.png", "slice16_16.png", "Step time");
+            this._topProgressBar = this.createAndAddProgressBar(
+                "slice27_27.png", "slice16_16.png", "Step time",
+                Common.GameElements.PRACTISE_PROGRESS_STEP);
             this._topProgressBar.x = 0;
             this._topProgressBar.y = 0;
-            this._progressGroup.add(this._topProgressBar);
 
-            this._bottomProgressBar = this.createProgressBar("slice27_27.png", "slice35_35.png", "Steps done");
+            this._bottomProgressBar = this.createAndAddProgressBar(
+                "slice27_27.png", "slice35_35.png", "Steps done",
+                Common.GameElements.PRACTISE_PROGRESS_COMPLETION);
             this._bottomProgressBar.x = 0;
             this._bottomProgressBar.y = 60;
-            this._progressGroup.add(this._bottomProgressBar);
-            
-            this.addGameElement(Common.GameElements.PRACTISE_PROGRESS_STEP, this._topProgressBar);
-
         }
         
-        protected createProgressBar(backImage: string, fromImage: string, legendText: string): ProgressBar {
+        protected createAndAddProgressBar(backImage: string, fromImage: string, legendText: string, elementId: Common.GameElements): ProgressBar {
             var newProgress: ProgressBar = new ProgressBar(this._game, backImage, fromImage, legendText);
-            
+            this._progressGroup.add(newProgress);
+            this.addGameElement(elementId, newProgress);
             return newProgress;            
         }
 
@@ -133,6 +142,7 @@ module Common {
         }
 
         dispatchEvent(event: any, param1: any) {
+            super.dispatchEvent(event, param1);
             switch(event.type) {
                 case Events.GAME_CORRECT_STEP_DONE:
                     this._timer.removeAll();
@@ -141,7 +151,7 @@ module Common {
                     this.scheduleUpdates();
                     break;
                 case Events.CONTROL_PANEL_EVENT_PLAY:
-                    if (this.gameState == Common.GameState.PAUSED) {
+                    if (this._game.gameState == Common.GameState.PAUSED) {
                         this._timer.resume();                        
                     }
                     break;
@@ -163,16 +173,8 @@ module Common {
                     this._maxTimeValue = playInfo.stepWaitTime;
                     break;
             };
-            super.dispatchEvent(event, param1);
-
         }
         
-        initEventListners(): void {
-            super.initEventListners();
-            this.addEventListener(Events.GAME_CORRECT_STEP_DONE);
-            this.addEventListener(Events.STAGE_INFO_SHOW);
-        }
-
         destroy(): void {
           super.destroy();
           

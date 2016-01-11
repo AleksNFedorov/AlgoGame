@@ -25,12 +25,11 @@ module Common {
             this._playButton.callback = this.getCallbackForEventId(Events.CONTROL_PANEL_EVENT_PLAY);
 
             this._game.add.existing(this._playButton);
+            this.addGameElement(Common.GameElements.PRACTISE_CONTROL_PANEL_BUTTON_PLAY, this._playButton);
 
             this._infoText = new Phaser.Text(this._game, 250, 500, "Control panel text", Constants.CONTROL_PANEL_MESSAGE_STYLE);
             this._game.add.existing(this._infoText);
-            
-            this.addGameElement(Common.GameElements.PRACTISE_CONTROL_PANEL_BUTTON_PLAY, this._playButton);
-            
+            this.addGameElement(Common.GameElements.PRACTISE_CONTROL_PANEL_TEXT, this._infoText);
         }
         
         dispatchEvent(event: any, param1: any) {
@@ -56,7 +55,6 @@ module Common {
             super.initEventListners();
             super.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
             super.addEventListener(Events.GAME_END);
-            super.addEventListener(Events.STAGE_INFO_SHOW);
             super.addEventListener(Events.CONTROL_PANEL_SHOW_TEXT);
         }
         
@@ -87,13 +85,17 @@ module Common {
             this._pauseButton.callback = this.getCallbackForEventId(Events.CONTROL_PANEL_EVENT_PAUSE);
             
             this._game.add.existing(this._pauseButton);
+            this.addGameElement(Common.GameElements.PRACTISE_CONTROL_PANEL_BUTTON_PAUSE, this._pauseButton);
             
             this._pauseButton.deactivate();
+            
         }
 
         initEventListners(): void {
             super.initEventListners();
+            super.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
             super.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
+            super.addEventListener(Events.GAME_END);
         }
         
         dispatchEvent(event: any, param1: any) {

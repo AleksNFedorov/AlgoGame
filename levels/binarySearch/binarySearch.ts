@@ -306,7 +306,7 @@ module BinarySearch {
         }
     }
     
-    export class GamePlay extends Common.GameEventComponent {
+    export class GamePlay extends Common.GameComponentContainer {
 
         private _boxLine: BoxLine;
         private _algorithm: BinarySearchAlgorithm;
@@ -319,9 +319,6 @@ module BinarySearch {
         
         constructor(game: Common.AlgoGame) {
             super(game);
-            this.addEventListener(Events.STAGE_INITIALIZED);
-            this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
-            this.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
             
             this.gameSave = game.store.get(Constants.STATE_SEARCH_BINARY_SEARCH_P) 
                 || new Common.StateSave();
@@ -331,18 +328,26 @@ module BinarySearch {
 
         };
         
+        protected initEventListners(): void {
+            this.addEventListener(Events.STAGE_INITIALIZED);
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
+        }
+
+        
         dispatchEvent(event: any, param1: any) {
+            super.dispatchEvent(event, param1);
             switch(event.type) {
                 case Events.STAGE_INITIALIZED:
                     this.initGame();
                     break;
                 case Events.CONTROL_PANEL_EVENT_PLAY:
                     console.log("Play event received");
-                    if (this.gameState == Common.GameState.PAUSED) {
+                    if (this._game.gameState == Common.GameState.PAUSED) {
                         //mid-game pause
                         this._gameStepTimer.resume();
                     } else {
-                        if (this.gameState != Common.GameState.CREATED) {
+                        if (this._game.gameState != Common.GameState.CREATED) {
                             //non-first iteration
                             this.reinitGame();
                         };
@@ -353,7 +358,6 @@ module BinarySearch {
                     this._gameStepTimer.pause();
                     break;
             };
-            super.dispatchEvent(event, param1);
         }
         
         private initGame() : void {
@@ -400,7 +404,7 @@ module BinarySearch {
         
         private boxClicked(index: number, addToResult:number = 1, isUser:boolean = true) {
             
-            if (this.gameState != Common.GameState.RUNNING) {
+            if (this._game.gameState != Common.GameState.RUNNING) {
                 this._game.dispatch(Events.GAME_STEP_ON_PAUSE, this);
                 return;
             }

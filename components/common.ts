@@ -18,7 +18,7 @@ module Common {
         PRACTISE_PROGRESS_STEP = 7,
         PRACTISE_PROGRESS_COMPLETION = 8,
         PRACTISE_CONTROL_PANEL_BUTTON_PLAY = 9,
-        PRACTISE_CONTROL_PANEL_BUTTON_PAUS = 10,
+        PRACTISE_CONTROL_PANEL_BUTTON_PAUSE = 10,
         PRACTISE_CONTROL_PANEL_TEXT = 11,
         GAME_AREA = 12
     };
@@ -88,6 +88,8 @@ module Common {
         
         private _game: AlgoGame;
         private _eventsToProcess: Phaser.LinkedList = new Phaser.LinkedList();
+        private _gameState: GameState = GameState.UNKNOWN;
+
         
         public dispatch(eventId: string, caller: any, param?: any) {
             console.log("New event dispatched by state");
@@ -97,6 +99,19 @@ module Common {
         
         public init(): void {
             this._game = <AlgoGame> this.game;
+        }
+        
+        
+        public create(): void {
+            this.initEventListners();
+        }
+        
+        private initEventListners(): void {
+            this._game.eventBus.addEventListener(Events.GAME_CREATED, this.dispatchEvent, this);
+            this._game.eventBus.addEventListener(Events.GAME_STARTED, this.dispatchEvent, this);
+            this._game.eventBus.addEventListener(Events.GAME_END, this.dispatchEvent, this);
+            this._game.eventBus.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY, this.dispatchEvent, this);
+            this._game.eventBus.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE, this.dispatchEvent, this);
         }
         
         public update(): void {
@@ -111,8 +126,42 @@ module Common {
             }
         }
         
+        public shutdown(): void {
+            this._game.eventBus.removeEventListener(Events.GAME_CREATED, this.dispatchEvent, this);
+            this._game.eventBus.removeEventListener(Events.GAME_STARTED, this.dispatchEvent, this);
+            this._game.eventBus.removeEventListener(Events.GAME_END, this.dispatchEvent, this);
+            this._game.eventBus.removeEventListener(Events.CONTROL_PANEL_EVENT_PLAY, this.dispatchEvent, this);
+            this._game.eventBus.removeEventListener(Events.CONTROL_PANEL_EVENT_PAUSE, this.dispatchEvent, this);
+        }
+        
+        dispatchEvent(event: any, param1: any) {
+            switch(event.type) {
+                case Events.CONTROL_PANEL_EVENT_PAUSE:
+                    this._gameState = GameState.PAUSED;
+                    break;
+                case Events.CONTROL_PANEL_EVENT_PLAY:
+                    if (this._gameState != GameState.PAUSED)
+                        return;
+                    this._gameState = GameState.RUNNING;
+                    break;
+                case Events.GAME_CREATED:
+                    this._gameState = GameState.CREATED;
+                    break;
+                case Events.GAME_STARTED:
+                    this._gameState = GameState.RUNNING;
+                    break;
+                case Events.GAME_END:
+                    this._gameState = GameState.END;
+                    break;
+            }
+        }
+        
         public get algoGame(): AlgoGame {
             return this._game;
+        }
+        
+        public get gameState(): GameState {
+            return this._gameState;
         }
     }
     
@@ -138,50 +187,28 @@ module Common {
         get eventBus(): EventBusClass {
             return this._eventBus;
         }
+        
+        public get gameState(): GameState {
+            var state: AlgoGameState = <AlgoGameState> this.state.states[this.state.current];
+            return state.gameState;
+        }
+
     }
 
     export class GameEventComponent {
         
         protected _game: AlgoGame;
         private _listeners: Phaser.ArraySet = new Phaser.ArraySet([]);
-        private _gameState: GameState = GameState.UNKNOWN;
 
         constructor(game: AlgoGame) {
             this._game = game;
             this.initEventListners();
         }
         
-        initEventListners(): void {
-            this.addEventListener(Events.GAME_CREATED);
-            this.addEventListener(Events.GAME_STARTED);
-            this.addEventListener(Events.GAME_END);
-            this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
-            this.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
-        }
+        protected initEventListners(): void {}
 
-        dispatchEvent(event: any, param1: any) {
-            console.log("Menu event cought [" + event.type + "]");
-            switch(event.type) {
-                case Events.CONTROL_PANEL_EVENT_PAUSE:
-                    this._gameState = GameState.PAUSED;
-                    break;
-                case Events.CONTROL_PANEL_EVENT_PLAY:
-                    if (this._gameState != GameState.PAUSED)
-                        return;
-                    this._gameState = GameState.RUNNING;
-                    break;
-                case Events.GAME_CREATED:
-                    this._gameState = GameState.CREATED;
-                    break;
-                case Events.GAME_STARTED:
-                    this._gameState = GameState.RUNNING;
-                    break;
-                case Events.GAME_END:
-                    this._gameState = GameState.END;
-                    break;
-            }
-        };
-        
+        dispatchEvent(event: any, param1: any) {}
+
         addEventListener(eventId: string): void {
         
             if (!this._listeners.exists(eventId)) {
@@ -210,11 +237,6 @@ module Common {
                 this._game.dispatch(eventId, this, param);
             }.bind(this);
         };
-        
-        protected get gameState(): GameState {
-            return this._gameState;
-        }
-        
     };
     
     export class GameComponentContainer extends GameEventComponent {
@@ -225,8 +247,7 @@ module Common {
             super(game);
         }
         
-        initEventListners(): void {
-            super.initEventListners();
+        protected initEventListners(): void {
             this.addEventListener(Events.STAGE_INFO_SHOW);
         }
         
@@ -235,7 +256,6 @@ module Common {
         } 
 
         dispatchEvent(event: any, param1: any) {
-            super.dispatchEvent(event, param1);
             switch(event.type) {
                 case Events.STAGE_INFO_SHOW:
                     var infoWidget: InfoWidget = <InfoWidget> param1;

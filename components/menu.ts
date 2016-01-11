@@ -2,7 +2,7 @@
 
 module Common {   
     
-    export class Menu extends GameEventComponent {
+    export class Menu extends GameComponentContainer {
         
         private _menuButtons: Common.Button[] = [];
         private _menuGroup: Phaser.Group;
@@ -29,6 +29,7 @@ module Common {
         
             this._menuGroup.add(newButton);
             this._menuButtons[elementId] = newButton;
+            super.addGameElement(elementId, newButton);
         }
         
         protected createButton(frames: number[]): Common.Button {
@@ -40,18 +41,6 @@ module Common {
         setCallbackToElement(gameElement: GameElements, callback: Function): void {
             var button: Common.Button = this._menuButtons[gameElement];
             button.callback = callback;
-        }
-        
-        initEventListners():void {
-            
-            super.initEventListners();
-            super.addEventListener(Events.MENU_EVENT_GO_MENU);  
-            super.addEventListener(Events.MENU_EVENT_OPEN_ALGO_DESCR);  
-            super.addEventListener(Events.MENU_EVENT_SHOW_LEVEL_OBJECT);  
-            super.addEventListener(Events.MENU_EVENT_GO_PRACTISE);  
-            super.addEventListener(Events.MENU_EVENT_GO_TEST);  
-            super.addEventListener(Events.MENU_EVENT_GO_TEST);  
-            super.addEventListener(Events.STAGE_INFO_SHOW);
         }
         
         destroy(): void {

@@ -1,5 +1,5 @@
 /// <reference path="../lib/gamemodal.d.ts" />
-/// <reference path="../lib/phaser.d.ts" />
+/// <reference path="./common.ts" />
 
 module GameModal {
 
@@ -29,17 +29,21 @@ module GameModal {
     }
     
     
-    export class ModalWindow {
+    export class ModalWindow extends Common.GameEventComponent {
         
         private _gameModal;
         private _type: string
+        private _paused: boolean;
         
-        constructor(game: Phaser.Game, type: string) {
+        constructor(game: Common.AlgoGame, type: string) {
+            super(game)
             this._gameModal = new GameModal(game);
             this._type = type;
         }
         
         public show(image: string): void {
+            
+            this._paused = false;
             
             var modalOptions: GameModalOptions = new GameModalOptions();
             modalOptions.type = this._type;
@@ -67,11 +71,19 @@ module GameModal {
         }
         
         protected onShow(): void {
-            console.log("Modal window [" + this._type + "] showed")
+            console.log("Modal window [" + this._type + "] showed");
+            if (this._game.gameState == Common.GameState.RUNNING) {
+                this._game.dispatch(Events.CONTROL_PANEL_EVENT_PAUSE, this);
+                this._paused = true;
+            }
         }
         
         protected onHide(): void {
-            console.log("Modal window [" + this._type + "] hide")
+            console.log("Modal window [" + this._type + "] hide");
+            if (this._paused) {
+                this._game.dispatch(Events.CONTROL_PANEL_EVENT_PLAY, this);
+                this._paused = false;
+            }
         }
         
         destroy(): void {
