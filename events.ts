@@ -31,7 +31,7 @@ class Events {
     //on attempt of making step during pause
     static GAME_STEP_ON_PAUSE = "GameStepOnPause";
     static GAME_PRACTISE_DONE = "GamePractiseDone";
-    
+
     static GAME_EXAM_FAILED = "GameExamFailed";
     static GAME_EXAM_DONE = "GameExamDone";
     

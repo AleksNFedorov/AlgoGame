@@ -23,7 +23,7 @@ module Common {
     }
     
     export class StateSave {
-        public practiseDone: number = 0;
+        public stepsDone: number = 0;
         public testsDone: number = 0;
     }
     

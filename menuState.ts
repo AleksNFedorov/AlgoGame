@@ -31,15 +31,15 @@ class Preload extends Phaser.State {
 
     private _onLoadComplete() {
         console.log("Preload complete");
-        this.game.state.start(Constants.STATE_MENU);
+        this.game.state.start(Constants.STATE_SEARCH_BINARY_SEARCH_P);
     }
 }
 
-class MenuState extends Common.AlgoGameState {
+class BinarySearchPractise extends Common.AlgoGameState {
     
     private _menu: Common.Menu;
     private _controlPanel: Common.PractisePanel;
-    private _gamePlay: BinarySearch.GamePlay;
+    private _gamePlay: BinarySearch.PractiseGamePlay;
     private _progressPanel: Common.ProgressPanel;
     private _practiseManager: StageInfo.PractiseManager;
     private _modalWindow: GameModal.ModalWindow;
@@ -59,7 +59,7 @@ class MenuState extends Common.AlgoGameState {
         
         this._menu = new Common.Menu(this.algoGame);
         this._controlPanel = new Common.PractisePanel(this.algoGame);
-        this._gamePlay = new BinarySearch.GamePlay(this.algoGame);
+        this._gamePlay = new BinarySearch.PractiseGamePlay(this.algoGame);
         this._progressPanel = new Common.ProgressPanel(this.algoGame);
         this._practiseManager = new StageInfo.PractiseManager(this.algoGame);
         
@@ -74,4 +74,45 @@ class MenuState extends Common.AlgoGameState {
         this._modalWindow.show("cursor");
     }
     
+}
+
+class BinarySearchExam extends Common.AlgoGameState {
+
+    private _menu: Common.Menu;
+    private _controlPanel: Common.PractisePanel;
+    private _gamePlay: BinarySearch.GamePlay;
+    private _progressPanel: Common.ProgressPanel;
+    private _practiseManager: StageInfo.PractiseManager;
+    private _modalWindow: GameModal.ModalWindow;
+
+    public shutdown(): void {
+        super.shutdown();
+        this._menu.destroy();
+        this._controlPanel.destroy();
+        this._gamePlay.destroy();
+        this._practiseManager.destroy();
+        this._menu = null;
+    }
+
+    create(): void {
+
+        this._modalWindow = new GameModal.ModalWindow(this.algoGame, "test");
+
+        this._menu = new Common.Menu(this.algoGame);
+        this._controlPanel = new Common.PractisePanel(this.algoGame);
+        this._gamePlay = new BinarySearch.GamePlay(this.algoGame);
+        this._progressPanel = new Common.ProgressPanel(this.algoGame);
+        this._practiseManager = new StageInfo.PractiseManager(this.algoGame);
+
+        this._menu.setCallbackToElement(Common.GameElements.MENU_BUTTON_BACK, this.showModalWindow.bind(this));
+
+        super.create();
+
+        this.algoGame.dispatch(Events.STAGE_INITIALIZED, this);
+    }
+
+    showModalWindow(): void {
+        this._modalWindow.show("cursor");
+    }
+
 }

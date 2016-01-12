@@ -305,22 +305,21 @@ module BinarySearch {
             this._boxToFind.destroy();
         }
     }
-    
-    export class GamePlay extends Common.GameComponentContainer {
 
-        private _boxLine: BoxLine;
-        private _algorithm: BinarySearchAlgorithm;
-        private _algorithmStep: BinarySearchStep;
-        private _gameStepTimer: Phaser.Timer;
-        private _clickedBoxIndex:number = -1;
-        private _stepPerformed: boolean = false;
+    export class PractiseGamePlay extends Common.GameComponentContainer {
+
+        protected _boxLine: BoxLine;
+        protected _algorithm: BinarySearchAlgorithm;
+        protected _algorithmStep: BinarySearchStep;
+        protected _gameStepTimer: Phaser.Timer;
+        protected _stepPerformed: boolean = false;
         
         protected gameSave: Common.StateSave;
-        
+
         constructor(game: Common.AlgoGame) {
             super(game);
             
-            this.gameSave = game.store.get(Constants.STATE_SEARCH_BINARY_SEARCH_P) 
+            this.gameSave = game.store.get(game.state.current)
                 || new Common.StateSave();
         
             this._gameStepTimer = this._game.time.create(false);
@@ -363,16 +362,17 @@ module BinarySearch {
         private initGame() : void {
             this.reinitGame();
 
-            var gameStaistics: Common.GamePlayInfo = 
-                new Common.GamePlayInfo(
-                    Constants.BS_PR_STEP_TIME, 
-                    Constants.BS_PRACTISE_TO_OPEN_TEST, 
-                    this.gameSave.practiseDone);
-            
             this._game.dispatch(
                 Events.GAME_CREATED, 
-                this, 
-                gameStaistics);
+                this,
+                this.createGamePlayInfo());
+        }
+
+        protected createGamePlayInfo(): Common.GamePlayInfo {
+            return  new Common.GamePlayInfo(
+                Constants.BS_PR_STEP_TIME,
+                Constants.BS_PRACTISE_TO_OPEN_TEST,
+                this.gameSave.stepsDone);
         }
         
         private reinitGame(): void {
@@ -394,7 +394,7 @@ module BinarySearch {
             this._algorithmStep = this._algorithm.nextStep;
             this.addTimerEvents();
             this._game.dispatch(Events.GAME_STARTED, this, 
-                this.gameSave.practiseDone);
+                this.gameSave.stepsDone);
 
         }
         
@@ -402,7 +402,7 @@ module BinarySearch {
             this.boxClicked(this._algorithmStep.elementIndex, 0, false);
         }
         
-        private boxClicked(index: number, addToResult:number = 1, isUser:boolean = true) {
+        protected boxClicked(index: number, addToResult:number = 1, isUser:boolean = true) {
             
             if (this._game.levelStageState != Common.LevelStageState.RUNNING) {
                 this._game.dispatch(Events.GAME_STEP_ON_PAUSE, this);
@@ -428,7 +428,7 @@ module BinarySearch {
                 this._game.dispatch(
                     Events.GAME_CORRECT_STEP_DONE, 
                     this, 
-                    [this.gameSave.practiseDone, isUser]);
+                    [this.gameSave.stepsDone, isUser]);
                 
                 if (step.isLast) {
                     this.onLastStep();
@@ -443,22 +443,21 @@ module BinarySearch {
         }
         
         protected updateGameStatistics(addToResult: number): void {
-          this.gameSave.practiseDone += addToResult;
-          this._game.store.set(Constants.STATE_SEARCH_BINARY_SEARCH_P, this.gameSave);
+          this.gameSave.stepsDone += addToResult;
+          this._game.store.set(this._game.state.current, this.gameSave);
         }
         
-        private onLastStep(): void {
+        protected onLastStep(): void {
             this._gameStepTimer.removeAll();
             this._game.dispatch(Events.GAME_END, this);
             console.log("Game finished");
 
-            if (Constants.BS_PRACTISE_TO_OPEN_TEST == this.gameSave.practiseDone) {
+            if (Constants.BS_PRACTISE_TO_OPEN_TEST == this.gameSave.stepsDone) {
                 this._game.dispatch(Events.GAME_PRACTISE_DONE, this);
             }
-
         }
         
-        private addTimerEvents(): void {
+        protected addTimerEvents(): void {
             this._gameStepTimer.removeAll();
             this._gameStepTimer.repeat(Constants.BS_PR_STEP_TIME, 0, this.clickBox, this);
         }
@@ -475,6 +474,89 @@ module BinarySearch {
                 this._boxLine.destroy();            
             }
         }
+    }
+
+
+    export class ExamGamePlay extends PractiseGamePlay {
+
+        constructor(game: Common.AlgoGame) {
+            super(game);
+        }
+
+        protected initEventListners(): void {
+            super.initEventListners();
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_STOP);
+        }
+
+        protected createGamePlayInfo(): Common.GamePlayInfo {
+            return  new Common.GamePlayInfo(
+                Constants.BS_PR_STEP_TIME,
+                Constants.BS_TEST_TO_PASS,
+                this.gameSave.stepsDone);
+        }
+
+        dispatchEvent(event: any, param1: any) {
+            super.dispatchEvent(event, param1);
+            switch(event.type) {
+                case Events.CONTROL_PANEL_EVENT_STOP:
+                    /// put game fail here;
+                    this.clickBox();
+                    break;
+            }
+        }
+
+        protected clickBox() {
+            this.boxClicked(-1, 0, false);
+        }
+
+        protected boxClicked(index: number, addToResult:number = 1, isUser:boolean = true) {
+
+            if (this._game.levelStageState != Common.LevelStageState.RUNNING) {
+                this._game.dispatch(Events.GAME_STEP_ON_PAUSE, this);
+                return;
+            }
+
+            if (!isUser) {
+                this._game.dispatch(Events.GAME_EXAM_FAILED, this, isUser);
+                return;
+            }
+
+            console.log("Box clicked [" + index + "]");
+
+            var step: BinarySearchStep = this._algorithmStep;
+
+            if (index == step.elementIndex) {
+                this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
+                this._boxLine.selectBox(step.elementIndex);
+                this._game.dispatch(
+                    Events.GAME_CORRECT_STEP_DONE,
+                    this,
+                    [this.gameSave.stepsDone, isUser]);
+
+                if (step.isLast) {
+                    this.onLastStep();
+                } else {
+                    this._algorithmStep = this._algorithm.nextStep;
+                    this.addTimerEvents();
+                }
+            } else {
+                this._game.dispatch(Events.GAME_EXAM_FAILED, this, isUser);
+            }
+        }
+
+        protected onLastStep(): void {
+            this.updateGameStatistics(1);
+            this._gameStepTimer.removeAll();
+            this._game.dispatch(Events.GAME_END, this, this.gameSave.stepsDone);
+            console.log("Game finished");
+
+            if (Constants.BS_TEST_TO_PASS == this.gameSave.stepsDone) {
+                this._game.dispatch(Events.GAME_EXAM_DONE, this);
+            }
+        }
+
+
+
     }
 }
 

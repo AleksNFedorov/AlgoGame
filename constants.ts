@@ -43,5 +43,6 @@ class Constants {
     static BS_MAX_SEQ_NUMBER = 100;
     static BS_MAX_ELEMENTS_IN_SEQ = 20;
     static BS_PRACTISE_TO_OPEN_TEST = 100;
-    
+    static BS_TEST_TO_PASS = 10;
+
 }
