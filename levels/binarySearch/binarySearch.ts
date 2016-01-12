@@ -2,7 +2,7 @@
 
 module BinarySearch {
     
-    export enum Operation {Less = 1, Greater = 2, Equals = 3, NotEquals = 4, Unknown = 5};
+    export enum Operation {Less = 1, Greater = 2, Equals = 3, NotEquals = 4, Unknown = 5}
 
     class BinarySearchStep extends Common.Step {
         
@@ -26,25 +26,25 @@ module BinarySearch {
         
         public get startIndex(): number {
             return this._startIndex;
-        };
+        }
         
         public get endIndex(): number {
             return this._endIndex;  
-        };
+        }
         
         public get elementIndex(): number {
             return this._elementIndex;  
-        };
+        }
         
         public get operation(): Operation {
             return this._operation;  
-        };
+        }
         
         public toString(): string {
           return "[" + this._elementIndex + "][" + this._startIndex + "][" + this._endIndex + "]";  
-        };
+        }
         
-    };
+    }
     
     class BinarySearchAlgorithm  {
         
@@ -58,13 +58,13 @@ module BinarySearch {
             this._elementToFindIndex = this.defineElementToFind();
             
             this._nextStep = new BinarySearchStep(false, -1,  -1, 0, count - 1, Operation.Unknown)
-        };
+        }
         
         public get nextStep(): BinarySearchStep {
             this._nextStep = this.evaluateNextStep();
             console.log("Next step - " + this._nextStep.toString());
             return this._nextStep;
-        };
+        }
         
         private evaluateNextStep(): BinarySearchStep {
 
@@ -117,7 +117,7 @@ module BinarySearch {
             }
         
             return nextStep;
-        };
+        }
 
         private defineElementToFind(): number {
     
@@ -135,11 +135,11 @@ module BinarySearch {
 
         public get sequence(): number[] {
           return this._sequence;  
-        };
+        }
         
         public get elementToFindIndex(): number {
           return this._elementToFindIndex;  
-        };
+        }
         
         private static generateSeqeunce(count: number): number[] {
 
@@ -153,24 +153,24 @@ module BinarySearch {
                 newGeneratedArray.sort(function(a,b){return a-b;});
                 
                 return newGeneratedArray;
-        };
+        }
         
         public static getRandomInteger(from: number, to: number): number {
             return Math.floor(Math.random() * (to - from) + from);
         }
         
-    };
+    }
     
     class BoxContainer {
         
         constructor(
             public boxGroup: Phaser.Group, 
             public boxAndTextGroup: Phaser.Group
-            ) {};
+            ) {}
             
         destroy(): void {
           this.boxAndTextGroup.destroy();
-        };
+        }
         
     }
     
@@ -186,7 +186,7 @@ module BinarySearch {
             this._game = game;
             this._boxClickedCallback = boxClickedCallback;
             this.init(sequence, elementToFindIndex);
-        };
+        }
         
         private init(seqeunce: number[], elementToFindIndex: number) {
             this._boxLine = this._game.add.group();
@@ -201,7 +201,7 @@ module BinarySearch {
             this._boxToFind.x = 20;
             this._boxToFind.y = 200;
 
-        };
+        }
         
         public hideBoxesOutOf(from: number, to: number) {
           
@@ -211,7 +211,7 @@ module BinarySearch {
               }
           }
             
-        };
+        }
         
         public higlightBox(boxIndex: number) {
             var boxContainer: BoxContainer = this._boxes[boxIndex];
@@ -220,11 +220,11 @@ module BinarySearch {
             this._game.add.tween(boxGroup).to({y:boxGroup.y - 4}, 
                 Constants.BS_BOX_HILIGHT_INTERVAL, 
                 Phaser.Easing.Exponential.Out, true);
-        };
+        }
         
         public selectBox(boxIndex: number) {
             this.higlightBox(boxIndex);
-        };
+        }
         
         private createBoxes(seqeunce: number[]): BoxContainer[] {
             
@@ -241,7 +241,7 @@ module BinarySearch {
             }
             
             return boxes;
-        };
+        }
         
         private createBoxWithIndex(index: number, value:number): BoxContainer {
             
@@ -269,7 +269,7 @@ module BinarySearch {
             boxKeyText.events.onInputDown.add(boxClicked);
             
             return new BoxContainer(boxGroup, boxAndTextGroup);
-        };
+        }
         
         private createElementToFindBox(value: number) {
 
@@ -287,13 +287,13 @@ module BinarySearch {
         
             return boxGroup;
 
-        };
+        }
         
         private createBoxClickCallback(index: number): Function {
             return function() {
                 this._boxClickedCallback(index);
             }.bind(this);
-        };
+        }
         
         public destroy(): void {
             for(var box of this._boxes) {
@@ -326,7 +326,7 @@ module BinarySearch {
             this._gameStepTimer = this._game.time.create(false);
             this._gameStepTimer.start();
 
-        };
+        }
         
         protected initEventListners(): void {
             this.addEventListener(Events.STAGE_INITIALIZED);
@@ -350,14 +350,14 @@ module BinarySearch {
                         if (this._game.levelStageState != Common.LevelStageState.CREATED) {
                             //non-first iteration
                             this.reinitGame();
-                        };
+                        }
                         this.startGame();
                     }
                     break;
                 case Events.CONTROL_PANEL_EVENT_PAUSE:
                     this._gameStepTimer.pause();
                     break;
-            };
+            }
         }
         
         private initGame() : void {
@@ -387,7 +387,7 @@ module BinarySearch {
                 this._algorithm.elementToFindIndex);
             
             console.log("Element to find index [" + this._algorithm.elementToFindIndex + "]");
-        };
+        }
         
         private startGame(): void {
             
@@ -396,11 +396,11 @@ module BinarySearch {
             this._game.dispatch(Events.GAME_STARTED, this, 
                 this.gameSave.practiseDone);
 
-        };
+        }
         
         protected clickBox() {
             this.boxClicked(this._algorithmStep.elementIndex, 0, false);
-        };
+        }
         
         private boxClicked(index: number, addToResult:number = 1, isUser:boolean = true) {
             
@@ -440,12 +440,12 @@ module BinarySearch {
             } else {
                 this._game.dispatch(Events.GAME_WRONG_STEP_DONE, this);
             }
-        };
+        }
         
         protected updateGameStatistics(addToResult: number): void {
           this.gameSave.practiseDone += addToResult;
           this._game.store.set(Constants.STATE_SEARCH_BINARY_SEARCH_P, this.gameSave);
-        };
+        }
         
         private onLastStep(): void {
             this._gameStepTimer.removeAll();
@@ -461,20 +461,20 @@ module BinarySearch {
         private addTimerEvents(): void {
             this._gameStepTimer.removeAll();
             this._gameStepTimer.repeat(Constants.BS_PR_STEP_TIME, 0, this.clickBox, this);
-        };
+        }
         
         destroy(): void {
             super.destroy();
             this.destroyTempObjects();
             this._gameStepTimer.destroy();
-        };
+        }
         
         private destroyTempObjects():void {
           this._algorithm = null;
             if (this._boxLine != null) {
                 this._boxLine.destroy();            
-            };
-        };
-    };
+            }
+        }
+    }
 }
 

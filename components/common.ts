@@ -4,29 +4,28 @@ declare var store: Store;
 
 module Common {
     
-    export enum LevelStageState {PAUSED = 0, RUNNING = 1, CREATED = 2, END = 3, UNKNOWN = 4};
-    export enum LevelStageType {MENU = 0, PRACTISE = 1, EXAM = 2, UNKNOWN = 3};
+    export enum LevelStageState {PAUSED = 0, RUNNING = 1, CREATED = 2, END = 3, UNKNOWN = 4}
+    export enum LevelStageType {MENU = 0, PRACTISE = 1, EXAM = 2, UNKNOWN = 3}
     
     export enum GameElements {
-        LEVEL_BUTTON = 0,
-        LEVEL_PROGRESS = 1,
         MENU_BUTTON_BACK = 2,
         MENU_BUTTON_DESCRIPTION = 3,
         MENU_BUTTON_OBJECTIVES = 4,
         MENU_BUTTON_PRACTISE = 5,
         MENU_BUTTON_EXAM = 6,
-        PRACTISE_PROGRESS_STEP = 7,
-        PRACTISE_PROGRESS_COMPLETION = 8,
-        PRACTISE_CONTROL_PANEL_BUTTON_PLAY = 9,
-        PRACTISE_CONTROL_PANEL_BUTTON_PAUSE = 10,
-        PRACTISE_CONTROL_PANEL_TEXT = 11,
-        GAME_AREA = 12
-    };
+        PROGRESS_STEP = 7,
+        PROGRESS_COMPLETE = 8,
+        CONTROL_PANEL_BUTTON_PLAY = 9,
+        CONTROL_PANEL_BUTTON_PAUSE = 10,
+        CONTROL_PANEL_BUTTON_STOP = 11,
+        CONTROL_PANEL_TEXT = 12,
+        GAME_AREA = 13
+    }
     
     export class StateSave {
         public practiseDone: number = 0;
         public testsDone: number = 0;
-    };
+    }
     
     export class GamePlayInfo {
         
@@ -42,15 +41,15 @@ module Common {
         
         public get stepWaitTime(): number {
             return this._stepWaitTime;
-        };
+        }
         
         public get totalItertions(): number {
             return this._totalItertions;
-        };
+        }
         
         public get doneIterations(): number {
             return this._doneIterations;
-        };
+        }
         
     }
     
@@ -65,11 +64,11 @@ module Common {
         
         public get isLast(): boolean {
             return this._isLast;
-        };
+        }
         
         public get stepNumber(): number {
             return this._stepNumber;
-        };
+        }
     }
     
     export interface InfoWidget {
@@ -90,7 +89,6 @@ module Common {
         private _eventsToProcess: Phaser.LinkedList = new Phaser.LinkedList();
         private _levelStageState: LevelStageState = LevelStageState.UNKNOWN;
 
-        
         public dispatch(eventId: string, caller: any, param?: any) {
             console.log("New event dispatched by state");
             var newEvent: GameEvent = new GameEvent(eventId, caller, param);

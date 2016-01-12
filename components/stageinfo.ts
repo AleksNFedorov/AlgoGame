@@ -2,10 +2,10 @@
 
 module StageInfo {
     
-    enum Quarter {TOPLEFT = 0, TOPRIGHT = 1, BOTTOMLEFT = 2, BOTTOMRIGHT = 3};
+    enum Quarter {TOPLEFT = 0, TOPRIGHT = 1, BOTTOMLEFT = 2, BOTTOMRIGHT = 3}
     
     class Save {
-        gameInfoSaves: {[stage: string]: number} = {};
+        gameInfoSaves: {[stage: string]: number} = {}
     }
     
     class ShowInfo {
@@ -209,12 +209,12 @@ module StageInfo {
             super(game, Common.LevelStageType.PRACTISE,
                 [
                     new ShowInfo(
-                        Common.GameElements.PRACTISE_CONTROL_PANEL_BUTTON_PLAY,
+                        Common.GameElements.CONTROL_PANEL_BUTTON_PLAY,
                         "Play button description",
                         Events.CONTROL_PANEL_EVENT_PLAY
                         ),
                     new ShowInfo(
-                        Common.GameElements.PRACTISE_PROGRESS_STEP,
+                        Common.GameElements.PROGRESS_STEP,
                         "Progress step description"
                         )
                     ]

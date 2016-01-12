@@ -12,11 +12,11 @@ class Game extends Common.AlgoGame {
         this.state.add(Constants.STATE_PRELOAD, Preload);
         this.state.add(Constants.STATE_MENU, MenuState);
         this.state.start(Constants.STATE_BOOT);
-    };
+    }
 }
 
 window.onload = () => {
 
     var game = new Game();
 
-};
+}

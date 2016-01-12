@@ -33,7 +33,7 @@ class Constants {
         font: "16px Arial", 
         boundsAlignH: "center", 
         boundsAlignV: "middle" 
-    };
+    }
     
     static BS_BOX_HILIGHT_INTERVAL = 300;
     static BS_PR_STEP_TIME = 4000;

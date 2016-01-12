@@ -27,13 +27,13 @@ class Preload extends Phaser.State {
         this.load.image('modalBg', '/assets/images/modalBG.png');
 
         this.load.onLoadComplete.add(this._onLoadComplete, this);
-    };
+    }
 
     private _onLoadComplete() {
         console.log("Preload complete");
         this.game.state.start(Constants.STATE_MENU);
-    };
-};
+    }
+}
 
 class MenuState extends Common.AlgoGameState {
     
@@ -51,7 +51,7 @@ class MenuState extends Common.AlgoGameState {
         this._gamePlay.destroy();
         this._practiseManager.destroy();
         this._menu = null;
-    };
+    }
 
     create(): void {
         
@@ -68,10 +68,10 @@ class MenuState extends Common.AlgoGameState {
         super.create();        
         
         this.algoGame.dispatch(Events.STAGE_INITIALIZED, this);
-    };
+    }
     
     showModalWindow(): void {
         this._modalWindow.show("cursor");
     }
     
-};
+}

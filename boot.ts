@@ -3,7 +3,7 @@ class Boot extends Phaser.State {
     preload() {
         
         this.load.image('preloadbar', '/assets/images/preloader-bar.png');
-    };
+    }
 
     create() {
         
@@ -16,5 +16,5 @@ class Boot extends Phaser.State {
         this.scale.pageAlignHorizontally = true;
 
         this.game.state.start(Constants.STATE_PRELOAD);
-    };
+    }
 }

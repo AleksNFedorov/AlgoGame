@@ -109,13 +109,13 @@ module Common {
         
             this._topProgressBar = this.createAndAddProgressBar(
                 "slice27_27.png", "slice16_16.png", "Step time",
-                Common.GameElements.PRACTISE_PROGRESS_STEP);
+                Common.GameElements.PROGRESS_STEP);
             this._topProgressBar.x = 0;
             this._topProgressBar.y = 0;
 
             this._bottomProgressBar = this.createAndAddProgressBar(
                 "slice27_27.png", "slice35_35.png", "Steps done",
-                Common.GameElements.PRACTISE_PROGRESS_COMPLETION);
+                Common.GameElements.PROGRESS_COMPLETE);
             this._bottomProgressBar.x = 0;
             this._bottomProgressBar.y = 60;
         }
@@ -172,7 +172,7 @@ module Common {
                     this._bottomProgressBar.setValue(playInfo.doneIterations, playInfo.doneIterations + "");
                     this._maxTimeValue = playInfo.stepWaitTime;
                     break;
-            };
+            }
         }
         
         destroy(): void {
