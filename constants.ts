@@ -35,12 +35,13 @@ class Constants {
         boundsAlignV: "middle" 
     };
     
+    static BS_BOX_HILIGHT_INTERVAL = 300;
+    static BS_PR_STEP_TIME = 4000;
+    
     //Binary search 
     static BS_MIN_SEQ_NUMBER = 1;
     static BS_MAX_SEQ_NUMBER = 100;
     static BS_MAX_ELEMENTS_IN_SEQ = 20;
-    static BS_BOX_HILIGHT_INTERVAL = 300;
-    static BS_PR_STEP_TIME = 4000;
     static BS_PRACTISE_TO_OPEN_TEST = 100;
     
 }
