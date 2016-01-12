@@ -452,7 +452,7 @@ module BinarySearch {
             this._game.dispatch(Events.GAME_END, this);
             console.log("Game finished");
 
-            if (Constants.Constants.BS_PRACTISE_TO_OPEN_TEST == this.gameSave.practiseDone) {
+            if (Constants.BS_PRACTISE_TO_OPEN_TEST == this.gameSave.practiseDone) {
                 this._game.dispatch(Events.GAME_PRACTISE_DONE, this);
             }
 
