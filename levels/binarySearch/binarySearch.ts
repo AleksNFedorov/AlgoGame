@@ -516,11 +516,6 @@ module BinarySearch {
                 return;
             }
 
-            if (!isUser) {
-                this._game.dispatch(Events.GAME_EXAM_FAILED, this, isUser);
-                return;
-            }
-
             console.log("Box clicked [" + index + "]");
 
             var step: BinarySearchStep = this._algorithmStep;
@@ -534,6 +529,7 @@ module BinarySearch {
                     [this.gameSave.stepsDone, isUser]);
 
                 if (step.isLast) {
+                    this.updateGameStatistics(1);
                     this.onLastStep();
                 } else {
                     this._algorithmStep = this._algorithm.nextStep;
@@ -541,11 +537,17 @@ module BinarySearch {
                 }
             } else {
                 this._game.dispatch(Events.GAME_EXAM_FAILED, this, isUser);
+                this.flushProgress();
+                this.onLastStep();
             }
+        }
+        
+        protected flushProgress(): void {
+            this.gameSave.stepsDone = 0;
+            this.updateGameStatistics(0);
         }
 
         protected onLastStep(): void {
-            this.updateGameStatistics(1);
             this._gameStepTimer.removeAll();
             this._game.dispatch(Events.GAME_END, this, this.gameSave.stepsDone);
             console.log("Game finished");

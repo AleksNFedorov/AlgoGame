@@ -90,7 +90,7 @@ module Common {
         private _levelStageState: LevelStageState = LevelStageState.UNKNOWN;
 
         public dispatch(eventId: string, caller: any, param?: any) {
-            console.log("New event dispatched by state");
+            console.log("New event received by state [" + eventId + "]");
             var newEvent: GameEvent = new GameEvent(eventId, caller, param);
             this._eventsToProcess.add(newEvent);
         }

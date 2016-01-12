@@ -12,11 +12,14 @@ class Game extends Common.AlgoGame {
         this.state.add(Constants.STATE_PRELOAD, Preload);
         this.state.add(Constants.STATE_SEARCH_BINARY_SEARCH_P, BinarySearchPractise);
         this.state.add(Constants.STATE_SEARCH_BINARY_SEARCH_T, BinarySearchExam);
+        
+        this.state.start(Constants.STATE_BOOT);        
+        
     }
 }
 
 window.onload = () => {
 
-    new Game();
+    var game = new Game();
 
 }

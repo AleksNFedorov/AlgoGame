@@ -96,6 +96,7 @@ module Common {
         }
         
         protected initEventListners(): void {
+            super.initEventListners();
             this.addEventListener(Events.GAME_CORRECT_STEP_DONE);
             this.addEventListener(Events.STAGE_INFO_SHOW);
             this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
@@ -164,6 +165,9 @@ module Common {
                     break;
                 case Events.GAME_END:
                     this._timer.removeAll();
+                    var stepsDone: number = <number>param1;
+                    this._bottomProgressBar.setValue(stepsDone, stepsDone + "");
+                    this._topProgressBar.setValue(0, "");
                     break;
                 case Events.GAME_CREATED:
                     var playInfo: Common.GamePlayInfo = <Common.GamePlayInfo> param1;
