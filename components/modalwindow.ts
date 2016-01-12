@@ -57,7 +57,10 @@ module GameModal {
             console.log("Modal event received");
             switch(event.type) {
                 case Events.GAME_PRACTISE_DONE:
+                    var isUserAction: boolean = <boolean> param1;
+                    if (isUserAction) {
                     this.show(Common.ModalWindows.PRACTISE_DONE);
+                    }
                     break;
                 case Events.GAME_EXAM_DONE:
                     this.show(Common.ModalWindows.EXAM_DONE);

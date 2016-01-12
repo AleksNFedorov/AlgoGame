@@ -10,7 +10,7 @@ class Events {
     static MENU_EVENT_OPEN_ALGO_DESCR = "MenuOpenAlgorithm";
     static MENU_EVENT_SHOW_LEVEL_OBJECT = "MenuShowLevelObjectives";
     static MENU_EVENT_GO_PRACTISE = "MenuGoPractise";
-    static MENU_EVENT_GO_TEST = "MenuGoTest";
+    static MENU_EVENT_GO_EXAM = "MenuGoExam";
     
     //Control panel events
     static CONTROL_PANEL_EVENT_PLAY = "cpPlay";

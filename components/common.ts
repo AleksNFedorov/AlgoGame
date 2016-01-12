@@ -9,7 +9,7 @@ module Common {
     export enum ModalWindows {OBJECTIVES = 0, PRACTISE_DONE = 1, EXAM_DONE = 2}
     
     export enum GameElements {
-        MENU_BUTTON_BACK = 2,
+        MENU_BUTTON_MENU = 2,
         MENU_BUTTON_DESCRIPTION = 3,
         MENU_BUTTON_OBJECTIVES = 4,
         MENU_BUTTON_PRACTISE = 5,

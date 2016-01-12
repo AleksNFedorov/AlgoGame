@@ -339,6 +339,7 @@ module BinarySearch {
             switch(event.type) {
                 case Events.STAGE_INITIALIZED:
                     this.initGame();
+                    this.checkPractiseDone(false);
                     break;
                 case Events.CONTROL_PANEL_EVENT_PLAY:
                     console.log("Play event received");
@@ -451,9 +452,15 @@ module BinarySearch {
             this._gameStepTimer.removeAll();
             this._game.dispatch(Events.GAME_END, this);
             console.log("Game finished");
+            
+            this.checkPractiseDone(true);
 
-            if (Constants.BS_PRACTISE_TO_OPEN_TEST == this.gameSave.stepsDone) {
-                this._game.dispatch(Events.GAME_PRACTISE_DONE, this);
+        }
+        
+        // True when practise done because of user actions during this game
+        protected checkPractiseDone(thisGame: boolean) {
+            if (Constants.BS_PRACTISE_TO_OPEN_TEST <= this.gameSave.stepsDone) {
+                this._game.dispatch(Events.GAME_PRACTISE_DONE, this, thisGame);
             }
         }
         

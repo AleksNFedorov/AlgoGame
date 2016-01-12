@@ -31,7 +31,7 @@ class Preload extends Phaser.State {
 
     private _onLoadComplete() {
         console.log("Preload complete");
-        this.game.state.start(Constants.STATE_SEARCH_BINARY_SEARCH_T);
+        this.game.state.start(Constants.STATE_SEARCH_BINARY_SEARCH_P);
     }
 }
 
@@ -56,8 +56,9 @@ class BinarySearchPractise extends Common.AlgoGameState {
     create(): void {
         
         this._modalWindow = new GameModal.ModalWindow(this.algoGame);
+        this.initModalWindows();
         
-        this._menu = new Common.Menu(this.algoGame);
+        this._menu = new Common.PractiseMenu(this.algoGame);
         this._controlPanel = new Common.PractisePanel(this.algoGame);
         this._gamePlay = new BinarySearch.PractiseGamePlay(this.algoGame);
         this._progressPanel = new Common.ProgressPanel(this.algoGame);
@@ -68,8 +69,13 @@ class BinarySearchPractise extends Common.AlgoGameState {
         this.algoGame.dispatch(Events.STAGE_INITIALIZED, this);
     }
     
-    showModalWindow(): void {
-        // this._modalWindow.show("cursor");
+    private initModalWindows(): void {
+        var configs: GameModal.ModalConfig[] = [
+                new GameModal.ModalConfig(Common.ModalWindows.OBJECTIVES, "cursor"),
+                new GameModal.ModalConfig(Common.ModalWindows.PRACTISE_DONE, "cursor")
+            ];
+            
+        this._modalWindow.createWindows(configs)            ;
     }
     
 }
@@ -98,7 +104,7 @@ class BinarySearchExam extends Common.AlgoGameState {
         this._modalWindow = new GameModal.ModalWindow(this.algoGame);
         this.initModalWindows();
 
-        this._menu = new Common.Menu(this.algoGame);
+        this._menu = new Common.ExamMenu(this.algoGame);
         this._controlPanel = new Common.ExamPanel(this.algoGame);
         this._gamePlay = new BinarySearch.ExamGamePlay(this.algoGame);
         this._progressPanel = new Common.ProgressPanel(this.algoGame);
@@ -107,10 +113,6 @@ class BinarySearchExam extends Common.AlgoGameState {
         super.create();
 
         this.algoGame.dispatch(Events.STAGE_INITIALIZED, this);
-    }
-    
-    showModalWindow(): void {
-        // this._modalWindow.show("cursor");
     }
     
     private initModalWindows(): void {
