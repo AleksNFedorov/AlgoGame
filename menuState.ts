@@ -55,7 +55,7 @@ class BinarySearchPractise extends Common.AlgoGameState {
 
     create(): void {
         
-        this._modalWindow = new GameModal.ModalWindow(this.algoGame, "test");
+        this._modalWindow = new GameModal.ModalWindow(this.algoGame);
         
         this._menu = new Common.Menu(this.algoGame);
         this._controlPanel = new Common.PractisePanel(this.algoGame);
@@ -63,15 +63,13 @@ class BinarySearchPractise extends Common.AlgoGameState {
         this._progressPanel = new Common.ProgressPanel(this.algoGame);
         this._practiseManager = new StageInfo.PractiseManager(this.algoGame);
         
-        this._menu.setCallbackToElement(Common.GameElements.MENU_BUTTON_BACK, this.showModalWindow.bind(this));
-        
         super.create();        
         
         this.algoGame.dispatch(Events.STAGE_INITIALIZED, this);
     }
     
     showModalWindow(): void {
-        this._modalWindow.show("cursor");
+        // this._modalWindow.show("cursor");
     }
     
 }
@@ -91,12 +89,14 @@ class BinarySearchExam extends Common.AlgoGameState {
         this._controlPanel.destroy();
         this._gamePlay.destroy();
         this._practiseManager.destroy();
+        this._modalWindow.destroy();
         this._menu = null;
     }
 
     create(): void {
 
-        this._modalWindow = new GameModal.ModalWindow(this.algoGame, "test");
+        this._modalWindow = new GameModal.ModalWindow(this.algoGame);
+        this.initModalWindows();
 
         this._menu = new Common.Menu(this.algoGame);
         this._controlPanel = new Common.ExamPanel(this.algoGame);
@@ -104,15 +104,22 @@ class BinarySearchExam extends Common.AlgoGameState {
         this._progressPanel = new Common.ProgressPanel(this.algoGame);
         this._practiseManager = new StageInfo.PractiseManager(this.algoGame);
 
-        this._menu.setCallbackToElement(Common.GameElements.MENU_BUTTON_BACK, this.showModalWindow.bind(this));
-
         super.create();
 
         this.algoGame.dispatch(Events.STAGE_INITIALIZED, this);
     }
-
+    
     showModalWindow(): void {
-        this._modalWindow.show("cursor");
+        // this._modalWindow.show("cursor");
+    }
+    
+    private initModalWindows(): void {
+        var configs: GameModal.ModalConfig[] = [
+                new GameModal.ModalConfig(Common.ModalWindows.OBJECTIVES, "cursor"),
+                new GameModal.ModalConfig(Common.ModalWindows.EXAM_DONE, "cursor")
+            ];
+            
+        this._modalWindow.createWindows(configs)            ;
     }
 
 }

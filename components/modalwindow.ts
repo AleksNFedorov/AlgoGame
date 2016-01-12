@@ -2,7 +2,14 @@
 /// <reference path="./common.ts" />
 
 module GameModal {
-
+    
+    export class ModalConfig {
+        constructor(
+            public modalId: Common.ModalWindows,
+            public contentImageId: string) {};
+        
+    }
+    
     class GameModalWindowComponent {
         type: string;
         content: any;
@@ -32,21 +39,46 @@ module GameModal {
     export class ModalWindow extends Common.GameEventComponent {
         
         private _gameModal;
-        private _type: string
         private _paused: boolean;
+        private _createdWindows: ModalConfig[];
         
-        constructor(game: Common.AlgoGame, type: string) {
+        constructor(game: Common.AlgoGame) {
             super(game)
             this._gameModal = new GameModal(game);
-            this._type = type;
         }
         
-        public show(image: string): void {
-            
-            this._paused = false;
+        protected initEventListners(): void {
+            this.addEventListener(Events.GAME_PRACTISE_DONE);
+            this.addEventListener(Events.GAME_EXAM_DONE);
+            this.addEventListener(Events.MENU_EVENT_SHOW_LEVEL_OBJECT);
+        }
+        
+        public dispatchEvent(event: any, param1: any) {
+            console.log("Modal event received");
+            switch(event.type) {
+                case Events.GAME_PRACTISE_DONE:
+                    this.show(Common.ModalWindows.PRACTISE_DONE);
+                    break;
+                case Events.GAME_EXAM_DONE:
+                    this.show(Common.ModalWindows.EXAM_DONE);
+                    break;
+                case Events.MENU_EVENT_SHOW_LEVEL_OBJECT:
+                    this.show(Common.ModalWindows.OBJECTIVES);
+                    break;
+            }
+        }
+        
+        public createWindows(configs: ModalConfig[]): void {
+            this._createdWindows = configs;
+            for(var config of configs) {
+                this.createAndRegisterNewWindow(config);
+            }
+        }
+         
+        private createAndRegisterNewWindow(config: ModalConfig): void {
             
             var modalOptions: GameModalOptions = new GameModalOptions();
-            modalOptions.type = this._type;
+            modalOptions.type = Common.ModalWindows[config.modalId];
             modalOptions.includeBackground = true;
             modalOptions.modalCloseOnInput = true;
             modalOptions.hideCallback = this.onHide.bind(this);
@@ -58,7 +90,7 @@ module GameModal {
             
             var windowContent: GameModalWindowComponent = new GameModalWindowComponent();
             windowContent.type = "image";
-            windowContent.content = image;
+            windowContent.content = config.contentImageId;
             windowContent.offsetY = -60;
             windowContent.offsetX = -125;
             windowContent.contentScale = 0.5;
@@ -66,12 +98,17 @@ module GameModal {
             modalOptions.itemsArr = [bg, windowContent];
             
             this._gameModal.createModal(modalOptions);
-            this.onShow();
-            this._gameModal.showModal(this._type);
         }
         
+        private show(modalId: Common.ModalWindows): void {
+            this._paused = false;
+            this.onShow();
+            this._gameModal.showModal(Common.ModalWindows[modalId]);
+        }
+        
+        
         protected onShow(): void {
-            console.log("Modal window [" + this._type + "] showed");
+            console.log("Modal window showed");
             if (this._game.levelStageState == Common.LevelStageState.RUNNING) {
                 this._game.dispatch(Events.CONTROL_PANEL_EVENT_PAUSE, this);
                 this._paused = true;
@@ -79,7 +116,7 @@ module GameModal {
         }
         
         protected onHide(): void {
-            console.log("Modal window [" + this._type + "] hide");
+            console.log("Modal window hide");
             if (this._paused) {
                 this._game.dispatch(Events.CONTROL_PANEL_EVENT_PLAY, this);
                 this._paused = false;
@@ -87,7 +124,10 @@ module GameModal {
         }
         
         destroy(): void {
-            this._gameModal.destroyModal(this._type);   
+            super.destroy();
+            for(var config in this._createdWindows) {
+                this._gameModal.destroyModal(Common.ModalWindows[config.modalId]);   
+            }
         }
     }
 }

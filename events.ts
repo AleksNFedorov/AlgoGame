@@ -1,7 +1,6 @@
 
 class Events {
     
-    
     //Global events
     //Fires when all stage components/controls initalized.
     static STAGE_INITIALIZED = "StageInit";
@@ -19,7 +18,6 @@ class Events {
     static CONTROL_PANEL_EVENT_STOP = "cpStop";
     static CONTROL_PANEL_SHOW_TEXT = "cpShowText";
     
-
     //General game play events
     static GAME_CREATED = "GameCreated";
     static GAME_STARTED = "GameStarted";
