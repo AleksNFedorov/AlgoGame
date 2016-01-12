@@ -72,7 +72,7 @@ module GameModal {
         
         protected onShow(): void {
             console.log("Modal window [" + this._type + "] showed");
-            if (this._game.gameState == Common.GameState.RUNNING) {
+            if (this._game.levelStageState == Common.LevelStageState.RUNNING) {
                 this._game.dispatch(Events.CONTROL_PANEL_EVENT_PAUSE, this);
                 this._paused = true;
             }

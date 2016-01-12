@@ -122,20 +122,20 @@ module StageInfo {
         
         private _infoToShow: ShowInfo[];
         private _infoSave: Save;
-        private _stageType: Common.StageType = Common.StageType.UNKNOWN;
+        private _levelStageType: Common.LevelStageType = Common.LevelStageType.UNKNOWN;
         private _requestedShowWidget: InfoWidget;
         private _infoToShowIndex: number;
         
-        constructor(game: Common.AlgoGame, stageType: Common.StageType, infoToShow: ShowInfo[]) {
+        constructor(game: Common.AlgoGame, stageType: Common.LevelStageType, infoToShow: ShowInfo[]) {
             super(game);
             this._infoToShow = infoToShow;
-            this._stageType = stageType;
+            this._levelStageType = stageType;
             
             this._infoSave = game.store.get(Constants.GAME_SHOW_INFO_SAVE_ID) 
                 || new Save();
                 
-            if (this._infoSave.gameInfoSaves[this._stageType] == null) {
-                this._infoSave.gameInfoSaves[this._stageType] = -1;
+            if (this._infoSave.gameInfoSaves[this._levelStageType] == null) {
+                this._infoSave.gameInfoSaves[this._levelStageType] = -1;
             }
         }
         
@@ -148,7 +148,7 @@ module StageInfo {
             if (infoToShow.eventToHide != null) {
                 super.removeEventListener(infoToShow.eventToHide);
             }
-            this._infoSave.gameInfoSaves[this._stageType] = this._infoToShowIndex;
+            this._infoSave.gameInfoSaves[this._levelStageType] = this._infoToShowIndex;
             this._game.store.set(Constants.GAME_SHOW_INFO_SAVE_ID, this._infoSave);
             this._requestedShowWidget.destroy();
             this.sendShowInfoRequest();
@@ -156,7 +156,7 @@ module StageInfo {
         
         private sendShowInfoRequest(): void {
             
-            var lastShowedElementId = this._infoSave.gameInfoSaves[this._stageType];
+            var lastShowedElementId = this._infoSave.gameInfoSaves[this._levelStageType];
             var elementToShow = lastShowedElementId + 1;
             if (elementToShow >= this._infoToShow.length) {
                 console.log("Last show info has been displayed");
@@ -206,7 +206,7 @@ module StageInfo {
     export class PractiseManager extends Manager {
         
         constructor(game: Common.AlgoGame) {
-            super(game, Common.StageType.PRACTISE,
+            super(game, Common.LevelStageType.PRACTISE,
                 [
                     new ShowInfo(
                         Common.GameElements.PRACTISE_CONTROL_PANEL_BUTTON_PLAY,
@@ -223,4 +223,4 @@ module StageInfo {
         
     }
     
-};
+}

@@ -4,8 +4,8 @@ declare var store: Store;
 
 module Common {
     
-    export enum GameState {PAUSED = 0, RUNNING = 1, CREATED = 2, END = 3, UNKNOWN = 4};
-    export enum StageType {MENU = 0, PRACTISE = 1, EXAM = 2, UNKNOWN = 3};
+    export enum LevelStageState {PAUSED = 0, RUNNING = 1, CREATED = 2, END = 3, UNKNOWN = 4};
+    export enum LevelStageType {MENU = 0, PRACTISE = 1, EXAM = 2, UNKNOWN = 3};
     
     export enum GameElements {
         LEVEL_BUTTON = 0,
@@ -88,7 +88,7 @@ module Common {
         
         private _game: AlgoGame;
         private _eventsToProcess: Phaser.LinkedList = new Phaser.LinkedList();
-        private _gameState: GameState = GameState.UNKNOWN;
+        private _levelStageState: LevelStageState = LevelStageState.UNKNOWN;
 
         
         public dispatch(eventId: string, caller: any, param?: any) {
@@ -137,21 +137,21 @@ module Common {
         dispatchEvent(event: any, param1: any) {
             switch(event.type) {
                 case Events.CONTROL_PANEL_EVENT_PAUSE:
-                    this._gameState = GameState.PAUSED;
+                    this._levelStageState = LevelStageState.PAUSED;
                     break;
                 case Events.CONTROL_PANEL_EVENT_PLAY:
-                    if (this._gameState != GameState.PAUSED)
+                    if (this._levelStageState != LevelStageState.PAUSED)
                         return;
-                    this._gameState = GameState.RUNNING;
+                    this._levelStageState = LevelStageState.RUNNING;
                     break;
                 case Events.GAME_CREATED:
-                    this._gameState = GameState.CREATED;
+                    this._levelStageState = LevelStageState.CREATED;
                     break;
                 case Events.GAME_STARTED:
-                    this._gameState = GameState.RUNNING;
+                    this._levelStageState = LevelStageState.RUNNING;
                     break;
                 case Events.GAME_END:
-                    this._gameState = GameState.END;
+                    this._levelStageState = LevelStageState.END;
                     break;
             }
         }
@@ -160,8 +160,8 @@ module Common {
             return this._game;
         }
         
-        public get gameState(): GameState {
-            return this._gameState;
+        public get levelStageState(): LevelStageState {
+            return this._levelStageState;
         }
     }
     
@@ -173,7 +173,7 @@ module Common {
         constructor(gameWidth: number, gameHeight: number, mode: number, tag: string) {
             super(gameWidth, gameHeight, mode, tag);
             this._eventBus = new EventBusClass();
-        };
+        }
         
         public dispatch(eventId: string, caller: any, param?: any): void {
             var state: AlgoGameState = <AlgoGameState> this.state.states[this.state.current];
@@ -188,9 +188,9 @@ module Common {
             return this._eventBus;
         }
         
-        public get gameState(): GameState {
+        public get levelStageState(): LevelStageState {
             var state: AlgoGameState = <AlgoGameState> this.state.states[this.state.current];
-            return state.gameState;
+            return state.levelStageState;
         }
 
     }
@@ -217,18 +217,18 @@ module Common {
             } else {
                 console.log("Event listener exists [" + eventId + "] ")
             }                
-        };
+        }
         
         removeEventListener(eventId: string): void {
             this._game.eventBus.removeEventListener(eventId, this.dispatchEvent, this);  
-        };
+        }
         
         destroy(): void {
         
             for(var eventId in this._listeners) {
                 this.removeEventListener(eventId);
             }
-        };
+        }
 
         getCallbackForEventId(eventId: string, param?: any) {
             
@@ -236,8 +236,8 @@ module Common {
                 console.log("Event created " + eventId);
                 this._game.dispatch(eventId, this, param);
             }.bind(this);
-        };
-    };
+        }
+    }
     
     export class GameComponentContainer extends GameEventComponent {
     
@@ -293,7 +293,7 @@ module Common {
             );
             this._activeFrames = frames;
             this._inactiveFrame = frames[4];
-        };
+        }
         
         activate(): void {
             this.input.enabled = true;
@@ -303,7 +303,7 @@ module Common {
                 this._activeFrames[2],
                 this._activeFrames[3]
                 );
-        };
+        }
         
         deactivate():void {
             this.input.enabled = false;
@@ -313,7 +313,7 @@ module Common {
                 this._inactiveFrame, 
                 this._inactiveFrame
             );
-        };
+        }
         
         private onButtonDown(): void {
             this._callback();
@@ -321,6 +321,6 @@ module Common {
         
         set callback(callback: Function) {
             this._callback = callback;
-        };
+        }
     }
 }

@@ -151,7 +151,7 @@ module Common {
                     this.scheduleUpdates();
                     break;
                 case Events.CONTROL_PANEL_EVENT_PLAY:
-                    if (this._game.gameState == Common.GameState.PAUSED) {
+                    if (this._game.levelStageState == Common.LevelStageState.PAUSED) {
                         this._timer.resume();                        
                     }
                     break;

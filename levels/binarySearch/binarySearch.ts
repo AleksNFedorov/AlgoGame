@@ -343,11 +343,11 @@ module BinarySearch {
                     break;
                 case Events.CONTROL_PANEL_EVENT_PLAY:
                     console.log("Play event received");
-                    if (this._game.gameState == Common.GameState.PAUSED) {
+                    if (this._game.levelStageState == Common.LevelStageState.PAUSED) {
                         //mid-game pause
                         this._gameStepTimer.resume();
                     } else {
-                        if (this._game.gameState != Common.GameState.CREATED) {
+                        if (this._game.levelStageState != Common.LevelStageState.CREATED) {
                             //non-first iteration
                             this.reinitGame();
                         };
@@ -404,7 +404,7 @@ module BinarySearch {
         
         private boxClicked(index: number, addToResult:number = 1, isUser:boolean = true) {
             
-            if (this._game.gameState != Common.GameState.RUNNING) {
+            if (this._game.levelStageState != Common.LevelStageState.RUNNING) {
                 this._game.dispatch(Events.GAME_STEP_ON_PAUSE, this);
                 return;
             }
