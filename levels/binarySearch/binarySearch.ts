@@ -313,6 +313,7 @@ module BinarySearch {
         protected _algorithmStep: BinarySearchStep;
         protected _gameStepTimer: Phaser.Timer;
         protected _stepPerformed: boolean = false;
+        protected _pausedByModalWindow: boolean = false;
         
         protected gameSave: Common.StateSave;
 
@@ -340,7 +341,7 @@ module BinarySearch {
             switch(event.type) {
                 case Events.STAGE_INITIALIZED:
                     this.initGame();
-                    this.checkPractiseDone(false);
+                    this.checkPractiseDone();
                     break;
                 case Events.CONTROL_PANEL_EVENT_PLAY:
                     console.log("Play event received");
@@ -357,9 +358,17 @@ module BinarySearch {
                     break;
                 case Events.MODAL_WINDOW_DISPLAYING:
                     this._game.dispatch(Events.GAME_DISABLE_ALL, this);
+                    if (this._game.levelStageState == Common.LevelStageState.RUNNING) {
+                        this._pausedByModalWindow = true;
+                        this._game.dispatch(Events.CONTROL_PANEL_EVENT_PAUSE, this);
+                    }
                     break;
                 case Events.MODAL_WINDOW_HIDE:
                     this._game.dispatch(Events.GAME_ENABLE_ALL, this);
+                    if (this._pausedByModalWindow) {
+                        this._game.dispatch(Events.CONTROL_PANEL_EVENT_PLAY, this);
+                        this._pausedByModalWindow = false;
+                    }
                     break;
                 case Events.CONTROL_PANEL_EVENT_PAUSE:
                     this._gameStepTimer.pause();
@@ -444,6 +453,8 @@ module BinarySearch {
                     this._algorithmStep = this._algorithm.nextStep;
                     this.addTimerEvents();
                 }
+                this.checkPractiseDone();
+
                 this._stepPerformed = false;
             } else {
                 this._game.dispatch(Events.GAME_WRONG_STEP_DONE, this);
@@ -459,15 +470,14 @@ module BinarySearch {
             this._gameStepTimer.removeAll();
             this._game.dispatch(Events.GAME_END, this, this.gameSave.stepsDone);
             console.log("Game finished");
-            
-            this.checkPractiseDone(true);
-
         }
         
         // True when practise done because of user actions during this game
-        protected checkPractiseDone(thisGame: boolean) {
+        protected checkPractiseDone() {
             if (Constants.BS_PRACTISE_TO_OPEN_TEST <= this.gameSave.stepsDone) {
-                this._game.dispatch(Events.GAME_PRACTISE_DONE, this, thisGame);
+                this._game.dispatch(Events.GAME_PRACTISE_DONE, this, !this.gameSave.stagePassed);
+                this.gameSave.stagePassed = true;
+                this._game.store.set(this._game.state.current, this.gameSave);
             }
         }
         

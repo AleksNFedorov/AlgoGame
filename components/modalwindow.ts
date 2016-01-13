@@ -39,7 +39,6 @@ module GameModal {
     export class ModalWindow extends Common.GameEventComponent {
         
         private _gameModal;
-        private _paused: boolean;
         private _createdWindows: ModalConfig[];
         
         constructor(game: Common.AlgoGame) {
@@ -59,7 +58,7 @@ module GameModal {
                 case Events.GAME_PRACTISE_DONE:
                     var isUserAction: boolean = <boolean> param1;
                     if (isUserAction) {
-                    this.show(Common.ModalWindows.PRACTISE_DONE);
+                        this.show(Common.ModalWindows.PRACTISE_DONE);
                     }
                     break;
                 case Events.GAME_EXAM_DONE:
@@ -104,7 +103,6 @@ module GameModal {
         }
         
         private show(modalId: Common.ModalWindows): void {
-            this._paused = false;
             this.onShow();
             this._gameModal.showModal(Common.ModalWindows[modalId]);
         }
@@ -112,21 +110,12 @@ module GameModal {
         
         protected onShow(): void {
             console.log("Modal window showed");
-            if (this._game.levelStageState == Common.LevelStageState.RUNNING) {
-                this._game.dispatch(Events.CONTROL_PANEL_EVENT_PAUSE, this);
-                this._paused = true;
-            }
             this._game.dispatch(Events.MODAL_WINDOW_DISPLAYING, this);
         }
         
         protected onHide(): void {
             console.log("Modal window hide");
             this._game.dispatch(Events.MODAL_WINDOW_HIDE, this);
-
-            if (this._paused) {
-                this._game.dispatch(Events.CONTROL_PANEL_EVENT_PLAY, this);
-                this._paused = false;
-            }
         }
         
         destroy(): void {

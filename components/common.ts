@@ -25,7 +25,7 @@ module Common {
     
     export class StateSave {
         public stepsDone: number = 0;
-        public testsDone: number = 0;
+        public stagePassed: boolean = false;
     }
     
     export class GamePlayInfo {
