@@ -313,7 +313,6 @@ module BinarySearch {
         protected _algorithmStep: BinarySearchStep;
         protected _gameStepTimer: Phaser.Timer;
         protected _stepPerformed: boolean = false;
-        protected _pausedByModalWindow: boolean = false;
         
         protected gameSave: Common.StateSave;
 
@@ -332,8 +331,6 @@ module BinarySearch {
             this.addEventListener(Events.STAGE_INITIALIZED);
             this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
             this.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
-            this.addEventListener(Events.MODAL_WINDOW_DISPLAYING);
-            this.addEventListener(Events.MODAL_WINDOW_HIDE);
         }
 
         dispatchEvent(event: any, param1: any) {
@@ -354,20 +351,6 @@ module BinarySearch {
                             this.reinitGame();
                         }
                         this.startGame();
-                    }
-                    break;
-                case Events.MODAL_WINDOW_DISPLAYING:
-                    this._game.dispatch(Events.GAME_DISABLE_ALL, this);
-                    if (this._game.levelStageState == Common.LevelStageState.RUNNING) {
-                        this._pausedByModalWindow = true;
-                        this._game.dispatch(Events.CONTROL_PANEL_EVENT_PAUSE, this);
-                    }
-                    break;
-                case Events.MODAL_WINDOW_HIDE:
-                    this._game.dispatch(Events.GAME_ENABLE_ALL, this);
-                    if (this._pausedByModalWindow) {
-                        this._game.dispatch(Events.CONTROL_PANEL_EVENT_PLAY, this);
-                        this._pausedByModalWindow = false;
                     }
                     break;
                 case Events.CONTROL_PANEL_EVENT_PAUSE:

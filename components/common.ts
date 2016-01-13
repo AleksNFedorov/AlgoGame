@@ -99,6 +99,7 @@ module Common {
         private _game: AlgoGame;
         private _eventsToProcess: Phaser.LinkedList = new Phaser.LinkedList();
         private _levelStageState: LevelStageState = LevelStageState.UNKNOWN;
+        private _pausedByModalWindow: boolean = false;
 
         public dispatch(eventId: string, caller: any, param?: any) {
             console.log("New event received by state [" + eventId + "]");
@@ -116,11 +117,13 @@ module Common {
         }
         
         private initEventListners(): void {
-            this._game.eventBus.addEventListener(Events.GAME_CREATED, this.dispatchEvent, this);
-            this._game.eventBus.addEventListener(Events.GAME_STARTED, this.dispatchEvent, this);
-            this._game.eventBus.addEventListener(Events.GAME_END, this.dispatchEvent, this);
-            this._game.eventBus.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY, this.dispatchEvent, this);
-            this._game.eventBus.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE, this.dispatchEvent, this);
+            this.addEventListener(Events.GAME_CREATED);
+            this.addEventListener(Events.GAME_STARTED);
+            this.addEventListener(Events.GAME_END);
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
+            this.addEventListener(Events.MODAL_WINDOW_DISPLAYING);
+            this.addEventListener(Events.MODAL_WINDOW_HIDE);
         }
         
         public update(): void {
@@ -136,11 +139,13 @@ module Common {
         }
         
         public shutdown(): void {
-            this._game.eventBus.removeEventListener(Events.GAME_CREATED, this.dispatchEvent, this);
-            this._game.eventBus.removeEventListener(Events.GAME_STARTED, this.dispatchEvent, this);
-            this._game.eventBus.removeEventListener(Events.GAME_END, this.dispatchEvent, this);
-            this._game.eventBus.removeEventListener(Events.CONTROL_PANEL_EVENT_PLAY, this.dispatchEvent, this);
-            this._game.eventBus.removeEventListener(Events.CONTROL_PANEL_EVENT_PAUSE, this.dispatchEvent, this);
+            this.removeEventListener(Events.GAME_CREATED);
+            this.removeEventListener(Events.GAME_STARTED);
+            this.removeEventListener(Events.GAME_END);
+            this.removeEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
+            this.removeEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
+            this.removeEventListener(Events.MODAL_WINDOW_DISPLAYING);
+            this.removeEventListener(Events.MODAL_WINDOW_HIDE);
         }
         
         dispatchEvent(event: any, param1: any) {
@@ -162,8 +167,31 @@ module Common {
                 case Events.GAME_END:
                     this._levelStageState = LevelStageState.END;
                     break;
+                case Events.MODAL_WINDOW_DISPLAYING:
+                    this._game.dispatch(Events.GAME_DISABLE_ALL, this);
+                    if (this._game.levelStageState == Common.LevelStageState.RUNNING) {
+                        this._pausedByModalWindow = true;
+                        this._game.dispatch(Events.CONTROL_PANEL_EVENT_PAUSE, this);
+                    }
+                    break;
+                case Events.MODAL_WINDOW_HIDE:
+                    this._game.dispatch(Events.GAME_ENABLE_ALL, this);
+                    if (this._pausedByModalWindow) {
+                        this._game.dispatch(Events.CONTROL_PANEL_EVENT_PLAY, this);
+                        this._pausedByModalWindow = false;
+                    }
+                    break;
             }
         }
+        
+        private addEventListener(eventId: string): void {
+            this._game.eventBus.addEventListener(eventId, this.dispatchEvent, this);  
+        }
+        
+        private removeEventListener(eventId: string): void {
+            this._game.eventBus.removeEventListener(eventId, this.dispatchEvent, this);  
+        }
+
         
         public get algoGame(): AlgoGame {
             return this._game;
