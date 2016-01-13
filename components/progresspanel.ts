@@ -2,10 +2,10 @@
 
 module Common {
 
-    class ProgressBar extends Phaser.Group {
+    class ProgressBar extends Phaser.Group implements Common.GameUIObjectWithState {
     
         private _maxProgressWidth: number;
-        private _maxProgressValue: number;
+        private _maxProgressValue: number; 
     
         private _progressImage: Phaser.Sprite;
         private _progressText: Phaser.Text;
@@ -69,6 +69,10 @@ module Common {
             this._progressImage.width = this._maxProgressWidth * completines;
             this._progressText.text = textValue;
         }
+        
+        saveStateAndDisable(): void {}
+        
+        restoreState(): void {}
     }
     
     export class ProgressPanel extends GameComponentContainer {

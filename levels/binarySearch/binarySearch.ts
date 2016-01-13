@@ -331,9 +331,10 @@ module BinarySearch {
             this.addEventListener(Events.STAGE_INITIALIZED);
             this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
             this.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
+            this.addEventListener(Events.MODAL_WINDOW_DISPLAYING);
+            this.addEventListener(Events.MODAL_WINDOW_HIDE);
         }
 
-        
         dispatchEvent(event: any, param1: any) {
             super.dispatchEvent(event, param1);
             switch(event.type) {
@@ -353,6 +354,12 @@ module BinarySearch {
                         }
                         this.startGame();
                     }
+                    break;
+                case Events.MODAL_WINDOW_DISPLAYING:
+                    this._game.dispatch(Events.GAME_DISABLE_ALL, this);
+                    break;
+                case Events.MODAL_WINDOW_HIDE:
+                    this._game.dispatch(Events.GAME_ENABLE_ALL, this);
                     break;
                 case Events.CONTROL_PANEL_EVENT_PAUSE:
                     this._gameStepTimer.pause();
@@ -450,7 +457,7 @@ module BinarySearch {
         
         protected onLastStep(): void {
             this._gameStepTimer.removeAll();
-            this._game.dispatch(Events.GAME_END, this);
+            this._game.dispatch(Events.GAME_END, this, this.gameSave.stepsDone);
             console.log("Game finished");
             
             this.checkPractiseDone(true);

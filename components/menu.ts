@@ -25,7 +25,7 @@ module Common {
             this.addButtonToMenu(Common.GameElements.MENU_BUTTON_EXAM, Events.MENU_EVENT_GO_EXAM, [5,5,14,5, 31], 940, 30);
             console.log("Button has been added");
         }
-
+        
         protected addButtonToMenu(elementId: GameElements, eventId: string, frames: number[], x: number, y: number) {
             var newButton: Common.Button = this.createButton(frames);
             newButton.x = x;

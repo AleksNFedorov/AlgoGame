@@ -116,10 +116,13 @@ module GameModal {
                 this._game.dispatch(Events.CONTROL_PANEL_EVENT_PAUSE, this);
                 this._paused = true;
             }
+            this._game.dispatch(Events.MODAL_WINDOW_DISPLAYING, this);
         }
         
         protected onHide(): void {
             console.log("Modal window hide");
+            this._game.dispatch(Events.MODAL_WINDOW_HIDE, this);
+
             if (this._paused) {
                 this._game.dispatch(Events.CONTROL_PANEL_EVENT_PLAY, this);
                 this._paused = false;

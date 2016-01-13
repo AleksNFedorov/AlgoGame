@@ -84,6 +84,16 @@ module Common {
             public param?: any) {}
     }
     
+    export interface GameUIObjectWithState {
+        worldPosition: PIXI.Point;
+        width: number;
+        height: number;
+        
+        saveStateAndDisable(): void;
+        restoreState(): void;
+        destroy(): void;
+    }
+    
     export class AlgoGameState extends Phaser.State {
         
         private _game: AlgoGame;
@@ -240,7 +250,7 @@ module Common {
     
     export class GameComponentContainer extends GameEventComponent {
     
-        private _componentElements: any[] = [];
+        private _componentElements: GameUIObjectWithState[] = [];
         
         constructor(game: AlgoGame) {
             super(game);
@@ -248,14 +258,28 @@ module Common {
         
         protected initEventListners(): void {
             this.addEventListener(Events.STAGE_INFO_SHOW);
+            this.addEventListener(Events.GAME_DISABLE_ALL);
+            this.addEventListener(Events.GAME_ENABLE_ALL);
         }
         
-        protected addGameElement(elementId: GameElements, element: any): void {
+        protected addGameElement(elementId: GameElements, element: GameUIObjectWithState): void {
             this._componentElements[elementId] = element;
         } 
 
         dispatchEvent(event: any, param1: any) {
             switch(event.type) {
+                case Events.GAME_DISABLE_ALL:
+                    for(var uiElementIndex in this._componentElements) {
+                        var uiElement = this._componentElements[uiElementIndex];
+                        uiElement.saveStateAndDisable();
+                    }
+                    break;
+                case Events.GAME_ENABLE_ALL:
+                    for(var uiElementIndex in this._componentElements) {
+                        var uiElement = this._componentElements[uiElementIndex];
+                        uiElement.restoreState();
+                    }
+                    break;
                 case Events.STAGE_INFO_SHOW:
                     var infoWidget: InfoWidget = <InfoWidget> param1;
                     var element = this._componentElements[infoWidget.getElementId()];
@@ -273,14 +297,24 @@ module Common {
                value.destroy();
             }
         }
-
     }
     
-    export class Button extends Phaser.Button {
+    export class Text extends Phaser.Text implements GameUIObjectWithState {
+        constructor(game: AlgoGame, x: number, y: number, text: string, fontSettings: any) {
+            super(game, x, y, text, fontSettings);
+        }
+        
+        saveStateAndDisable(): void {};
+        restoreState(): void {};
+        
+    }
+    
+    export class Button extends Phaser.Button implements GameUIObjectWithState {
         
         private _activeFrames: number[];
         private _inactiveFrame: number;
         private _callback: Function;
+        private _savedEnabled: boolean;
         
         constructor(game:AlgoGame, frames:number[]) {
             super(game, 0,0, Constants.MENU_BUTTON_ATTLAS,
@@ -312,6 +346,17 @@ module Common {
                 this._inactiveFrame, 
                 this._inactiveFrame
             );
+        }
+        
+        public saveStateAndDisable(): void {
+            this._savedEnabled = this.input.enabled;
+            this.deactivate();
+        }
+        
+        public restoreState(): void {
+            if (this._savedEnabled) {
+                this.activate();
+            } 
         }
         
         private onButtonDown(): void {

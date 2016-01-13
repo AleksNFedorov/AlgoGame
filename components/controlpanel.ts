@@ -6,7 +6,7 @@ module Common {
         
         protected _playButton: Common.Button;
 
-        protected _infoText: Phaser.Text;
+        protected _infoText: Common.Text;
         protected _autoStartTimer: Phaser.Timer;
         
         constructor(game: AlgoGame) {
@@ -25,9 +25,8 @@ module Common {
             );
             
             this.initButton(this._playButton, 100, 500);
-                
-     
-            this._infoText = new Phaser.Text(this._game, 250, 500, "Control panel text", Constants.CONTROL_PANEL_MESSAGE_STYLE);
+
+            this._infoText = new Common.Text(this._game, 250, 500, "Control panel text", Constants.CONTROL_PANEL_MESSAGE_STYLE);
             this._game.add.existing(this._infoText);
             this.addGameElement(Common.GameElements.CONTROL_PANEL_TEXT, this._infoText);
         }
@@ -63,6 +62,12 @@ module Common {
                 case Events.CONTROL_PANEL_SHOW_TEXT:
                     this._infoText.text = param1 + "";
                     break;
+                case Events.GAME_DISABLE_ALL:
+                    this._autoStartTimer.pause();
+                    break;
+                case Events.GAME_ENABLE_ALL:
+                    this._autoStartTimer.resume();
+                    break;
             }
         }
         
@@ -71,6 +76,8 @@ module Common {
             super.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
             super.addEventListener(Events.GAME_END);
             super.addEventListener(Events.CONTROL_PANEL_SHOW_TEXT);
+            super.addEventListener(Events.GAME_DISABLE_ALL);
+            super.addEventListener(Events.GAME_ENABLE_ALL);
         }
         
         destroy() {

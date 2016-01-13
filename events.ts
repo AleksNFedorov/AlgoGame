@@ -18,6 +18,10 @@ class Events {
     static CONTROL_PANEL_EVENT_STOP = "cpStop";
     static CONTROL_PANEL_SHOW_TEXT = "cpShowText";
     
+    //Modal window events
+    static MODAL_WINDOW_DISPLAYING = "ModalWindowDispl";
+    static MODAL_WINDOW_HIDE = "ModalWindowHide";
+    
     //General game play events
     static GAME_CREATED = "GameCreated";
     static GAME_STARTED = "GameStarted";
@@ -32,6 +36,9 @@ class Events {
 
     static GAME_EXAM_FAILED = "GameExamFailed";
     static GAME_EXAM_DONE = "GameExamDone";
+    
+    static GAME_DISABLE_ALL = "DisableAll";
+    static GAME_ENABLE_ALL = "EnableAll";
     
     //Stage info manager events
     static STAGE_INFO_SHOW = "ShowStageInfo";

@@ -67,7 +67,7 @@ module StageInfo {
             return this._infoToShow.elementId;   
         }
         
-        public showFor(element: any): void {
+        public showFor(element: Common.GameUIObjectWithState): void {
             var quarter: Quarter = InfoWidget.getQuarter(element.worldPosition.x, element.worldPosition.y);
             
             switch(quarter) {
