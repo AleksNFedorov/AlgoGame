@@ -4,9 +4,9 @@ declare module GameConfig {
     export class StateConfig {
         stageName: string;
         stateType: string;
-        gameElementData: any;
+        menu: any;
         stepsToPass: number;
-        customData: any;
+        gamePlay: any;
     }
     
     export class Config {

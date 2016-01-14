@@ -120,7 +120,7 @@ module GameModal {
         
         destroy(): void {
             super.destroy();
-            for(var config in this._createdWindows) {
+            for(var config of this._createdWindows) {
                 this._gameModal.destroyModal(Common.ModalWindows[config.modalId]);   
             }
         }

@@ -381,7 +381,7 @@ module BinarySearch {
             
             this.destroyTempObjects();
             
-            this._algorithm = new BinarySearchAlgorithm(this.stateConfig.customData);
+            this._algorithm = new BinarySearchAlgorithm(this.stateConfig.gamePlay);
             
             this._boxLine = new BoxLine(this._game,     
                 this.boxClicked.bind(this), 

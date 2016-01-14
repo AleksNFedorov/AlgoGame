@@ -17,6 +17,14 @@ module Common {
             this.createButtons();
         }
         
+        protected initEventListners(): void {
+            super.initEventListners();
+            this.addEventListener(Events.MENU_EVENT_GO_MENU);
+            this.addEventListener(Events.MENU_EVENT_OPEN_ALGO_DESCR);
+            this.addEventListener(Events.MENU_EVENT_GO_PRACTISE);
+            this.addEventListener(Events.MENU_EVENT_GO_EXAM);
+        }
+        
         protected createButtons(): void {
             this.addButtonToMenu(Common.GameElements.MENU_BUTTON_MENU, Events.MENU_EVENT_GO_MENU, [12,2,82,2, 6], 50, 30);
             this.addButtonToMenu(Common.GameElements.MENU_BUTTON_DESCRIPTION, Events.MENU_EVENT_OPEN_ALGO_DESCR, [3,3,68,3, 81], 110, 30);
@@ -42,6 +50,30 @@ module Common {
             newButton.scale.setTo(0.3);
             return newButton;
         }
+        
+        dispatchEvent(event: any, param1: any) {
+            super.dispatchEvent(event, param1);
+            switch(event.type) {
+                case Events.MENU_EVENT_GO_MENU:
+                    var elementIdName = GameElements[GameElements.MENU_BUTTON_MENU];
+                    this._game.state.start(this.stateConfig.menu[elementIdName]);
+                    break;
+                case Events.MENU_EVENT_OPEN_ALGO_DESCR:
+                    var elementIdName = GameElements[GameElements.MENU_BUTTON_DESCRIPTION];
+                    window.open(this.stateConfig.menu[elementIdName], "_blank");
+                    break;
+                case Events.MENU_EVENT_GO_PRACTISE:
+                    var elementIdName = GameElements[GameElements.MENU_BUTTON_PRACTISE];
+                    this._game.state.start(this.stateConfig.menu[elementIdName]);
+                    break;
+                case Events.MENU_EVENT_GO_EXAM:
+                    var elementIdName = GameElements[GameElements.MENU_BUTTON_EXAM];
+                    this._game.state.start(this.stateConfig.menu[elementIdName]);
+                    break;
+                    break;
+            }
+        }
+
         
         destroy(): void {
             

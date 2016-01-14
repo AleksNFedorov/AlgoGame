@@ -266,8 +266,7 @@ module Common {
         }
         
         destroy(): void {
-        
-            for(var eventId in this._listeners) {
+            for(var eventId of this._listeners.list) {
                 this.removeEventListener(eventId);
             }
         }
