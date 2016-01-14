@@ -1,6 +1,8 @@
 /// <reference path="../lib/phaser.d.ts" />
+/// <reference path="../lib/gameconfig.d.ts" />
 
 declare var store: Store;
+declare var globalConfig: GameConfig.Config
 
 module Common {
     
@@ -100,6 +102,7 @@ module Common {
         private _eventsToProcess: Phaser.LinkedList = new Phaser.LinkedList();
         private _levelStageState: LevelStageState = LevelStageState.UNKNOWN;
         private _pausedByModalWindow: boolean = false;
+        private _stateConfig: GameConfig.Config;
 
         public dispatch(eventId: string, caller: any, param?: any) {
             console.log("New event received by state [" + eventId + "]");
@@ -109,11 +112,13 @@ module Common {
         
         public init(): void {
             this._game = <AlgoGame> this.game;
+            this._stateConfig = globalConfig.stateConfigs[this.key];
         }
         
         
-        public create(): void {
+        protected onCreate(): void {
             this.initEventListners();
+            this._game.dispatch(Events.STAGE_INITIALIZED, this, this._stateConfig);
         }
         
         private initEventListners(): void {
@@ -279,6 +284,7 @@ module Common {
     export class GameComponentContainer extends GameEventComponent {
     
         private _componentElements: GameUIObjectWithState[] = [];
+        protected stateConfig: GameConfig.StateConfig;
         
         constructor(game: AlgoGame) {
             super(game);
@@ -288,6 +294,7 @@ module Common {
             this.addEventListener(Events.STAGE_INFO_SHOW);
             this.addEventListener(Events.GAME_DISABLE_ALL);
             this.addEventListener(Events.GAME_ENABLE_ALL);
+            this.addEventListener(Events.STAGE_INITIALIZED);
         }
         
         protected addGameElement(elementId: GameElements, element: GameUIObjectWithState): void {
@@ -307,6 +314,9 @@ module Common {
                         var uiElement = this._componentElements[uiElementIndex];
                         uiElement.restoreState();
                     }
+                    break;
+                case Events.STAGE_INITIALIZED:
+                    this.stateConfig = <GameConfig.StateConfig>param1;
                     break;
                 case Events.STAGE_INFO_SHOW:
                     var infoWidget: InfoWidget = <InfoWidget> param1;

@@ -64,9 +64,7 @@ class BinarySearchPractise extends Common.AlgoGameState {
         this._progressPanel = new Common.ProgressPanel(this.algoGame);
         this._practiseManager = new StageInfo.PractiseManager(this.algoGame);
         
-        super.create();        
-        
-        this.algoGame.dispatch(Events.STAGE_INITIALIZED, this);
+        super.onCreate();        
     }
     
     private initModalWindows(): void {
@@ -110,9 +108,7 @@ class BinarySearchExam extends Common.AlgoGameState {
         this._progressPanel = new Common.ProgressPanel(this.algoGame);
         this._practiseManager = new StageInfo.PractiseManager(this.algoGame);
 
-        super.create();
-
-        this.algoGame.dispatch(Events.STAGE_INITIALIZED, this);
+        super.onCreate();
     }
     
     private initModalWindows(): void {

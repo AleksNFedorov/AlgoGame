@@ -53,11 +53,11 @@ module BinarySearch {
         private _elementToFindIndex: number;
         private _nextStep: BinarySearchStep;
         
-        constructor(count: number) {
-            this._sequence = BinarySearchAlgorithm.generateSeqeunce(count);
+        constructor(config: any) {
+            this._sequence = BinarySearchAlgorithm.generateSeqeunce(config);
             this._elementToFindIndex = this.defineElementToFind();
             
-            this._nextStep = new BinarySearchStep(false, -1,  -1, 0, count - 1, Operation.Unknown)
+            this._nextStep = new BinarySearchStep(false, -1,  -1, 0, this._sequence.length - 1, Operation.Unknown)
         }
         
         public get nextStep(): BinarySearchStep {
@@ -141,21 +141,24 @@ module BinarySearch {
           return this._elementToFindIndex;  
         }
         
-        private static generateSeqeunce(count: number): number[] {
+        private static generateSeqeunce(config: any): number[] {
 
-                var newGeneratedArray: number[] = [];
-                
-                for (var i = 0; i < count; i++) { 
-                    var y = BinarySearchAlgorithm.getRandomInteger(Constants.BS_MIN_SEQ_NUMBER, Constants.BS_MAX_SEQ_NUMBER);
-                    newGeneratedArray.push(y);
-                }
-                
-                newGeneratedArray.sort(function(a,b){return a-b;});
-                
-                return newGeneratedArray;
+            var varElements = config.maxElementsInSeq - config.minElementsInSeq;    
+            var count = config.minElementsInSeq + this.getRandomInteger(0, varElements);
+    
+            var newGeneratedArray: number[] = [];
+            
+            for (var i = 0; i < count; i++) { 
+                var y = BinarySearchAlgorithm.getRandomInteger(config.minSeqNumber, config.maxSeqNumber);
+                newGeneratedArray.push(y);
+            }
+            
+            newGeneratedArray.sort(function(a,b){return a-b;});
+            
+            return newGeneratedArray;
         }
         
-        public static getRandomInteger(from: number, to: number): number {
+        private static getRandomInteger(from: number, to: number): number {
             return Math.floor(Math.random() * (to - from) + from);
         }
         
@@ -313,7 +316,6 @@ module BinarySearch {
         protected _algorithmStep: BinarySearchStep;
         protected _gameStepTimer: Phaser.Timer;
         protected _stepPerformed: boolean = false;
-        
         protected gameSave: Common.StateSave;
 
         constructor(game: Common.AlgoGame) {
@@ -371,7 +373,7 @@ module BinarySearch {
         protected createGamePlayInfo(): Common.GamePlayInfo {
             return  new Common.GamePlayInfo(
                 Constants.BS_PR_STEP_TIME,
-                Constants.BS_PRACTISE_TO_OPEN_TEST,
+                this.stateConfig.stepsToPass,
                 this.gameSave.stepsDone);
         }
         
@@ -379,7 +381,7 @@ module BinarySearch {
             
             this.destroyTempObjects();
             
-            this._algorithm = new BinarySearchAlgorithm(14 + BinarySearchAlgorithm.getRandomInteger(0,6));
+            this._algorithm = new BinarySearchAlgorithm(this.stateConfig.customData);
             
             this._boxLine = new BoxLine(this._game,     
                 this.boxClicked.bind(this), 
@@ -457,7 +459,7 @@ module BinarySearch {
         
         // True when practise done because of user actions during this game
         protected checkPractiseDone() {
-            if (Constants.BS_PRACTISE_TO_OPEN_TEST <= this.gameSave.stepsDone) {
+            if (this.stateConfig.stepsToPass <= this.gameSave.stepsDone) {
                 this._game.dispatch(Events.GAME_PRACTISE_DONE, this, !this.gameSave.stagePassed);
                 this.gameSave.stagePassed = true;
                 this._game.store.set(this._game.state.current, this.gameSave);
@@ -498,7 +500,7 @@ module BinarySearch {
         protected createGamePlayInfo(): Common.GamePlayInfo {
             return  new Common.GamePlayInfo(
                 Constants.BS_PR_STEP_TIME,
-                Constants.BS_TEST_TO_PASS,
+                this.stateConfig.stepsToPass,
                 this.gameSave.stepsDone);
         }
 
@@ -559,7 +561,7 @@ module BinarySearch {
             this._game.dispatch(Events.GAME_END, this, this.gameSave.stepsDone);
             console.log("Game finished");
 
-            if (Constants.BS_TEST_TO_PASS == this.gameSave.stepsDone) {
+            if (this.stateConfig.stepsToPass == this.gameSave.stepsDone) {
                 this._game.dispatch(Events.GAME_EXAM_DONE, this);
             }
         }
