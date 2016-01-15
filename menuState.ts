@@ -31,7 +31,7 @@ class Preload extends Phaser.State {
 
     private _onLoadComplete() {
         console.log("Preload complete");
-        this.game.state.start(Constants.STATE_SEARCH_BINARY_SEARCH_T);
+        this.game.state.start("binarySearchPractise");
     }
 }
 

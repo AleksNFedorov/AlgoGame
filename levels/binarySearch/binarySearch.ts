@@ -321,9 +321,6 @@ module BinarySearch {
         constructor(game: Common.AlgoGame) {
             super(game);
             
-            this.gameSave = game.store.get(game.state.current)
-                || new Common.StateSave();
-        
             this._gameStepTimer = this._game.time.create(false);
             this._gameStepTimer.start();
 
@@ -339,6 +336,8 @@ module BinarySearch {
             super.dispatchEvent(event, param1);
             switch(event.type) {
                 case Events.STAGE_INITIALIZED:
+                    this.gameSave = this._game.store.get(this.stateConfig.level)
+                        || new Common.StateSave();
                     this.initGame();
                     this.checkPractiseDone();
                     break;
@@ -374,7 +373,7 @@ module BinarySearch {
             return  new Common.GamePlayInfo(
                 Constants.BS_PR_STEP_TIME,
                 this.stateConfig.stepsToPass,
-                this.gameSave.stepsDone);
+                this.gameSave.practiseDone);
         }
         
         private reinitGame(): void {
@@ -396,7 +395,7 @@ module BinarySearch {
             this._algorithmStep = this._algorithm.nextStep;
             this.addTimerEvents();
             this._game.dispatch(Events.GAME_STARTED, this, 
-                this.gameSave.stepsDone);
+                this.gameSave.practiseDone);
 
         }
         
@@ -430,7 +429,7 @@ module BinarySearch {
                 this._game.dispatch(
                     Events.GAME_CORRECT_STEP_DONE, 
                     this, 
-                    [this.gameSave.stepsDone, isUser]);
+                    [this.gameSave.practiseDone, isUser]);
                 
                 if (step.isLast) {
                     this.onLastStep();
@@ -447,22 +446,26 @@ module BinarySearch {
         }
         
         protected updateGameStatistics(addToResult: number): void {
-          this.gameSave.stepsDone += addToResult;
-          this._game.store.set(this._game.state.current, this.gameSave);
+            this.gameSave.practiseDone += addToResult;
+            this.saveState();
+        }
+        
+        protected saveState():void  {
+          this._game.store.set(this.stateConfig.level, this.gameSave);
         }
         
         protected onLastStep(): void {
             this._gameStepTimer.removeAll();
-            this._game.dispatch(Events.GAME_END, this, this.gameSave.stepsDone);
+            this._game.dispatch(Events.GAME_END, this, this.gameSave.practiseDone);
             console.log("Game finished");
         }
         
         // True when practise done because of user actions during this game
         protected checkPractiseDone() {
-            if (this.stateConfig.stepsToPass <= this.gameSave.stepsDone) {
-                this._game.dispatch(Events.GAME_PRACTISE_DONE, this, !this.gameSave.stagePassed);
-                this.gameSave.stagePassed = true;
-                this._game.store.set(this._game.state.current, this.gameSave);
+            if (this.stateConfig.stepsToPass <= this.gameSave.practiseDone) {
+                this._game.dispatch(Events.GAME_PRACTISE_DONE, this, !this.gameSave.practisePassed);
+                this.gameSave.practisePassed = true;
+                this.saveState();
             }
         }
         
@@ -487,6 +490,8 @@ module BinarySearch {
 
 
     export class ExamGamePlay extends PractiseGamePlay {
+        
+        private _iterationsDone: number = 0;
 
         constructor(game: Common.AlgoGame) {
             super(game);
@@ -500,8 +505,7 @@ module BinarySearch {
         protected createGamePlayInfo(): Common.GamePlayInfo {
             return  new Common.GamePlayInfo(
                 Constants.BS_PR_STEP_TIME,
-                this.stateConfig.stepsToPass,
-                this.gameSave.stepsDone);
+                this.stateConfig.stepsToPass, 0);
         }
 
         dispatchEvent(event: any, param1: any) {
@@ -535,7 +539,7 @@ module BinarySearch {
                 this._game.dispatch(
                     Events.GAME_CORRECT_STEP_DONE,
                     this,
-                    [this.gameSave.stepsDone, isUser]);
+                    [this._iterationsDone, isUser]);
 
                 if (step.isLast) {
                     this.onLastStep(1);
@@ -551,17 +555,18 @@ module BinarySearch {
         }
         
         protected flushProgress(): void {
-            this.gameSave.stepsDone = 0;
+            this._iterationsDone = 0;
         }
 
         protected onLastStep(points: number = 0): void {
-          this.gameSave.stepsDone += points;
+            this._iterationsDone += points;
             this._gameStepTimer.removeAll();
-            this._game.dispatch(Events.GAME_END, this, this.gameSave.stepsDone);
+            this._game.dispatch(Events.GAME_END, this, this._iterationsDone);
             console.log("Game finished");
 
-            if (this.stateConfig.stepsToPass == this.gameSave.stepsDone) {
-                this._game.store.set(this._game.state.current, this.gameSave);
+            if (this.stateConfig.stepsToPass == this._iterationsDone) {
+                this.gameSave.examPassed = true;
+                this.saveState();
                 this._game.dispatch(Events.GAME_EXAM_DONE, this);
             }
         }

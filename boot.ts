@@ -15,6 +15,6 @@ class Boot extends Phaser.State {
         this.scale.maxHeight = 786;
         this.scale.pageAlignHorizontally = true;
 
-        this.game.state.start(Constants.STATE_PRELOAD);
+        this.game.state.start("preload");
     }
 }

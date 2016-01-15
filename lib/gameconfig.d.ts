@@ -2,6 +2,7 @@
 declare module GameConfig {
 
     export class StateConfig {
+        level: string;
         stageName: string;
         stateType: string;
         menu: any;

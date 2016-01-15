@@ -16,14 +16,6 @@ class Constants {
     static PROGRESS_BAR_POSITION_X = 800;
     static PROGRESS_BAR_POSITION_Y = 100;
     
-    
-    //State names
-    static STATE_BOOT = "boot";
-    static STATE_PRELOAD = "preload";
-    static STATE_MENU = "menu";
-    static STATE_SEARCH_BINARY_SEARCH_P = "bsp";
-    static STATE_SEARCH_BINARY_SEARCH_T = "bst";
-
     //Assets
     static MENU_BUTTON_ATTLAS = "menuButtons";
     static PROGRESS_BARS_ATTLAS = "progressBars";

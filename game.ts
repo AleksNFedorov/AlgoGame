@@ -8,12 +8,12 @@ class Game extends Common.AlgoGame {
         
         super(Constants.GAME_WIDTH, Constants.GAME_HEIGHT, Phaser.AUTO, 'game');
 
-        this.state.add(Constants.STATE_BOOT, Boot);
-        this.state.add(Constants.STATE_PRELOAD, Preload);
-        this.state.add(Constants.STATE_SEARCH_BINARY_SEARCH_P, BinarySearchPractise);
-        this.state.add(Constants.STATE_SEARCH_BINARY_SEARCH_T, BinarySearchExam);
+        this.state.add("boot", Boot);
+        this.state.add("preload", Preload);
+        this.state.add("binarySearchPractise", BinarySearchPractise);
+        this.state.add("binarySearchExam", BinarySearchExam);
         
-        this.state.start(Constants.STATE_BOOT);        
+        this.state.start("boot");        
         
     }
 }
