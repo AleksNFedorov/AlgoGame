@@ -31,7 +31,7 @@ class Preload extends Phaser.State {
 
     private _onLoadComplete() {
         console.log("Preload complete");
-        this.game.state.start(Constants.STATE_SEARCH_BINARY_SEARCH_P);
+        this.game.state.start(Constants.STATE_SEARCH_BINARY_SEARCH_T);
     }
 }
 
@@ -50,6 +50,7 @@ class BinarySearchPractise extends Common.AlgoGameState {
         this._controlPanel.destroy();
         this._gamePlay.destroy();
         this._practiseManager.destroy();
+        this._modalWindow.destroy();
         this._menu = null;
     }
 
@@ -84,7 +85,6 @@ class BinarySearchExam extends Common.AlgoGameState {
     private _controlPanel: Common.ExamPanel;
     private _gamePlay: BinarySearch.ExamGamePlay;
     private _progressPanel: Common.ProgressPanel;
-    private _practiseManager: StageInfo.PractiseManager;
     private _modalWindow: GameModal.ModalWindow;
 
     public shutdown(): void {
@@ -92,7 +92,6 @@ class BinarySearchExam extends Common.AlgoGameState {
         this._menu.destroy();
         this._controlPanel.destroy();
         this._gamePlay.destroy();
-        this._practiseManager.destroy();
         this._modalWindow.destroy();
         this._menu = null;
     }
@@ -106,7 +105,6 @@ class BinarySearchExam extends Common.AlgoGameState {
         this._controlPanel = new Common.ExamPanel(this.algoGame);
         this._gamePlay = new BinarySearch.ExamGamePlay(this.algoGame);
         this._progressPanel = new Common.ProgressPanel(this.algoGame);
-        this._practiseManager = new StageInfo.PractiseManager(this.algoGame);
 
         super.onCreate();
     }

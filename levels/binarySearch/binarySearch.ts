@@ -515,7 +515,7 @@ module BinarySearch {
         }
 
         protected clickBox() {
-            this.boxClicked(-1, 0, false);
+            this.boxClicked(-2, 0, false);
         }
 
         protected boxClicked(index: number, addToResult:number = 1, isUser:boolean = true) {
@@ -538,8 +538,7 @@ module BinarySearch {
                     [this.gameSave.stepsDone, isUser]);
 
                 if (step.isLast) {
-                    this.updateGameStatistics(1);
-                    this.onLastStep();
+                    this.onLastStep(1);
                 } else {
                     this._algorithmStep = this._algorithm.nextStep;
                     this.addTimerEvents();
@@ -553,20 +552,19 @@ module BinarySearch {
         
         protected flushProgress(): void {
             this.gameSave.stepsDone = 0;
-            this.updateGameStatistics(0);
         }
 
-        protected onLastStep(): void {
+        protected onLastStep(points: number = 0): void {
+          this.gameSave.stepsDone += points;
             this._gameStepTimer.removeAll();
             this._game.dispatch(Events.GAME_END, this, this.gameSave.stepsDone);
             console.log("Game finished");
 
             if (this.stateConfig.stepsToPass == this.gameSave.stepsDone) {
+                this._game.store.set(this._game.state.current, this.gameSave);
                 this._game.dispatch(Events.GAME_EXAM_DONE, this);
             }
         }
-
-
 
     }
 }

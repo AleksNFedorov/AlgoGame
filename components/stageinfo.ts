@@ -10,24 +10,17 @@ module StageInfo {
     
     class ShowInfo {
         private _elementId: Common.GameElements;
-        private _descriptionText: string;
         private _eventToHide: string;
         
         constructor(elementId: Common.GameElements, 
-            descriptionText: string,
             eventToHide?: string
         ) {
             this._elementId = elementId;
-            this._descriptionText = descriptionText;
             this._eventToHide = eventToHide;
         }
         
         public get elementId(): Common.GameElements {
             return this._elementId;
-        }
-        
-        public get descriptionText(): string {
-            return this._descriptionText;
         }
         
         public get eventToHide(): string {
@@ -172,9 +165,6 @@ module StageInfo {
                 super.addEventListener(newShowInfo.eventToHide);
             }
             
-            this._game.dispatch(Events.CONTROL_PANEL_SHOW_TEXT, this, 
-                newShowInfo.descriptionText);
-                
             this._game.dispatch(Events.STAGE_INFO_SHOW, this, 
                 this._requestedShowWidget);
         }
@@ -210,12 +200,10 @@ module StageInfo {
                 [
                     new ShowInfo(
                         Common.GameElements.CONTROL_PANEL_BUTTON_PLAY,
-                        "Play button description",
                         Events.CONTROL_PANEL_EVENT_PLAY
                         ),
                     new ShowInfo(
-                        Common.GameElements.PROGRESS_STEP,
-                        "Progress step description"
+                        Common.GameElements.PROGRESS_STEP
                         )
                     ]
             );

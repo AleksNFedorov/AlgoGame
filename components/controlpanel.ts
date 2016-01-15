@@ -1,22 +1,68 @@
 /// <reference path="./common.ts" />
 
+declare var Dictionary: any;
+
 module Common {   
    
-    class ControlPanel extends GameComponentContainer {
+    class InfoTextPanel extends GameComponentContainer {
+        
+        protected _infoText: Common.Text;
+
+        constructor(game: AlgoGame) {
+            super(game);
+            this.createElements();
+        }
+        
+        protected createElements(): void {
+            this._infoText = new Common.Text(this._game, 250, 500, "Control panel text", Constants.CONTROL_PANEL_MESSAGE_STYLE);
+            this._game.add.existing(this._infoText);
+            this.addGameElement(Common.GameElements.CONTROL_PANEL_TEXT, this._infoText);
+        }
+        
+        dispatchEvent(event: any, param1: any) {
+            super.dispatchEvent(event, param1);
+            switch(event.type) {
+                default:
+                this.setInfoMessageFromDictionary(event.type);
+                console.log("Control panel event [" + event.type + "]");
+            }
+        }
+        
+        private setInfoMessageFromDictionary(key: string) {
+            var messages: any[] = Dictionary[key];
+            if (messages != null) {
+                this._infoText.text = Phaser.ArrayUtils.getRandomItem(messages, 0, messages.length);
+            } 
+        }
+        
+        initEventListners(): void {
+            super.initEventListners();
+            for (var eventId of Events.getAllEvents()) {
+               this.addEventListener(eventId);
+            }
+        }
+        
+        destroy() {
+           super.destroy(); 
+           this._infoText.destroy();
+        }
+    }
+   
+    class ControlPanel extends InfoTextPanel {
         
         protected _playButton: Common.Button;
 
-        protected _infoText: Common.Text;
         protected _autoStartTimer: Phaser.Timer;
         
         constructor(game: AlgoGame) {
             super(game);
-            this.createElements();
             this._autoStartTimer = game.time.create(false);
             this._autoStartTimer.start();
         }
         
-        createElements(): void {
+        protected createElements(): void {
+
+            super.createElements();
             
             this._playButton = this.createButton(
                 Common.GameElements.CONTROL_PANEL_BUTTON_PLAY, 
@@ -25,10 +71,6 @@ module Common {
             );
             
             this.initButton(this._playButton, 100, 500);
-
-            this._infoText = new Common.Text(this._game, 250, 500, "Control panel text", Constants.CONTROL_PANEL_MESSAGE_STYLE);
-            this._game.add.existing(this._infoText);
-            this.addGameElement(Common.GameElements.CONTROL_PANEL_TEXT, this._infoText);
         }
         
         protected createButton(elementId: Common.GameElements, eventId: string, frames: number[]): Button {
@@ -59,9 +101,6 @@ module Common {
                         this.getCallbackForEventId(Events.CONTROL_PANEL_EVENT_PLAY), 
                         this);
                     break;
-                case Events.CONTROL_PANEL_SHOW_TEXT:
-                    this._infoText.text = param1 + "";
-                    break;
                 case Events.GAME_DISABLE_ALL:
                     this._autoStartTimer.pause();
                     break;
@@ -75,14 +114,12 @@ module Common {
             super.initEventListners();
             super.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
             super.addEventListener(Events.GAME_END);
-            super.addEventListener(Events.CONTROL_PANEL_SHOW_TEXT);
             super.addEventListener(Events.GAME_DISABLE_ALL);
             super.addEventListener(Events.GAME_ENABLE_ALL);
         }
         
         destroy() {
            super.destroy(); 
-           this._infoText.destroy();
            this._autoStartTimer.destroy();
         }
         
