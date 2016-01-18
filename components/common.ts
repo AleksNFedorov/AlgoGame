@@ -118,6 +118,7 @@ module Common {
             this.initConfig();
         }
         
+        //TODO move to game
         private initConfig() {
         
             var stage = "";
@@ -234,6 +235,7 @@ module Common {
     
         private _eventBus:EventBusClass;
         private _store: Store = store;
+        private _config: GameConfig.Config = globalConfig;
         
         constructor(gameWidth: number, gameHeight: number, mode: number, tag: string) {
             super(gameWidth, gameHeight, mode, tag);
@@ -251,6 +253,10 @@ module Common {
         
         get eventBus(): EventBusClass {
             return this._eventBus;
+        }
+        
+        get config(): GameConfig.Config {
+            return this._config;
         }
         
         public get levelStageState(): LevelStageState {

@@ -7,13 +7,19 @@ module Common {
     class LevelInfo {
         private _levelSave: StateSave;
         private _levelName: string;
+        private _practiseToPass: number;
         
         public levelEnabled: boolean = false;
         public stateToStart: string;
         
-        constructor(levelName: string, levelSave: StateSave) {
+        constructor(levelName: string, levelSave: StateSave, practiseToPass: number) {
             this._levelSave = levelSave;
             this._levelName = levelName;
+            this._practiseToPass = practiseToPass;
+        }
+        
+        public get levelName(): string {
+            return this._levelName;
         }
         
         public get practiseDone(): number {
@@ -26,6 +32,10 @@ module Common {
 
         public get examPassed(): boolean {
             return this._levelSave.examPassed;
+        }
+        
+        public get practiseToPass(): number {
+            return this._practiseToPass;
         }
     }
     
@@ -71,22 +81,77 @@ module Common {
         restoreState(): void {}
     }
     
+    class LevelLocker {
+        
+        private _game: AlgoGame;
+        private _levelInfo: LevelInfo[] = [];
+        
+        constructor(game: AlgoGame) {
+            this._game = game;
+            this.initLevelInfo();
+        }
+        
+        private initLevelInfo(): void {
+            for(var levelName in this._game.config.levelConfigs) {
+                console.log("Processing level [" + levelName + "] config");
+                var levelInfo: LevelInfo = this.createLevelInfo(levelName);
+                this._levelInfo.push(levelInfo);
+            }
+        }
+        
+        private createLevelInfo(levelName: string): LevelInfo {
+            
+            var levelSave: StateSave = this._game.store.get(levelName) || new StateSave();
+            var levelConfig: GameConfig.LevelConfig = this._game.config.levelConfigs[levelName];
+            var levelPractiseConfig: GameConfig.StateConfig = levelConfig.PRACTISE;
+
+            var levelInfo: LevelInfo = new LevelInfo(levelName, levelSave, levelPractiseConfig.stepsToPass);
+            levelInfo.stateToStart = levelPractiseConfig.stageName;
+            
+            if (levelConfig.dependsOn != null) {
+                var dependsOnLevelSave: StateSave = this._game.store.get(levelConfig.dependsOn) || new StateSave();
+                levelInfo.levelEnabled = dependsOnLevelSave.examPassed;
+            } else {
+                levelInfo.levelEnabled = true;
+            }
+            
+            return levelInfo;
+        }
+        
+        get levelInfos(): LevelInfo[] {
+            return this._levelInfo;
+        }
+        
+    }
+    
     export class LevelButtonsPanel extends GameComponentContainer {
+        
+        private _levelLocker: LevelLocker;
         
         constructor(game: AlgoGame) {
             super(game);
+            
+            this._levelLocker = new LevelLocker(game);
+            
             this.createLevelButtons();
         }
         
         private createLevelButtons(): void {
             
+/*
             var levelSave: StateSave = this._game.store.get("binarySearch");
             var levelInfo: LevelInfo = new LevelInfo("binarySearch", levelSave);
             levelInfo.levelEnabled = true;
             levelInfo.stateToStart = "binarySearchPractise";
+*/
+
+            var yOffset = 0;
             
-            var binarySearchButton = new LevelButton(this._game, levelInfo, 50,50, [12,2,82,2, 6]);
-            this.addGameElement(GameElements.LEVEL_BUTTON, binarySearchButton);
+            for(var levelInfo of this._levelLocker.levelInfos) {
+                yOffset += 100;
+                var levelButton = new LevelButton(this._game, levelInfo, 50, yOffset, [12,2,82,2, 6]);
+                this.addGameElement(GameElements.LEVEL_BUTTON, levelButton);
+            }
         }
     }
 }

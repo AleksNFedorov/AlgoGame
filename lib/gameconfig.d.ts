@@ -1,6 +1,7 @@
 
 declare module GameConfig {
 
+    //TODO refactor to Stage config
     export class StateConfig {
         level: string;
         stageName: string;
@@ -11,8 +12,9 @@ declare module GameConfig {
     }
     
     export class LevelConfig {
-        practiseConfig: StateConfig;
-        examConfig: StateConfig;
+        dependsOn: string;
+        PRACTISE: StateConfig;
+        EXAM: StateConfig;
     }
     
     export class Config {
