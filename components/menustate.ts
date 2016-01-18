@@ -138,13 +138,6 @@ module Common {
         
         private createLevelButtons(): void {
             
-/*
-            var levelSave: StateSave = this._game.store.get("binarySearch");
-            var levelInfo: LevelInfo = new LevelInfo("binarySearch", levelSave);
-            levelInfo.levelEnabled = true;
-            levelInfo.stateToStart = "binarySearchPractise";
-*/
-
             var yOffset = 0;
             
             for(var levelInfo of this._levelLocker.levelInfos) {
