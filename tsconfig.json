@@ -10,6 +10,7 @@
     },
     "files": [
         "components/common.ts",
+        "components/menustate.ts",
         "components/menu.ts",
         "components/progresspanel.ts",
         "components/controlpanel.ts",

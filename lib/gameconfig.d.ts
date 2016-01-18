@@ -10,8 +10,12 @@ declare module GameConfig {
         gamePlay: any;
     }
     
-    export class Config {
-        stateConfigs: StateConfig;
+    export class LevelConfig {
+        practiseConfig: StateConfig;
+        examConfig: StateConfig;
     }
     
+    export class Config {
+        levelConfigs:LevelConfig;
+    }
 }

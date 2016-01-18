@@ -198,12 +198,10 @@ module BinarySearch {
 
             this._boxes = this.createBoxes(seqeunce);
             
-            
             //Creating element to find box
             this._boxToFind = this.createElementToFindBox(seqeunce[elementToFindIndex]);
             this._boxToFind.x = 20;
             this._boxToFind.y = 200;
-
         }
         
         public hideBoxesOutOf(from: number, to: number) {
@@ -213,7 +211,6 @@ module BinarySearch {
                 this._boxes[i].boxGroup.alpha = 0.5;
               }
           }
-            
         }
         
         public higlightBox(boxIndex: number) {
@@ -323,7 +320,6 @@ module BinarySearch {
             
             this._gameStepTimer = this._game.time.create(false);
             this._gameStepTimer.start();
-
         }
         
         protected initEventListners(): void {

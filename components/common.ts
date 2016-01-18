@@ -103,7 +103,7 @@ module Common {
         private _eventsToProcess: Phaser.LinkedList = new Phaser.LinkedList();
         private _levelStageState: LevelStageState = LevelStageState.UNKNOWN;
         private _pausedByModalWindow: boolean = false;
-        private _stateConfig: GameConfig.Config;
+        private _stateConfig: GameConfig.StateConfig;
 
         public dispatch(eventId: string, caller: any, param?: any) {
             console.log("New event received by state [" + eventId + "]");
@@ -113,7 +113,24 @@ module Common {
         
         public init(): void {
             this._game = <AlgoGame> this.game;
-            this._stateConfig = globalConfig.stateConfigs[this.key];
+            this.initConfig();
+        }
+        
+        private initConfig() {
+        
+            var stage = "";
+            if (this.key.indexOf("Practise") != -1) {
+                stage = "Practise";
+            } else if (this.key.indexOf("Exam") != -1) {
+                stage = "Exam";
+            }
+            
+            var level = this.key.replace(stage, "");
+        
+            var levelConfig: GameConfig.LevelConfig = globalConfig.levelConfigs[level];
+            this._stateConfig = levelConfig[stage.toUpperCase()];
+            this._stateConfig.level = level;
+            this._stateConfig.stageName = stage.toUpperCase();
         }
         
         
