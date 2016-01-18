@@ -22,9 +22,11 @@ module Common {
         CONTROL_PANEL_BUTTON_PAUSE = 10,
         CONTROL_PANEL_BUTTON_STOP = 11,
         CONTROL_PANEL_TEXT = 12,
-        GAME_AREA = 13
+        GAME_AREA = 13,
+        LEVEL_BUTTON = 14,
     }
     
+    //Raname to level save or smth
     export class StateSave {
         public practiseDone: number = 0;
         public practisePassed: boolean = false;
@@ -123,6 +125,9 @@ module Common {
                 stage = "Practise";
             } else if (this.key.indexOf("Exam") != -1) {
                 stage = "Exam";
+            } else {
+                //Refactor required
+                return;
             }
             
             var level = this.key.replace(stage, "");

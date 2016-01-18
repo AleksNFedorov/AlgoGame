@@ -10,6 +10,7 @@ class Game extends Common.AlgoGame {
 
         this.state.add("boot", Boot);
         this.state.add("preload", Preload);
+        this.state.add("menu", LevelMenuState);
         this.state.add("binarySearchPractise", BinarySearchPractise);
         this.state.add("binarySearchExam", BinarySearchExam);
         

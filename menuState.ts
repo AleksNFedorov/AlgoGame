@@ -1,6 +1,7 @@
 /// <reference path="components/common.ts" />
 /// <reference path="components/stageinfo.ts" />
 /// <reference path="components/modalwindow.ts" />
+/// <reference path="components/menustate.ts" />
 
 class Preload extends Phaser.State {
     
@@ -20,7 +21,6 @@ class Preload extends Phaser.State {
         '/assets/images/bars.json',
         Phaser.Loader.TEXTURE_ATLAS_JSON_ARRAY);
 
-        
         // Tmp images
         this.load.image('box', '/assets/images/box.png');
         this.load.image('cursor', '/assets/images/cursor.png');
@@ -31,9 +31,24 @@ class Preload extends Phaser.State {
 
     private _onLoadComplete() {
         console.log("Preload complete");
-        this.game.state.start("binarySearchPractise");
+        this.game.state.start("menu");
     }
 }
+
+class LevelMenuState extends Common.AlgoGameState {
+
+    private _levelButtonsPanel: Common.LevelButtonsPanel;
+
+    public shutdown(): void {
+        this._levelButtonsPanel.destroy();
+    }
+
+    create(): void {
+        this._levelButtonsPanel = new Common.LevelButtonsPanel(this.algoGame);
+        super.onCreate();
+    }
+}
+
 
 class BinarySearchPractise extends Common.AlgoGameState {
     
