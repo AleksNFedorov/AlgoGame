@@ -30,6 +30,7 @@ module Common {
     export class StateSave {
         public practiseDone: number = 0;
         public practisePassed: boolean = false;
+        public examDone: number = 0;
         public examPassed: boolean = false;
     }
     
@@ -136,7 +137,6 @@ module Common {
             var levelConfig: GameConfig.LevelConfig = globalConfig.levelConfigs[level];
             this._stateConfig = levelConfig[stage.toUpperCase()];
             this._stateConfig.level = level;
-            this._stateConfig.stageName = stage.toUpperCase();
         }
         
         

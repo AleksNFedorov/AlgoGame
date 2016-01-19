@@ -487,8 +487,6 @@ module BinarySearch {
 
     export class ExamGamePlay extends PractiseGamePlay {
         
-        private _iterationsDone: number = 0;
-
         constructor(game: Common.AlgoGame) {
             super(game);
         }
@@ -501,7 +499,8 @@ module BinarySearch {
         protected createGamePlayInfo(): Common.GamePlayInfo {
             return  new Common.GamePlayInfo(
                 Constants.BS_PR_STEP_TIME,
-                this.stateConfig.stepsToPass, 0);
+                this.stateConfig.stepsToPass, 
+                this.gameSave.examDone);
         }
 
         dispatchEvent(event: any, param1: any) {
@@ -535,7 +534,7 @@ module BinarySearch {
                 this._game.dispatch(
                     Events.GAME_CORRECT_STEP_DONE,
                     this,
-                    [this._iterationsDone, isUser]);
+                    [this.gameSave.examDone, isUser]);
 
                 if (step.isLast) {
                     this.onLastStep(1);
@@ -551,19 +550,24 @@ module BinarySearch {
         }
         
         protected flushProgress(): void {
-            this._iterationsDone = 0;
+            if (!this.gameSave.examPassed) {
+                this.gameSave.examDone = 0;
+            }
         }
 
         protected onLastStep(points: number = 0): void {
-            this._iterationsDone += points;
+            this.gameSave.examDone += points;
             this._gameStepTimer.removeAll();
-            this._game.dispatch(Events.GAME_END, this, this._iterationsDone);
+            this._game.dispatch(Events.GAME_END, this, this.gameSave.examDone);
             console.log("Game finished");
 
-            if (this.stateConfig.stepsToPass == this._iterationsDone) {
+            if (this.stateConfig.stepsToPass == this.gameSave.examDone) {
                 this.gameSave.examPassed = true;
-                this.saveState();
                 this._game.dispatch(Events.GAME_EXAM_DONE, this);
+            }
+            
+            if (this.gameSave.examPassed) {
+                this.saveState();
             }
         }
 

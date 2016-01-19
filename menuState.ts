@@ -40,6 +40,7 @@ class LevelMenuState extends Common.AlgoGameState {
     private _levelButtonsPanel: Common.LevelButtonsPanel;
 
     public shutdown(): void {
+        super.shutdown();
         this._levelButtonsPanel.destroy();
     }
 
