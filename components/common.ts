@@ -236,7 +236,7 @@ module Common {
         private _eventBus:EventBusClass;
         private _store: Store = store;
         private _config: GameConfig.Config = globalConfig;
-        
+
         constructor(gameWidth: number, gameHeight: number, mode: number, tag: string) {
             super(gameWidth, gameHeight, mode, tag);
             this._eventBus = new EventBusClass();
@@ -312,8 +312,9 @@ module Common {
     export class GameComponentContainer extends GameEventComponent {
     
         private _componentElements: GameUIObjectWithState[] = [];
+        private _levelSave: StateSave;
         protected stateConfig: GameConfig.StateConfig;
-        
+
         constructor(game: AlgoGame) {
             super(game);
         }
@@ -328,6 +329,14 @@ module Common {
         protected addGameElement(elementId: GameElements, element: GameUIObjectWithState): void {
             this._componentElements[elementId] = element;
         } 
+        
+        protected get levelSave(): StateSave {
+            return this._levelSave;
+        }
+        
+        protected saveState(): void  {
+          this._game.store.set(this.stateConfig.level, this._levelSave);
+        }
 
         dispatchEvent(event: any, param1: any) {
             switch(event.type) {
@@ -345,6 +354,8 @@ module Common {
                     break;
                 case Events.STAGE_INITIALIZED:
                     this.stateConfig = <GameConfig.StateConfig>param1;
+                    this._levelSave = this._game.store.get(this.stateConfig.level)
+                        || new Common.StateSave();
                     break;
                 case Events.STAGE_INFO_SHOW:
                     var infoWidget: InfoWidget = <InfoWidget> param1;
