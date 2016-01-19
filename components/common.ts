@@ -27,6 +27,9 @@ module Common {
         LEVEL_BUTTON = 14,
     }
     
+        
+    export interface GamePlayAction {}
+    
     //Raname to level save or smth
     export class StateSave {
         public practiseDone: number = 0;
@@ -100,7 +103,7 @@ module Common {
         restoreState(): void;
         destroy(): void;
     }
-    
+
     export class AlgoGameState extends Phaser.State {
         
         private _game: AlgoGame;

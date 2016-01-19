@@ -16,6 +16,7 @@
         "components/controlpanel.ts",
         "components/stageinfo.ts",
         "components/modalwindow.ts",
+        "components/gameplay.ts",
         "boot.ts",
         "constants.ts",
         "events.ts",
