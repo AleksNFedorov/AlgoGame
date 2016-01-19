@@ -3,6 +3,14 @@
 module BinarySearch {
     
     export enum Operation {Less = 1, Greater = 2, Equals = 3, NotEquals = 4, Unknown = 5}
+    
+    export interface GamePlayAction {
+        
+    }
+    
+    export class BinarySearchAction implements GamePlayAction {
+        constructor(public index: number){};
+    }
 
     class BinarySearchStep extends Common.Step {
         
@@ -46,7 +54,13 @@ module BinarySearch {
         
     }
     
-    class BinarySearchAlgorithm  {
+    export interface Algorithm {
+
+        getNextStep(): Common.Step;
+    }
+    
+    
+    class BinarySearchAlgorithm implements Algorithm {
         
         private _stepIndex: number = 0;
         private _sequence: number[];
@@ -60,7 +74,7 @@ module BinarySearch {
             this._nextStep = new BinarySearchStep(false, -1,  -1, 0, this._sequence.length - 1, Operation.Unknown)
         }
         
-        public get nextStep(): BinarySearchStep {
+        public getNextStep(): BinarySearchStep {
             this._nextStep = this.evaluateNextStep();
             console.log("Next step - " + this._nextStep.toString());
             return this._nextStep;
@@ -291,7 +305,7 @@ module BinarySearch {
         
         private createBoxClickCallback(index: number): Function {
             return function() {
-                this._boxClickedCallback(index);
+                this._boxClickedCallback(new BinarySearchAction(index));
             }.bind(this);
         }
         
@@ -306,11 +320,11 @@ module BinarySearch {
         }
     }
 
-    export class PractiseGamePlay extends Common.GameComponentContainer {
+    export class PractiseGamePlay<T extends GamePlayAction, A extends Algorithm> extends Common.GameComponentContainer {
 
-        protected _boxLine: BoxLine;
-        protected _algorithm: BinarySearchAlgorithm;
-        protected _algorithmStep: BinarySearchStep;
+        protected _algorithm: A;
+        protected _algorithmStep: Common.Step;
+        
         protected _gameStepTimer: Phaser.Timer;
         protected _stepPerformed: boolean = false;
 
@@ -337,11 +351,11 @@ module BinarySearch {
                     break;
                 case Events.CONTROL_PANEL_EVENT_PLAY:
                     console.log("Play event received");
-                    if (this._game.levelStageState == Common.LevelStageState.PAUSED) {
+                    if (this.isCurrentState(Common.LevelStageState.PAUSED)) {
                         //mid-game pause
                         this._gameStepTimer.resume();
                     } else {
-                        if (this._game.levelStageState != Common.LevelStageState.CREATED) {
+                        if (this.isNotCurrentState(Common.LevelStageState.CREATED)) {
                             //non-first iteration
                             this.initGame(false);
                         }
@@ -357,21 +371,23 @@ module BinarySearch {
         private initGame(isGameCreate: boolean) : void {
             this.destroyTempObjects();
             
-            this._algorithm = new BinarySearchAlgorithm(this.stateConfig.gamePlay);
+            this._algorithm = this.createAlgorithm(this.stateConfig.gamePlay);
+            this.onInit();
             
-            this._boxLine = new BoxLine(this._game,     
-                this.boxClicked.bind(this), 
-                this._algorithm.sequence, 
-                this._algorithm.elementToFindIndex);
-            
-            console.log("Element to find index [" + this._algorithm.elementToFindIndex + "]");
-
             if (isGameCreate) {
                 this._game.dispatch(
                     Events.GAME_CREATED, 
                     this,
                     this.createGamePlayInfo());
             }
+        }
+        
+        protected createAlgorithm(config: any): A {
+            return null;
+        }
+        
+        protected onInit(): void {
+            
         }
 
         protected createGamePlayInfo(): Common.GamePlayInfo {
@@ -383,7 +399,7 @@ module BinarySearch {
         
         private startGame(): void {
             
-            this._algorithmStep = this._algorithm.nextStep;
+            this._algorithmStep = this._algorithm.getNextStep();
             this.addTimerEvents();
             this._game.dispatch(Events.GAME_STARTED, this, 
                 this.levelSave.practiseDone);
@@ -391,32 +407,30 @@ module BinarySearch {
         }
         
         protected clickBox() {
-            this.boxClicked(this._algorithmStep.elementIndex, 0, false);
         }
         
-        protected boxClicked(index: number, addToResult:number = 1, isUser:boolean = true) {
+        protected boxClicked(action: T, isUser:boolean = true) {
             
-            if (this._game.levelStageState != Common.LevelStageState.RUNNING) {
+            if (this.isNotCurrentState(Common.LevelStageState.RUNNING)) {
                 this._game.dispatch(Events.GAME_STEP_ON_PAUSE, this);
                 return;
             }
             
             if (isUser && this._stepPerformed) {
-                console.log("Unable to make a step");
+                console.log("Unable to make a second step");
                 this._game.dispatch(Events.GAME_MULTI_STEP_DONE, this);
                 return;
             }
             
             this._stepPerformed = true;
 
-            console.log("Box clicked [" + index + "]");
+            console.log("Box clicked [" + action + "]");
             
-            var step: BinarySearchStep = this._algorithmStep;
+            var step: Common.Step = this._algorithmStep;
             
-            if (index == step.elementIndex) {
-                this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
-                this._boxLine.selectBox(step.elementIndex);
-                this.updateGameStatistics(addToResult);
+            if (this.isCorrectStep(action)) {
+                this.onCorrectAction();
+                this.updateGameStatistics(isUser);
                 this._game.dispatch(
                     Events.GAME_CORRECT_STEP_DONE, 
                     this, 
@@ -425,7 +439,7 @@ module BinarySearch {
                 if (step.isLast) {
                     this.onLastStep();
                 } else {
-                    this._algorithmStep = this._algorithm.nextStep;
+                    this._algorithmStep = this._algorithm.getNextStep();
                     this.addTimerEvents();
                 }
                 this.checkPractiseDone();
@@ -436,8 +450,17 @@ module BinarySearch {
             }
         }
         
-        protected updateGameStatistics(addToResult: number): void {
-            this.levelSave.practiseDone += addToResult;
+        protected onCorrectAction(): void {}
+        
+        protected isCorrectStep(action: T): boolean {
+            return false;
+        }
+        
+        
+        protected updateGameStatistics(isUser: boolean): void {
+            if (!isUser) return;
+            
+            this.levelSave.practiseDone += 1;
             this.saveState();
         }
         
@@ -467,16 +490,55 @@ module BinarySearch {
             this._gameStepTimer.destroy();
         }
         
-        private destroyTempObjects():void {
+        protected destroyTempObjects():void {
           this._algorithm = null;
+        }
+    }
+    
+    export class BinarySearchPractiseGamePlay extends PractiseGamePlay<BinarySearchAction, BinarySearchAlgorithm> {
+        
+        protected _boxLine: BoxLine;
+        
+        protected onInit(): void {
+            this._boxLine = new BoxLine(this._game,     
+                this.boxClicked.bind(this), 
+                this._algorithm.sequence, 
+                this._algorithm.elementToFindIndex);
+        }
+
+        
+        protected createAlgorithm(config: any): BinarySearchAlgorithm {
+            return new BinarySearchAlgorithm(config);
+        }
+        
+        protected clickBox() {
+            this.boxClicked(new BinarySearchAction(this.getCurrentStep().elementIndex), false);
+        }
+
+        protected isCorrectStep(action: BinarySearchAction): boolean {
+            var step: BinarySearchStep = this.getCurrentStep();
+            return action.index === step.elementIndex;
+        }
+        
+        protected onCorrectAction(): void {
+            var step: BinarySearchStep = this.getCurrentStep();
+            this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
+            this._boxLine.selectBox(step.elementIndex);
+        }
+        
+        protected destroyTempObjects():void {
+            super.destroyTempObjects();
             if (this._boxLine != null) {
                 this._boxLine.destroy();            
             }
         }
+        
+        protected getCurrentStep(): BinarySearchStep {
+            return <BinarySearchStep>this._algorithmStep;
+        }
     }
 
-
-    export class ExamGamePlay extends PractiseGamePlay {
+    export class ExamGamePlay<T extends GamePlayAction, A extends Algorithm>  extends PractiseGamePlay<T, A> {
         
         constructor(game: Common.AlgoGame) {
             super(game);
@@ -505,23 +567,22 @@ module BinarySearch {
         }
 
         protected clickBox() {
-            this.boxClicked(-2, 0, false);
+            throw "No implementation for method [clickBox]";
         }
 
-        protected boxClicked(index: number, addToResult:number = 1, isUser:boolean = true) {
+        protected boxClicked(action: T, isUser:boolean = true) {
 
-            if (this._game.levelStageState != Common.LevelStageState.RUNNING) {
+            if (this.isNotCurrentState(Common.LevelStageState.RUNNING)) {
                 this._game.dispatch(Events.GAME_STEP_ON_PAUSE, this);
                 return;
             }
 
-            console.log("Box clicked [" + index + "]");
+            console.log("Box clicked [" + action + "]");
 
-            var step: BinarySearchStep = this._algorithmStep;
+            var step: Common.Step = this._algorithmStep;
 
-            if (index == step.elementIndex) {
-                this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
-                this._boxLine.selectBox(step.elementIndex);
+            if (this.isCorrectStep(action)) {
+                this.onCorrectAction();
                 this._game.dispatch(
                     Events.GAME_CORRECT_STEP_DONE,
                     this,
@@ -530,7 +591,7 @@ module BinarySearch {
                 if (step.isLast) {
                     this.onLastStep(1);
                 } else {
-                    this._algorithmStep = this._algorithm.nextStep;
+                    this._algorithmStep = this._algorithm.getNextStep();
                     this.addTimerEvents();
                 }
             } else {
@@ -540,6 +601,10 @@ module BinarySearch {
             }
         }
         
+        protected onCorrectAction(): void {
+            
+        }
+
         protected flushProgress(): void {
             if (!this.levelSave.examPassed) {
                 this.levelSave.examDone = 0;
@@ -552,7 +617,7 @@ module BinarySearch {
             this._game.dispatch(Events.GAME_END, this, this.levelSave.examDone);
             console.log("Game finished");
 
-            if (this.stateConfig.stepsToPass == this.levelSave.examDone) {
+            if (!this.levelSave.examPassed && this.stateConfig.stepsToPass == this.levelSave.examDone) {
                 this.levelSave.examPassed = true;
                 this._game.dispatch(Events.GAME_EXAM_DONE, this);
             }
@@ -562,6 +627,49 @@ module BinarySearch {
             }
         }
 
+    }
+    
+    export class BinarySearchExamGamePlay extends ExamGamePlay<BinarySearchAction, BinarySearchAlgorithm> {
+    
+        protected _boxLine: BoxLine;
+        
+        protected onInit(): void {
+            this._boxLine = new BoxLine(this._game,     
+                this.boxClicked.bind(this), 
+                this._algorithm.sequence, 
+                this._algorithm.elementToFindIndex);
+        }
+
+        
+        protected createAlgorithm(config: any): BinarySearchAlgorithm {
+            return new BinarySearchAlgorithm(config);
+        }
+        
+        protected clickBox() {
+            this.boxClicked(new BinarySearchAction(-2), false);
+        }
+
+        protected isCorrectStep(action: BinarySearchAction): boolean {
+            var step: BinarySearchStep = this.getCurrentStep();
+            return action.index === step.elementIndex;
+        }
+        
+        protected onCorrectAction(): void {
+            var step: BinarySearchStep = this.getCurrentStep();
+            this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
+            this._boxLine.selectBox(step.elementIndex);
+        }
+        
+        protected destroyTempObjects():void {
+            super.destroyTempObjects();
+            if (this._boxLine != null) {
+                this._boxLine.destroy();            
+            }
+        }
+        
+        protected getCurrentStep(): BinarySearchStep {
+            return <BinarySearchStep>this._algorithmStep;
+        }        
     }
 }
 

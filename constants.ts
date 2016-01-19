@@ -28,8 +28,12 @@ class Constants {
     }
     
     static BS_BOX_HILIGHT_INTERVAL = 300;
+    
+    //TODO rename to avoid BS
     static BS_PR_STEP_TIME = 4000;
     
+    
+    //TODO remove
     //Binary search 
     static BS_MIN_SEQ_NUMBER = 1;
     static BS_MAX_SEQ_NUMBER = 100;

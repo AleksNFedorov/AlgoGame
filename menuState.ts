@@ -55,7 +55,7 @@ class BinarySearchPractise extends Common.AlgoGameState {
     
     private _menu: Common.Menu;
     private _controlPanel: Common.PractisePanel;
-    private _gamePlay: BinarySearch.PractiseGamePlay;
+    private _gamePlay: BinarySearch.BinarySearchPractiseGamePlay;
     private _progressPanel: Common.ProgressPanel;
     private _practiseManager: StageInfo.PractiseManager;
     private _modalWindow: GameModal.ModalWindow;
@@ -77,7 +77,7 @@ class BinarySearchPractise extends Common.AlgoGameState {
         
         this._menu = new Common.PractiseMenu(this.algoGame);
         this._controlPanel = new Common.PractisePanel(this.algoGame);
-        this._gamePlay = new BinarySearch.PractiseGamePlay(this.algoGame);
+        this._gamePlay = new BinarySearch.BinarySearchPractiseGamePlay(this.algoGame);
         this._progressPanel = new Common.ProgressPanel(this.algoGame);
         this._practiseManager = new StageInfo.PractiseManager(this.algoGame);
         
@@ -99,7 +99,7 @@ class BinarySearchExam extends Common.AlgoGameState {
 
     private _menu: Common.Menu;
     private _controlPanel: Common.ExamPanel;
-    private _gamePlay: BinarySearch.ExamGamePlay;
+    private _gamePlay: BinarySearch.BinarySearchExamGamePlay;
     private _progressPanel: Common.ProgressPanel;
     private _modalWindow: GameModal.ModalWindow;
 
@@ -119,7 +119,7 @@ class BinarySearchExam extends Common.AlgoGameState {
 
         this._menu = new Common.ExamMenu(this.algoGame);
         this._controlPanel = new Common.ExamPanel(this.algoGame);
-        this._gamePlay = new BinarySearch.ExamGamePlay(this.algoGame);
+        this._gamePlay = new BinarySearch.BinarySearchExamGamePlay(this.algoGame);
         this._progressPanel = new Common.ProgressPanel(this.algoGame);
 
         super.onCreate();

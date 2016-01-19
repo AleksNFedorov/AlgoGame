@@ -4,6 +4,7 @@
 declare var store: Store;
 declare var globalConfig: GameConfig.Config
 
+//TODO remove Common. from module code
 module Common {
     
     export enum LevelStageState {PAUSED = 0, RUNNING = 1, CREATED = 2, END = 3, UNKNOWN = 4}
@@ -337,6 +338,14 @@ module Common {
         protected saveState(): void  {
           this._game.store.set(this.stateConfig.level, this._levelSave);
         }
+        
+        protected isCurrentState(state: LevelStageState): boolean {
+            return this._game.levelStageState === state;
+        }
+        
+        protected isNotCurrentState(state: LevelStageState): boolean {
+            return this._game.levelStageState != state;
+        }
 
         dispatchEvent(event: any, param1: any) {
             switch(event.type) {
@@ -352,10 +361,13 @@ module Common {
                         uiElement.restoreState();
                     }
                     break;
+                //TODO refactor if condition                    
                 case Events.STAGE_INITIALIZED:
                     this.stateConfig = <GameConfig.StateConfig>param1;
-                    this._levelSave = this._game.store.get(this.stateConfig.level)
-                        || new Common.StateSave();
+                    if (this.stateConfig != null) {
+                        this._levelSave = this._game.store.get(this.stateConfig.level)
+                            || new Common.StateSave();
+                    }
                     break;
                 case Events.STAGE_INFO_SHOW:
                     var infoWidget: InfoWidget = <InfoWidget> param1;
