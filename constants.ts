@@ -27,18 +27,5 @@ class Constants {
         boundsAlignV: "middle" 
     }
     
-    static BS_BOX_HILIGHT_INTERVAL = 300;
-    
-    //TODO rename to avoid BS
-    static BS_PR_STEP_TIME = 4000;
-    
-    
-    //TODO remove
-    //Binary search 
-    static BS_MIN_SEQ_NUMBER = 1;
-    static BS_MAX_SEQ_NUMBER = 100;
-    static BS_MAX_ELEMENTS_IN_SEQ = 20;
-    static BS_PRACTISE_TO_OPEN_TEST = 100;
-    static BS_TEST_TO_PASS = 10;
-
+    static STEP_TIME = 4000;
 }

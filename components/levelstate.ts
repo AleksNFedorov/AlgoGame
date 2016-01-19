@@ -1,18 +1,17 @@
 /// <reference path="./common.ts" />
 
-// Raname file to reflect it related to levels
-
 module Common {
     
     class LevelInfo {
-        private _levelSave: StateSave;
+        
+        private _levelSave: LevelSave;
         private _levelName: string;
         private _practiseToPass: number;
         
         public levelEnabled: boolean = false;
         public stateToStart: string;
         
-        constructor(levelName: string, levelSave: StateSave, practiseToPass: number) {
+        constructor(levelName: string, levelSave: LevelSave, practiseToPass: number) {
             this._levelSave = levelSave;
             this._levelName = levelName;
             this._practiseToPass = practiseToPass;
@@ -101,15 +100,15 @@ module Common {
         
         private createLevelInfo(levelName: string): LevelInfo {
             
-            var levelSave: StateSave = this._game.store.get(levelName) || new StateSave();
+            var levelSave: LevelSave = this._game.store.get(levelName) || new LevelSave();
             var levelConfig: GameConfig.LevelConfig = this._game.config.levelConfigs[levelName];
-            var levelPractiseConfig: GameConfig.StateConfig = levelConfig.PRACTISE;
+            var levelPractiseConfig: GameConfig.StageConfig = levelConfig.practise;
 
             var levelInfo: LevelInfo = new LevelInfo(levelName, levelSave, levelPractiseConfig.stepsToPass);
             levelInfo.stateToStart = levelPractiseConfig.stageName;
             
             if (levelConfig.dependsOn != null) {
-                var dependsOnLevelSave: StateSave = this._game.store.get(levelConfig.dependsOn) || new StateSave();
+                var dependsOnLevelSave: LevelSave = this._game.store.get(levelConfig.dependsOn) || new LevelSave();
                 levelInfo.levelEnabled = dependsOnLevelSave.examPassed;
             } else {
                 levelInfo.levelEnabled = true;

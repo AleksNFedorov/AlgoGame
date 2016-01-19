@@ -4,11 +4,9 @@
 declare var store: Store;
 declare var globalConfig: GameConfig.Config
 
-//TODO remove Common. from module code
 module Common {
     
     export enum LevelStageState {PAUSED = 0, RUNNING = 1, CREATED = 2, END = 3, UNKNOWN = 4}
-    export enum LevelStageType {MENU = 0, PRACTISE = 1, EXAM = 2, UNKNOWN = 3}
     export enum ModalWindows {OBJECTIVES = 0, PRACTISE_DONE = 1, EXAM_DONE = 2}
     
     export enum GameElements {
@@ -28,10 +26,8 @@ module Common {
     }
     
         
-    export interface GamePlayAction {}
-    
     //Raname to level save or smth
-    export class StateSave {
+    export class LevelSave {
         public practiseDone: number = 0;
         public practisePassed: boolean = false;
         public examDone: number = 0;
@@ -64,7 +60,7 @@ module Common {
         
     }
     
-    export class Step {
+    export class AlgorithmStep {
         private _isLast: boolean = false;
         private _stepNumber: number = -1;
         
@@ -110,7 +106,7 @@ module Common {
         private _eventsToProcess: Phaser.LinkedList = new Phaser.LinkedList();
         private _levelStageState: LevelStageState = LevelStageState.UNKNOWN;
         private _pausedByModalWindow: boolean = false;
-        private _stateConfig: GameConfig.StateConfig;
+        private _stateConfig: GameConfig.StageConfig;
 
         public dispatch(eventId: string, caller: any, param?: any) {
             console.log("New event received by state [" + eventId + "]");
@@ -139,7 +135,7 @@ module Common {
             var level = this.key.replace(stage, "");
         
             var levelConfig: GameConfig.LevelConfig = globalConfig.levelConfigs[level];
-            this._stateConfig = levelConfig[stage.toUpperCase()];
+            this._stateConfig = levelConfig[stage.toLowerCase()];
             this._stateConfig.level = level;
         }
         
@@ -202,7 +198,7 @@ module Common {
                     break;
                 case Events.MODAL_WINDOW_DISPLAYING:
                     this._game.dispatch(Events.GAME_DISABLE_ALL, this);
-                    if (this._game.levelStageState == Common.LevelStageState.RUNNING) {
+                    if (this._game.levelStageState == LevelStageState.RUNNING) {
                         this._pausedByModalWindow = true;
                         this._game.dispatch(Events.CONTROL_PANEL_EVENT_PAUSE, this);
                     }
@@ -316,8 +312,6 @@ module Common {
     export class GameComponentContainer extends GameEventComponent {
     
         private _componentElements: GameUIObjectWithState[] = [];
-        private _levelSave: StateSave;
-        protected stateConfig: GameConfig.StateConfig;
 
         constructor(game: AlgoGame) {
             super(game);
@@ -327,21 +321,13 @@ module Common {
             this.addEventListener(Events.STAGE_INFO_SHOW);
             this.addEventListener(Events.GAME_DISABLE_ALL);
             this.addEventListener(Events.GAME_ENABLE_ALL);
-            this.addEventListener(Events.STAGE_INITIALIZED);
         }
         
         protected addGameElement(elementId: GameElements, element: GameUIObjectWithState): void {
             this._componentElements[elementId] = element;
         } 
         
-        protected get levelSave(): StateSave {
-            return this._levelSave;
-        }
-        
-        protected saveState(): void  {
-          this._game.store.set(this.stateConfig.level, this._levelSave);
-        }
-        
+    
         protected isCurrentState(state: LevelStageState): boolean {
             return this._game.levelStageState === state;
         }
@@ -364,14 +350,6 @@ module Common {
                         uiElement.restoreState();
                     }
                     break;
-                //TODO refactor if condition                    
-                case Events.STAGE_INITIALIZED:
-                    this.stateConfig = <GameConfig.StateConfig>param1;
-                    if (this.stateConfig != null) {
-                        this._levelSave = this._game.store.get(this.stateConfig.level)
-                            || new Common.StateSave();
-                    }
-                    break;
                 case Events.STAGE_INFO_SHOW:
                     var infoWidget: InfoWidget = <InfoWidget> param1;
                     var element = this._componentElements[infoWidget.getElementId()];
@@ -389,6 +367,41 @@ module Common {
                value.destroy();
             }
         }
+    }
+    
+    export class GameContainerWithStoreSupport extends GameComponentContainer {
+    
+        private _levelSave: LevelSave;
+        protected stateConfig: GameConfig.StageConfig;
+
+        constructor(game: AlgoGame) {
+            super(game);
+        }
+        
+        protected initEventListners(): void {
+            super.initEventListners();
+            this.addEventListener(Events.STAGE_INITIALIZED);
+        }
+        
+        dispatchEvent(event: any, param1: any) {
+            super.dispatchEvent(event, param1);
+            switch(event.type) {
+                case Events.STAGE_INITIALIZED:
+                    this.stateConfig = <GameConfig.StageConfig>param1;
+                        this._levelSave = this._game.store.get(this.stateConfig.level)
+                            || new LevelSave();
+                    break;
+            }
+        }
+
+        protected get levelSave(): LevelSave {
+            return this._levelSave;
+        }
+        
+        protected saveState(): void  {
+          this._game.store.set(this.stateConfig.level, this._levelSave);
+        }
+
     }
     
     export class Text extends Phaser.Text implements GameUIObjectWithState {

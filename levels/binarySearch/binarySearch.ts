@@ -9,7 +9,7 @@ module BinarySearch {
         constructor(public index: number){};
     }
 
-    class BinarySearchStep extends Common.Step {
+    class BinarySearchStep extends Common.AlgorithmStep {
         
         private _startIndex: number;
         private _endIndex: number;
@@ -223,7 +223,7 @@ module BinarySearch {
             var boxGroup: Phaser.Group = boxContainer.boxGroup;
 
             this._game.add.tween(boxGroup).to({y:boxGroup.y - 4}, 
-                Constants.BS_BOX_HILIGHT_INTERVAL, 
+                300, 
                 Phaser.Easing.Exponential.Out, true);
         }
         

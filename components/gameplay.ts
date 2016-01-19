@@ -5,13 +5,13 @@ module Common {
     export interface GamePlayAction {}
     
     export interface Algorithm {
-        getNextStep(): Step;
+        getNextStep(): AlgorithmStep;
     }   
     
-    export class PractiseGamePlay<T extends GamePlayAction, A extends Algorithm> extends Common.GameComponentContainer {
+    export class PractiseGamePlay<T extends GamePlayAction, A extends Algorithm> extends Common.GameContainerWithStoreSupport {
 
         protected _algorithm: A;
-        protected _algorithmStep: Common.Step;
+        protected _algorithmStep: Common.AlgorithmStep;
         
         protected _gameStepTimer: Phaser.Timer;
         protected _stepPerformed: boolean = false;
@@ -80,7 +80,7 @@ module Common {
 
         protected createGamePlayInfo(): Common.GamePlayInfo {
             return  new Common.GamePlayInfo(
-                Constants.BS_PR_STEP_TIME,
+                Constants.STEP_TIME,
                 this.stateConfig.stepsToPass,
                 this.levelSave.practiseDone);
         }
@@ -114,7 +114,7 @@ module Common {
 
             console.log("Box clicked [" + action + "]");
             
-            var step: Common.Step = this._algorithmStep;
+            var step: Common.AlgorithmStep = this._algorithmStep;
             
             if (this.isCorrectStep(action)) {
                 this.onCorrectAction();
@@ -169,7 +169,7 @@ module Common {
         
         protected addTimerEvents(): void {
             this._gameStepTimer.removeAll();
-            this._gameStepTimer.repeat(Constants.BS_PR_STEP_TIME, 0, this.clickBox, this);
+            this._gameStepTimer.repeat(Constants.STEP_TIME, 0, this.clickBox, this);
         }
         
         destroy(): void {
@@ -196,7 +196,7 @@ module Common {
 
         protected createGamePlayInfo(): Common.GamePlayInfo {
             return  new Common.GamePlayInfo(
-                Constants.BS_PR_STEP_TIME,
+                Constants.STEP_TIME,
                 this.stateConfig.stepsToPass, 
                 this.levelSave.examDone);
         }
@@ -224,7 +224,7 @@ module Common {
 
             console.log("Box clicked [" + action + "]");
 
-            var step: Common.Step = this._algorithmStep;
+            var step: Common.AlgorithmStep = this._algorithmStep;
 
             if (this.isCorrectStep(action)) {
                 this.onCorrectAction();

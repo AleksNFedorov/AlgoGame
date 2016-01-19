@@ -1,7 +1,7 @@
 /// <reference path="components/common.ts" />
 /// <reference path="components/stageinfo.ts" />
 /// <reference path="components/modalwindow.ts" />
-/// <reference path="components/menustate.ts" />
+/// <reference path="components/levelstate.ts" />
 
 class Preload extends Phaser.State {
     

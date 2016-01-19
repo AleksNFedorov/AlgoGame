@@ -3,6 +3,8 @@
 module StageInfo {
     
     enum Quarter {TOPLEFT = 0, TOPRIGHT = 1, BOTTOMLEFT = 2, BOTTOMRIGHT = 3}
+    enum LevelStageType {MENU = 0, PRACTISE = 1, EXAM = 2, UNKNOWN = 3}
+    
     
     class Save {
         gameInfoSaves: {[stage: string]: number} = {}
@@ -115,11 +117,11 @@ module StageInfo {
         
         private _infoToShow: ShowInfo[];
         private _infoSave: Save;
-        private _levelStageType: Common.LevelStageType = Common.LevelStageType.UNKNOWN;
+        private _levelStageType: LevelStageType = LevelStageType.UNKNOWN;
         private _requestedShowWidget: InfoWidget;
         private _infoToShowIndex: number;
         
-        constructor(game: Common.AlgoGame, stageType: Common.LevelStageType, infoToShow: ShowInfo[]) {
+        constructor(game: Common.AlgoGame, stageType: LevelStageType, infoToShow: ShowInfo[]) {
             super(game);
             this._infoToShow = infoToShow;
             this._levelStageType = stageType;
@@ -196,7 +198,7 @@ module StageInfo {
     export class PractiseManager extends Manager {
         
         constructor(game: Common.AlgoGame) {
-            super(game, Common.LevelStageType.PRACTISE,
+            super(game, LevelStageType.PRACTISE,
                 [
                     new ShowInfo(
                         Common.GameElements.CONTROL_PANEL_BUTTON_PLAY,

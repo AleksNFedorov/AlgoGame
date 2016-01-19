@@ -44,9 +44,6 @@ class Events {
     //Stage info manager events
     static STAGE_INFO_SHOW = Events.createEvent("ShowStageInfo");
     
-    
-    
-    
     private static createEvent(eventId: string): string {
         if (!eventId || 0 === eventId.length) {
             throw "Empty event id";

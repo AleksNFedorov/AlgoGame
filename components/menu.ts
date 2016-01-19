@@ -2,7 +2,7 @@
 
 module Common {   
     
-    export class Menu extends GameComponentContainer {
+    export class Menu extends GameContainerWithStoreSupport {
         
         protected _menuButtons: Common.Button[] = [];
         private _menuGroup: Phaser.Group;
