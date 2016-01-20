@@ -4,8 +4,36 @@ module Common {
     
     export interface GamePlayAction {}
     
-    export interface Algorithm {
-        getNextStep(): AlgorithmStep;
+    export class Algorithm {
+        
+        getNextStep(): AlgorithmStep {
+            throw "Method not implemented [getNextStep]";
+        }
+        
+        
+        protected static generateSeqeunce(minElementsInSeq: number = 1, maxElementsInSeq: number = 20, minSeqNumber: number, maxSeqNumber:number, sorted: boolean = false): number[] {
+
+            var varElements = maxElementsInSeq - minElementsInSeq;    
+            var count = minElementsInSeq + this.getRandomInteger(0, varElements);
+    
+            var newGeneratedArray: number[] = [];
+            
+            for (var i = 0; i < count; i++) { 
+                var y = Algorithm.getRandomInteger(minSeqNumber, maxSeqNumber);
+                newGeneratedArray.push(y);
+            }
+            
+            if (sorted) {
+                newGeneratedArray.sort(function(a,b){return a-b;});
+            }
+            
+            return newGeneratedArray;
+        }
+        
+        protected static getRandomInteger(from: number, to: number): number {
+            return Math.floor(Math.random() * (to - from) + from);
+        }
+        
     }   
     
     export class PractiseGamePlay<T extends GamePlayAction, A extends Algorithm> extends Common.GameContainerWithStoreSupport {

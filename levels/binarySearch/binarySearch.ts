@@ -51,7 +51,7 @@ module BinarySearch {
         
     }
 
-    class BinarySearchAlgorithm implements Common.Algorithm {
+    class BinarySearchAlgorithm extends Common.Algorithm {
         
         private _stepIndex: number = 0;
         private _sequence: number[];
@@ -59,7 +59,8 @@ module BinarySearch {
         private _nextStep: BinarySearchStep;
         
         constructor(config: any) {
-            this._sequence = BinarySearchAlgorithm.generateSeqeunce(config);
+            super();
+            this._sequence = Common.Algorithm.generateSeqeunce(config.minElementsInSeq, config.maxElementsInSeq, config.minSeqNumber, config.maxSeqNumber, true);
             this._elementToFindIndex = this.defineElementToFind();
             
             this._nextStep = new BinarySearchStep(false, -1,  -1, 0, this._sequence.length - 1, Operation.Unknown)
@@ -144,27 +145,6 @@ module BinarySearch {
         
         public get elementToFindIndex(): number {
           return this._elementToFindIndex;  
-        }
-        
-        private static generateSeqeunce(config: any): number[] {
-
-            var varElements = config.maxElementsInSeq - config.minElementsInSeq;    
-            var count = config.minElementsInSeq + this.getRandomInteger(0, varElements);
-    
-            var newGeneratedArray: number[] = [];
-            
-            for (var i = 0; i < count; i++) { 
-                var y = BinarySearchAlgorithm.getRandomInteger(config.minSeqNumber, config.maxSeqNumber);
-                newGeneratedArray.push(y);
-            }
-            
-            newGeneratedArray.sort(function(a,b){return a-b;});
-            
-            return newGeneratedArray;
-        }
-        
-        private static getRandomInteger(from: number, to: number): number {
-            return Math.floor(Math.random() * (to - from) + from);
         }
         
     }

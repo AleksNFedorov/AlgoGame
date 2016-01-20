@@ -35,7 +35,7 @@ class Preload extends Phaser.State {
     }
 }
 
-class LevelMenuState extends Common.AlgoGameState {
+class LevelMenuState extends Common.State {
 
     private _levelButtonsPanel: Common.LevelButtonsPanel;
 
@@ -48,90 +48,43 @@ class LevelMenuState extends Common.AlgoGameState {
         this._levelButtonsPanel = new Common.LevelButtonsPanel(this.algoGame);
         super.onCreate();
     }
+    
+    protected getStageType(): string {
+        return "Menu";
+    }
+    
+    protected getStateConfig(stage: string): GameConfig.StageConfig {
+        return null;
+    }
+    
 }
 
 
-class BinarySearchPractise extends Common.AlgoGameState {
+class BinarySearchPractise extends Common.PractiseState {
     
-    private _menu: Common.Menu;
-    private _controlPanel: Common.PractisePanel;
     private _gamePlay: BinarySearch.BinarySearchPractiseGamePlay;
-    private _progressPanel: Common.ProgressPanel;
-    private _practiseManager: StageInfo.PractiseManager;
-    private _modalWindow: GameModal.ModalWindow;
     
     public shutdown(): void {
         super.shutdown();
-        this._menu.destroy();  
-        this._controlPanel.destroy();
         this._gamePlay.destroy();
-        this._practiseManager.destroy();
-        this._modalWindow.destroy();
-        this._menu = null;
     }
 
-    create(): void {
-        
-        this._modalWindow = new GameModal.ModalWindow(this.algoGame);
-        this.initModalWindows();
-        
-        this._menu = new Common.PractiseMenu(this.algoGame);
-        this._controlPanel = new Common.PractisePanel(this.algoGame);
+    protected initGamePlay(): void {
         this._gamePlay = new BinarySearch.BinarySearchPractiseGamePlay(this.algoGame);
-        this._progressPanel = new Common.ProgressPanel(this.algoGame);
-        this._practiseManager = new StageInfo.PractiseManager(this.algoGame);
-        
-        super.onCreate();        
     }
-    
-    private initModalWindows(): void {
-        var configs: GameModal.ModalConfig[] = [
-                new GameModal.ModalConfig(Common.ModalWindows.OBJECTIVES, "cursor"),
-                new GameModal.ModalConfig(Common.ModalWindows.PRACTISE_DONE, "cursor")
-            ];
-            
-        this._modalWindow.createWindows(configs)            ;
-    }
-    
 }
 
-class BinarySearchExam extends Common.AlgoGameState {
+class BinarySearchExam extends Common.ExamState {
 
-    private _menu: Common.Menu;
-    private _controlPanel: Common.ExamPanel;
     private _gamePlay: BinarySearch.BinarySearchExamGamePlay;
-    private _progressPanel: Common.ProgressPanel;
-    private _modalWindow: GameModal.ModalWindow;
 
     public shutdown(): void {
         super.shutdown();
-        this._menu.destroy();
-        this._controlPanel.destroy();
         this._gamePlay.destroy();
-        this._modalWindow.destroy();
-        this._menu = null;
     }
 
-    create(): void {
 
-        this._modalWindow = new GameModal.ModalWindow(this.algoGame);
-        this.initModalWindows();
-
-        this._menu = new Common.ExamMenu(this.algoGame);
-        this._controlPanel = new Common.ExamPanel(this.algoGame);
+    protected initGamePlay(): void {
         this._gamePlay = new BinarySearch.BinarySearchExamGamePlay(this.algoGame);
-        this._progressPanel = new Common.ProgressPanel(this.algoGame);
-
-        super.onCreate();
     }
-    
-    private initModalWindows(): void {
-        var configs: GameModal.ModalConfig[] = [
-                new GameModal.ModalConfig(Common.ModalWindows.OBJECTIVES, "cursor"),
-                new GameModal.ModalConfig(Common.ModalWindows.EXAM_DONE, "cursor")
-            ];
-            
-        this._modalWindow.createWindows(configs)            ;
-    }
-
 }
