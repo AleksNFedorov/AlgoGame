@@ -54,16 +54,14 @@ module BinarySearch {
     class BinarySearchAlgorithm extends Common.Algorithm {
         
         private _stepIndex: number = 0;
-        private _sequence: number[];
         private _elementToFindIndex: number;
         private _nextStep: BinarySearchStep;
         
-        constructor(config: any) {
-            super();
-            this._sequence = Common.Algorithm.generateSeqeunce(config.minElementsInSeq, config.maxElementsInSeq, config.minSeqNumber, config.maxSeqNumber, true);
+        constructor(config: GameConfig.SequenceConfig) {
+            super(config);
             this._elementToFindIndex = this.defineElementToFind();
             
-            this._nextStep = new BinarySearchStep(false, -1,  -1, 0, this._sequence.length - 1, Operation.Unknown)
+            this._nextStep = new BinarySearchStep(false, -1,  -1, 0, this.sequence.length - 1, Operation.Unknown)
         }
         
         public getNextStep(): BinarySearchStep {
@@ -82,8 +80,8 @@ module BinarySearch {
             this._stepIndex++;
         
             var pivotIndex: number = Math.floor((step.endIndex + step.startIndex) / 2);
-            var pivotElement = this._sequence[pivotIndex];
-            var elementToFind = this._sequence[this._elementToFindIndex];
+            var pivotElement = this.sequence[pivotIndex];
+            var elementToFind = this.sequence[this._elementToFindIndex];
         
             var nextStep: BinarySearchStep;
             if (pivotElement == elementToFind) {
@@ -127,22 +125,18 @@ module BinarySearch {
 
         private defineElementToFind(): number {
     
-            var arrayMiddleElement = Math.floor(this._sequence.length/2);
+            var arrayMiddleElement = Math.floor(this.sequence.length/2);
             var index = -1;
             if (Math.random() > .5 ) {
                 //Left side
                 index = BinarySearchAlgorithm.getRandomInteger(0, Math.floor(arrayMiddleElement) - 2);
             } else {
-                index = BinarySearchAlgorithm.getRandomInteger(Math.floor(arrayMiddleElement) + 2, this._sequence.length - 1);
+                index = BinarySearchAlgorithm.getRandomInteger(Math.floor(arrayMiddleElement) + 2, this.sequence.length - 1);
             }
             
             return index;
         }
 
-        public get sequence(): number[] {
-          return this._sequence;  
-        }
-        
         public get elementToFindIndex(): number {
           return this._elementToFindIndex;  
         }

@@ -6,28 +6,37 @@ module Common {
     
     export class Algorithm {
         
+        private _sequence: number[];
+        
+        constructor(config: GameConfig.SequenceConfig) {
+            this._sequence = Algorithm.generateSeqeunce(config);
+        }
+        
         getNextStep(): AlgorithmStep {
             throw "Method not implemented [getNextStep]";
         }
         
-        
-        protected static generateSeqeunce(minElementsInSeq: number = 1, maxElementsInSeq: number = 20, minSeqNumber: number, maxSeqNumber:number, sorted: boolean = false): number[] {
+        protected static generateSeqeunce(config: GameConfig.SequenceConfig): number[] {
 
-            var varElements = maxElementsInSeq - minElementsInSeq;    
-            var count = minElementsInSeq + this.getRandomInteger(0, varElements);
+            var varElements = config.maxElementsInSeq - config.minElementsInSeq;    
+            var count = config.minElementsInSeq + this.getRandomInteger(0, varElements);
     
             var newGeneratedArray: number[] = [];
             
             for (var i = 0; i < count; i++) { 
-                var y = Algorithm.getRandomInteger(minSeqNumber, maxSeqNumber);
+                var y = Algorithm.getRandomInteger(config.minSeqNumber, config.maxSeqNumber);
                 newGeneratedArray.push(y);
             }
             
-            if (sorted) {
+            if (config.sorted || false) {
                 newGeneratedArray.sort(function(a,b){return a-b;});
             }
             
             return newGeneratedArray;
+        }
+        
+        public get sequence(): number[] {
+            return this._sequence;
         }
         
         protected static getRandomInteger(from: number, to: number): number {

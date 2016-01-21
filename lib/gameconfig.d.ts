@@ -1,5 +1,13 @@
 
 declare module GameConfig {
+    
+    export class SequenceConfig {
+        minSeqNumber: number;
+        maxSeqNumber: number;
+        minElementsInSeq: number;
+        maxElementsInSeq: number;    
+        sorted: boolean;
+    }
 
     export class StageConfig {
         level: string;
