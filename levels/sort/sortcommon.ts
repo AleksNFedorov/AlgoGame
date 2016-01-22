@@ -2,129 +2,74 @@
 
 module Sort {
 
+    export enum Operation { Shift, Swap, Unknown};
 
     export class SortAction implements Common.GamePlayAction {
         constructor(public index: number, public position: number){};
     }
 
     export class Step extends Common.AlgorithmStep {
-        private _elementIndex: number;
         private _newPosition: number;
+        private _operation: Operation.Unknown;
+        private _currentArray: number[];
       
-        constructor(isLast: boolean, stepNumber: number,
-                elementIndex: number,
-                newPosition: number
-            ) {
-            super(isLast, stepNumber);
-            this._elementIndex = elementIndex;
+        constructor(stepNumber: number, newPosition: number, operation: Operation, array: number[]) {
+            super(false, stepNumber);
             this._newPosition = newPosition;
-        }
-        
-        public get elementIndex(): number {
-            return this._elementIndex;  
+            this._operation = operation;
+            this._currentArray = array.slice(0);
         }
         
         public get newPosition(): number {
             return this._newPosition;  
         }
         
+        public get operation(): Operation {
+            return this._operation;
+        }
+        
         public toString(): string {
-          return "[" + this.isLast + "][" + this.elementIndex + "][" + this.newPosition + "]";  
+          return "[" + this.isLast + "][" + this.newPosition + "]";  
         }
     }
     
-    class BinarySearchAlgorithm extends Common.Algorithm {
+    class InsertionSortAlgorithm extends Common.Algorithm {
         
-        private _stepIndex: number = 0;
-        private _sequence: number[];
-        private _elementToFindIndex: number;
-        private _nextStep: BinarySearchStep;
+        private _steps: Step[] = [];
+        private _lastRequestedStepNumber: number = -1;
         
-        constructor(config: any) {
-            super();
-            this._sequence = Common.Algorithm.generateSeqeunce(config.minElementsInSeq, config.maxElementsInSeq, config.minSeqNumber, config.maxSeqNumber, true);
-            this._elementToFindIndex = this.defineElementToFind();
+        constructor(config: GameConfig.SequenceConfig) {
+            super(config);
+            this.runalgorithm();
+            this.updateLastStep();
+        }
+        
+        public getNextStep(): Step {
+            this._lastRequestedStepNumber = Math.min(this._lastRequestedStepNumber + 1, this._steps.length - 1);
+            return this._steps[this._lastRequestedStepNumber];
+        }
+        
+        private runalgorithm(): Step[] {
             
-            this._nextStep = new BinarySearchStep(false, -1,  -1, 0, this._sequence.length - 1, Operation.Unknown)
-        }
-        
-        public getNextStep(): BinarySearchStep {
-            this._nextStep = this.evaluateNextStep();
-            console.log("Next step - " + this._nextStep.toString());
-            return this._nextStep;
-        }
-        
-        private evaluateNextStep(): BinarySearchStep {
-
-            if (this._nextStep.isLast) {
-                return this._nextStep;
-            }
+            var steps: Step[] = [];
+            var values = this._sequence;
             
-            var step: BinarySearchStep = this._nextStep;
-            this._stepIndex++;
-        
-            var pivotIndex: number = Math.floor((step.endIndex + step.startIndex) / 2);
-            var pivotElement = this._sequence[pivotIndex];
-            var elementToFind = this._sequence[this._elementToFindIndex];
-        
-            var nextStep: BinarySearchStep;
-            if (pivotElement == elementToFind) {
-                
-                nextStep = new BinarySearchStep(true, this._stepIndex, 
-                    pivotIndex, 
-                    pivotIndex, 
-                    pivotIndex, 
-                    Operation.Equals);
-                    
-            } else if(step.startIndex == step.endIndex) {
-                
-        	    nextStep = new BinarySearchStep(true, this._stepIndex,
-        	        pivotIndex, 
-        	        pivotIndex,
-        	        pivotIndex,
-        	        Operation.NotEquals);
-        	        
-            } else if (pivotElement > elementToFind) {
-                
-                nextStep = new BinarySearchStep(false, this._stepIndex,
-                    pivotIndex, 
-                    step.startIndex, 
-                    pivotIndex - 1, 
-                    Operation.Less);
-                
-        	} else if(pivotElement < elementToFind) {
-        	    
-            	nextStep = new BinarySearchStep(false, this._stepIndex, 
-            	pivotIndex, 
-            	pivotIndex + 1, 
-            	step.endIndex,
-            	Operation.Greater);
-            	
-            } else {
-            	console.log('Unknown state');
+            var length = values.length;
+            for(var i = 1; i < length; ++i) {
+                var temp = values[i];
+                var j = i - 1;
+                for(; j >= 0 && values[j] > temp; --j) {
+                    values[j+1] = values[j];
+                }
+                values[j+1] = temp;
+                steps.push(new Step(i, j+1, Operation.Shift, values));
             }
-        
-            return nextStep;
-        }
-
-        private defineElementToFind(): number {
-    
-            var arrayMiddleElement = Math.floor(this._sequence.length/2);
-            var index = -1;
-            if (Math.random() > .5 ) {
-                //Left side
-                index = BinarySearchAlgorithm.getRandomInteger(0, Math.floor(arrayMiddleElement) - 2);
-            } else {
-                index = BinarySearchAlgorithm.getRandomInteger(Math.floor(arrayMiddleElement) + 2, this._sequence.length - 1);
-            }
-            
-            return index;
-        }
-
-        public get sequence(): number[] {
-          return this._sequence;  
+            return steps;
         }
         
+        private updateLastStep(): void {
+            this._steps[this._steps.length - 1].setIsLast();
+        }
     }
     
 }

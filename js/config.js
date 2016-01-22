@@ -14,7 +14,8 @@ var globalConfig = {
                     minSeqNumber: 100,
                     maxSeqNumber: 1000,
                     minElementsInSeq: 14,
-                    maxElementsInSeq: 20
+                    maxElementsInSeq: 20,
+                    sorted: true
                 }
             },
             exam: {
@@ -30,7 +31,8 @@ var globalConfig = {
                     minSeqNumber: 100,
                     maxSeqNumber: 1000,
                     minElementsInSeq: 6,
-                    maxElementsInSeq: 21
+                    maxElementsInSeq: 21,
+                    sorted: true
                 }
             }
         },

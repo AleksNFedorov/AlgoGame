@@ -78,6 +78,10 @@ module Common {
             this._stepNumber = stepNumber;
         }
         
+        public setIsLast(): void {
+            this._isLast = true;
+        }
+        
         public get isLast(): boolean {
             return this._isLast;
         }
