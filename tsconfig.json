@@ -23,6 +23,7 @@
         "events.ts",
         "game.ts",
         "menuState.ts",
-        "levels/binarySearch/binarySearch.ts"
+        "levels/binarySearch/binarySearch.ts",
+        "levels/sort/sortcommon.ts"
     ]
 }

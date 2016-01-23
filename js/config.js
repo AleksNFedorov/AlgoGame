@@ -36,6 +36,43 @@ var globalConfig = {
                 }
             }
         },
+        insertionSort: {
+            practise: {
+                stageName: "insertionSortPractise",
+                stepsToPass: 5,
+                menu: {
+                    MENU_BUTTON_MENU: "menu",
+                    MENU_BUTTON_DESCRIPTION: "http://google.com",
+                    MENU_BUTTON_PRACTISE: "",
+                    MENU_BUTTON_EXAM:"insertionSortExam",
+                },
+                gamePlay: {
+                    minSeqNumber: 100,
+                    maxSeqNumber: 1000,
+                    minElementsInSeq: 14,
+                    maxElementsInSeq: 20,
+                    sorted: true
+                }
+            },
+            exam: {
+                stageName: "insertionSortExam",
+                stepsToPass: 2,
+                menu: {
+                    MENU_BUTTON_MENU: "menu",
+                    MENU_BUTTON_DESCRIPTION: "http://fb.com",
+                    MENU_BUTTON_OBJECTIVES: "OBJECTIVES",
+                    MENU_BUTTON_PRACTISE: "insertionSortPractise",
+                },
+                gamePlay: {
+                    minSeqNumber: 100,
+                    maxSeqNumber: 1000,
+                    minElementsInSeq: 6,
+                    maxElementsInSeq: 21,
+                    sorted: true
+                }
+            }
+        },
+        
         bubbleSort: {
             dependsOn: "binarySearch",
             practise: {

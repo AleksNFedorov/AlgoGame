@@ -285,7 +285,6 @@ module BinarySearch {
         }
     }
 
-    
     export class BinarySearchPractiseGamePlay extends Common.PractiseGamePlay<BinarySearchAction, BinarySearchAlgorithm> {
         
         protected _boxLine: BoxLine;

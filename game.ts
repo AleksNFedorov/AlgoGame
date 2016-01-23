@@ -14,6 +14,9 @@ class Game extends Common.AlgoGame {
         this.state.add("binarySearchPractise", BinarySearchPractise);
         this.state.add("binarySearchExam", BinarySearchExam);
         
+        this.state.add("insertionSortPractise", InsertionSortPractise);
+
+
         this.state.start("boot");        
         
     }

@@ -59,7 +59,6 @@ class LevelMenuState extends Common.State {
     
 }
 
-
 class BinarySearchPractise extends Common.PractiseState {
     
     private _gamePlay: BinarySearch.BinarySearchPractiseGamePlay;
@@ -86,5 +85,19 @@ class BinarySearchExam extends Common.ExamState {
 
     protected initGamePlay(): void {
         this._gamePlay = new BinarySearch.BinarySearchExamGamePlay(this.algoGame);
+    }
+}
+
+class InsertionSortPractise extends Common.PractiseState {
+    
+    private _gamePlay: Sort.SortPractiseGamePlay;
+    
+    public shutdown(): void {
+        super.shutdown();
+        this._gamePlay.destroy();
+    }
+
+    protected initGamePlay(): void {
+        this._gamePlay = new Sort.SortPractiseGamePlay(this.algoGame);
     }
 }
