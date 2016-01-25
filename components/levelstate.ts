@@ -62,7 +62,7 @@ module Common {
             this._text = this.game.add.text(
                 0,
                 50,
-                "" + levelInfo.practiseDone + " " + levelInfo.practisePassed + " " + levelInfo.practisePassed, 
+                "[" + levelInfo.stateToStart + "]" + levelInfo.practiseDone + " " + levelInfo.practisePassed + " " + levelInfo.practisePassed, 
                 Constants.CONTROL_PANEL_MESSAGE_STYLE
             );
 

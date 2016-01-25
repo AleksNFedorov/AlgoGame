@@ -41,7 +41,7 @@ module Sort {
         
         constructor(config: GameConfig.SequenceConfig) {
             super(config);
-            this.runalgorithm();
+            this._steps = this.runalgorithm();
             this.updateLastStep();
         }
         
@@ -97,23 +97,25 @@ module Sort {
             boxKeyText.anchor.setTo(0.5);
             
             box.inputEnabled = true;
-            box.events.onInputDown.add(this.onInputDown);
-            box.events.onInputUp.add(this.onInputUp);
+            box.events.onInputDown.add(this.onInputDown.bind(this));
+            box.events.onInputUp.add(this.onInputUp.bind(this));
 
             boxKeyText.inputEnabled = true;
-            boxKeyText.events.onInputDown.add(this.onInputDown);
-            boxKeyText.events.onInputUp.add(this.onInputUp);
+            boxKeyText.events.onInputDown.add(this.onInputDown.bind(this));
+            boxKeyText.events.onInputUp.add(this.onInputUp.bind(this));
 
             
             this.add(box);
             this.add(boxKeyText);
         }
         
-        public set boxIndex(boxIndex: number) {
+        public setBoxIndex(boxIndex: number): void {
+            console.log("Set box index [" + boxIndex + "][" + this._boxIndex + "]");
             this._boxIndex = boxIndex;
         } 
         
         private onInputDown(): void {
+            console.log("Index clicked " + this._boxIndex);
             this._pressCallback(this._boxIndex);
         }
         
@@ -127,14 +129,20 @@ module Sort {
     class BoxLine {
         
         private _boxes: BoxContainer[] = [];
+        private _separatorIndex: number[] = [];
         private _boxLine: Phaser.Group;
         private _game: Common.AlgoGame;
         private _boxClickedCallback: Function;
+        private _separator: Phaser.Sprite;
         
+        private _dragging: boolean = false;
+        private _placeToInsert: number = -1;
+
         constructor(game: Common.AlgoGame, boxClickedCallback:Function, sequence: number[]) {
             this._game = game;
             this._boxClickedCallback = boxClickedCallback;
             this.init(sequence);
+            this._separator = this.createSeparator();
         }
         
         private init(seqeunce: number[]) {
@@ -143,23 +151,125 @@ module Sort {
             this._boxLine.y = 300;
 
             this._boxes = this.createBoxes(seqeunce);
+            this._separatorIndex = this.createSeparatorIndex();
+            this._game.input.addMoveCallback(this.move, this);
         }
         
-        public higlightBox(boxIndex: number) {
-            /*
-            var boxContainer: BoxContainer = this._boxes[boxIndex];
-            var boxGroup: Phaser.Group = boxContainer.boxGroup;
+        private move(pointer: any, x: number, y: number): void {
+            if (this._dragging) {
+                this.updateSeparator(x, y);
+            }
+        }
 
-            this._game.add.tween(boxGroup).to({y:boxGroup.y - 4}, 
-                300, 
-                Phaser.Easing.Exponential.Out, true);
-            */                
+        private onBoxStartDragging(index: number): void {
+            this._dragging = true;
+            this._placeToInsert = index;
+            this._boxes[index].alpha = 0.5;
         }
         
-        public selectBox(boxIndex: number) {
-            // this.higlightBox(boxIndex);
+        private onBoxStopDragging(index: number): void {
+            this._boxes[index].alpha = 1;
+            if (this._dragging) {
+                this.hideSeparator();
+                this.shiftElements(index, this._placeToInsert);
+                this._dragging = false;
+            }
         }
         
+        private updateSeparator(x: number, y: number): void {
+            
+            var stepWidth = this._separatorIndex[1] - this._separatorIndex[0];
+            x += stepWidth / 2;
+            var leftBorder = this._separatorIndex[0];
+            var nx = Math.max(leftBorder, x);
+            nx = Math.min(this._boxLine.x + this._boxLine.width + stepWidth / 2, nx);
+            
+            
+            var indexElement = Math.floor( (nx-leftBorder)/stepWidth);
+            
+            this._separator.alpha = 1;
+            this._separator.y = this._boxLine.y;
+            this._separator.x = this._separatorIndex[indexElement];
+            
+            this._placeToInsert = indexElement;
+        }
+        
+        private shiftElements(targetElementIndex: number, newPosition: number): void {
+            var targetBox: BoxContainer = this._boxes[targetElementIndex];
+            var moveUp: Phaser.Tween = this._game.add.tween(targetBox).to({y: targetBox.y - 60}, 70, "Quart.easeOut");
+            var moveDown: Phaser.Tween = this._game.add.tween(targetBox).to({y: targetBox.y}, 70, "Quart.easeOut");
+            
+            var headTween: Phaser.Tween = moveUp;
+            var shiftedBox: BoxContainer = targetBox;
+            
+            if (targetElementIndex < newPosition) {
+                //shifting right
+                for(var i = targetElementIndex + 1; i<newPosition; i++) {
+                    var shiftingBox = this._boxes[i];
+                    
+                    this.moveBox(shiftingBox, i-1);
+                    
+                    this._game.add.tween(shiftingBox).to({x: shiftedBox.x}, 100, "Quart.easeOut").start();
+                    shiftedBox = shiftingBox;
+                    
+                }
+                this.moveBox(targetBox, newPosition - 1);
+
+                
+            } else if (targetElementIndex > newPosition) {
+                //shifting left
+                for(var i = targetElementIndex - 1; i>=newPosition; i--) {
+                    var shiftingBox = this._boxes[i];
+                    
+                    this.moveBox(shiftingBox, i+1);
+                    
+                    this._game.add.tween(shiftingBox).to({x: shiftedBox.x}, 100, "Quart.easeOut").start();
+                    shiftedBox = shiftingBox;
+                    
+                }
+                this.moveBox(targetBox, newPosition);
+            }
+            
+           var moveHorizontal: Phaser.Tween = this._game.add.tween(targetBox).to({x: shiftedBox.x}, 300, "Quart.easeOut");
+           headTween.chain(moveHorizontal);
+           moveHorizontal.chain(moveDown);
+            
+           moveUp.start();
+        }
+        
+        private moveBox(box: BoxContainer, newPosition: number): void {
+            this._boxes[newPosition] = box;
+            box.setBoxIndex(newPosition);
+        }
+        
+        private hideSeparator(): void {
+            this._separator.alpha = 0;
+        }
+        
+        private createSeparator(): Phaser.Sprite {
+            var seprator: Phaser.Sprite =  this._game.add.sprite(0,0, 'box');
+            seprator.alpha = 0;
+            seprator.width *= 0.1;
+            seprator.anchor.x = 0.5;
+            
+            return seprator;
+        }
+        
+        private createSeparatorIndex(): number[] {
+            
+            var boxWidth = this._boxes[0].width;
+            var boxSpace = this._boxes[1].x - (this._boxes[0].x + boxWidth);
+            var stepDelta = boxSpace + boxWidth;
+            var startPosition = this._boxLine.x - boxSpace/2;
+            
+            var index: number[] = [];
+            for(var i=0; i<= this._boxes.length; ++i) {
+                index.push(startPosition + (i * stepDelta));
+            }
+            
+            return index;
+        }
+
         private createBoxes(seqeunce: number[]): BoxContainer[] {
             
             var boxes: BoxContainer[] = [];
@@ -171,11 +281,11 @@ module Sort {
                 boxContainer.x = boxInterval * index;
                 boxContainer.y = 0;
                 
-                
                 boxes.push(boxContainer);
                 
-                var boxIndexText: Phaser.Text = this._game.add.text(boxContainer.x,  boxContainer.y + 35 , "" + (index + 1), Constants.CONTROL_PANEL_MESSAGE_STYLE);
+                var boxIndexText: Phaser.Text = this._game.add.text(boxContainer.x + 30,  boxContainer.y + 60 , "" + (index + 1), Constants.CONTROL_PANEL_MESSAGE_STYLE);
                 boxIndexText.anchor.setTo(0.5);
+                this._boxLine.add(boxIndexText);
                 
             }
             
@@ -188,14 +298,8 @@ module Sort {
                     this.onBoxStartDragging.bind(this),
                     this.onBoxStopDragging.bind(this)
                 );
-            boxContainer.boxIndex = index;
+            boxContainer.setBoxIndex(index);
             return boxContainer;
-        }
-
-        private onBoxStartDragging(index: number): void {
-        }
-        
-        private onBoxStopDragging(index: number): void {
         }
 
         public destroy(): void {

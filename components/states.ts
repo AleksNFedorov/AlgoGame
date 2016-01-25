@@ -137,14 +137,14 @@ module Common {
         protected _menu: Common.Menu;
         protected _controlPanel: Common.PractisePanel;
         protected _progressPanel: Common.ProgressPanel;
-        protected _practiseManager: StageInfo.PractiseManager;
+     //   protected _practiseManager: StageInfo.PractiseManager;
         protected _modalWindow: GameModal.ModalWindow;
         
         public shutdown(): void {
             super.shutdown();
             this._menu.destroy();  
             this._controlPanel.destroy();
-            this._practiseManager.destroy();
+      //      this._practiseManager.destroy();
             this._modalWindow.destroy();
             this._menu = null;
         }
@@ -158,7 +158,7 @@ module Common {
             this._controlPanel = new Common.PractisePanel(this.algoGame);
             this.initGamePlay();
             this._progressPanel = new Common.ProgressPanel(this.algoGame);
-            this._practiseManager = new StageInfo.PractiseManager(this.algoGame);
+   //         this._practiseManager = new StageInfo.PractiseManager(this.algoGame);
             
             super.onCreate();        
         }
