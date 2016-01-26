@@ -55,28 +55,24 @@ module BinarySearch {
         
         private _stepIndex: number = 0;
         private _elementToFindIndex: number;
-        private _nextStep: BinarySearchStep;
         
         constructor(config: any) {
             super(config);
+        }
+        
+        protected runAlgorithm(): BinarySearchStep[] {
+            var steps: BinarySearchStep[] = [];
             this._elementToFindIndex = this.defineElementToFind();
-            
-            this._nextStep = new BinarySearchStep(false, -1,  -1, 0, this.sequence.length - 1, Operation.Unknown)
+            var step = new BinarySearchStep(false, -1,  -1, 0, this.sequence.length - 1, Operation.Unknown);
+            while(!step.isLast) {
+                step = this.evaluateNextStep(step);
+                steps.push(step);
+            }             
+            return steps;
         }
         
-        public getNextStep(): BinarySearchStep {
-            this._nextStep = this.evaluateNextStep();
-            console.log("Next step - " + this._nextStep.toString());
-            return this._nextStep;
-        }
-        
-        private evaluateNextStep(): BinarySearchStep {
-
-            if (this._nextStep.isLast) {
-                return this._nextStep;
-            }
+        private evaluateNextStep(step: BinarySearchStep): BinarySearchStep {
             
-            var step: BinarySearchStep = this._nextStep;
             this._stepIndex++;
         
             var pivotIndex: number = Math.floor((step.endIndex + step.startIndex) / 2);

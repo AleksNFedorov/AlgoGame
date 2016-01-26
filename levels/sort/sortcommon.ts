@@ -28,21 +28,11 @@ module Sort {
     
     class InsertionSortAlgorithm extends Common.Algorithm {
         
-        private _steps: Step[] = [];
-        private _lastRequestedStepNumber: number = -1;
-        
         constructor(config: any) {
             super(config);
-            this._steps = this.runalgorithm();
-            this.updateLastStep();
         }
         
-        public getNextStep(): Step {
-            this._lastRequestedStepNumber = Math.min(this._lastRequestedStepNumber + 1, this._steps.length - 1);
-            return this._steps[this._lastRequestedStepNumber];
-        }
-        
-        private runalgorithm(): Step[] {
+        protected runalgorithm(): Step[] {
             
             var steps: Step[] = [];
             var values = this.sequence.slice(0);
@@ -64,9 +54,6 @@ module Sort {
             return steps;
         }
         
-        private updateLastStep(): void {
-            this._steps[this._steps.length - 1].setIsLast();
-        }
     }
     
     class BoxContainer extends Phaser.Group {

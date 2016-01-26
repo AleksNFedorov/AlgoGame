@@ -30,18 +30,31 @@ module Common {
     
     export class Algorithm {
         
+        private _steps: AlgorithmStep[] = [];
+        private _lastRequestedStepNumber: number = -1;
         private _sequence: any[];
         protected config: any;
         
         constructor(config: any) {
             this.config = config;
             this._sequence = this.generateSeqeunce(config);
+            this._steps = this.runAlgorithm();
+            this.updateLastStep();
         }
         
-        getNextStep(): AlgorithmStep {
-            throw "Method not implemented [getNextStep]";
+        protected runAlgorithm(): AlgorithmStep[] {
+            return [];   
         }
         
+        public getNextStep(): AlgorithmStep {
+            this._lastRequestedStepNumber = Math.min(this._lastRequestedStepNumber + 1, this._steps.length - 1);
+            return this._steps[this._lastRequestedStepNumber];
+        }
+        
+        private updateLastStep(): void {
+            this._steps[this._steps.length - 1].setIsLast();
+        }
+
         protected generateSeqeunce(config: any): any[] {
 
             var varElements = config.maxElementsInSeq - config.minElementsInSeq;    
