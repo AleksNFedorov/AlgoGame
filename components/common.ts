@@ -67,30 +67,6 @@ module Common {
         
     }
     
-    // Abstract algorithm step, represents single step of given algorithm.
-    // Particular algorithm should use it of extend.
-    export class AlgorithmStep {
-        private _isLast: boolean = false;
-        private _stepNumber: number = -1;
-        
-        constructor(isLast: boolean, stepNumber: number) {
-            this._isLast = isLast;
-            this._stepNumber = stepNumber;
-        }
-        
-        public setIsLast(): void {
-            this._isLast = true;
-        }
-        
-        public get isLast(): boolean {
-            return this._isLast;
-        }
-        
-        public get stepNumber(): number {
-            return this._stepNumber;
-        }
-    }
-    
     //Shows element info widget near the target element, used to icon with I (info) symbol. 
     //Need to attract play attention to target element
     export interface InfoWidget {

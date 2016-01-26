@@ -3,30 +3,22 @@
 
 module Sort {
 
-    export enum Operation {Shift, Swap, Unknown}
-
     export class SortAction implements Common.GamePlayAction {
         constructor(public index: number, public position: number){};
     }
 
     export class Step extends Common.AlgorithmStep {
         private _newPosition: number;
-        private _operation: Operation = Operation.Unknown;
         private _currentArray: number[];
       
-        constructor(stepNumber: number, newPosition: number, operation: Operation, array: number[]) {
+        constructor(stepNumber: number, newPosition: number, array: number[]) {
             super(false, stepNumber);
             this._newPosition = newPosition;
-            this._operation = operation;
             this._currentArray = array.slice(0);
         }
         
         public get newPosition(): number {
             return this._newPosition;  
-        }
-        
-        public get operation(): Operation {
-            return this._operation;
         }
         
         public toString(): string {
@@ -39,7 +31,7 @@ module Sort {
         private _steps: Step[] = [];
         private _lastRequestedStepNumber: number = -1;
         
-        constructor(config: GameConfig.SequenceConfig) {
+        constructor(config: any) {
             super(config);
             this._steps = this.runalgorithm();
             this.updateLastStep();
@@ -53,7 +45,7 @@ module Sort {
         private runalgorithm(): Step[] {
             
             var steps: Step[] = [];
-            var values = this.sequence;
+            var values = this.sequence.slice(0);
             
             var length = values.length;
             for(var i = 1; i < length; ++i) {
@@ -63,7 +55,11 @@ module Sort {
                     values[j+1] = values[j];
                 }
                 values[j+1] = temp;
-                steps.push(new Step(i, j+1, Operation.Shift, values));
+                
+                if (i != (j + 1)) {
+                    //No reason to keep speps with no changes
+                    steps.push(new Step(i, j+1, values));
+                }
             }
             return steps;
         }
@@ -169,9 +165,9 @@ module Sort {
         
         private onBoxStopDragging(index: number): void {
             this._boxes[index].alpha = 1;
+            this.hideSeparator();
             if (this._dragging) {
-                this.hideSeparator();
-                this.shiftElements(index, this._placeToInsert);
+                this._boxClickedCallback(new SortAction(index, this._placeToInsert));
                 this._dragging = false;
             }
         }
@@ -194,7 +190,7 @@ module Sort {
             this._placeToInsert = indexElement;
         }
         
-        private shiftElements(targetElementIndex: number, newPosition: number): void {
+        public shiftElements(targetElementIndex: number, newPosition: number): void {
             var targetBox: BoxContainer = this._boxes[targetElementIndex];
             var moveUp: Phaser.Tween = this._game.add.tween(targetBox).to({y: targetBox.y - 60}, 70, "Quart.easeOut");
             var moveDown: Phaser.Tween = this._game.add.tween(targetBox).to({y: targetBox.y}, 70, "Quart.easeOut");
@@ -286,7 +282,6 @@ module Sort {
                 var boxIndexText: Phaser.Text = this._game.add.text(boxContainer.x + 30,  boxContainer.y + 60 , "" + (index + 1), Constants.CONTROL_PANEL_MESSAGE_STYLE);
                 boxIndexText.anchor.setTo(0.5);
                 this._boxLine.add(boxIndexText);
-                
             }
             
             return boxes;
@@ -329,18 +324,19 @@ module Sort {
         }
         
         protected clickBox() {
-            this.boxClicked(new SortAction(0,0));
+            var step: Step = this.getCurrentStep();
+            this.boxClicked(new SortAction(step.stepNumber, step.newPosition), false);
         }
 
         protected isCorrectStep(action: SortAction): boolean {
             var step: Step = this.getCurrentStep();
-            return false;
+            return step.stepNumber === action.index 
+                && step.newPosition === action.position;
         }
         
         protected onCorrectAction(): void {
             var step: Step = this.getCurrentStep();
-            // this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
-            // this._boxLine.selectBox(step.elementIndex);
+            this._boxLine.shiftElements(step.stepNumber, step.newPosition);
         }
         
         protected destroyTempObjects():void {

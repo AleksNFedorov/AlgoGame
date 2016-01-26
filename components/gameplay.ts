@@ -4,31 +4,59 @@ module Common {
     
     export interface GamePlayAction {}
     
+    // Abstract algorithm step, represents single step of given algorithm.
+    // Particular algorithm should use it of extend.
+    export class AlgorithmStep {
+        private _isLast: boolean = false;
+        private _stepNumber: number = -1;
+        
+        constructor(isLast: boolean, stepNumber: number) {
+            this._isLast = isLast;
+            this._stepNumber = stepNumber;
+        }
+        
+        public setIsLast(): void {
+            this._isLast = true;
+        }
+        
+        public get isLast(): boolean {
+            return this._isLast;
+        }
+        
+        public get stepNumber(): number {
+            return this._stepNumber;
+        }
+    }
+    
     export class Algorithm {
         
-        private _sequence: number[];
+        private _sequence: any[];
+        protected config: any;
         
-        constructor(config: GameConfig.SequenceConfig) {
-            this._sequence = Algorithm.generateSeqeunce(config);
+        constructor(config: any) {
+            this.config = config;
+            this._sequence = this.generateSeqeunce(config);
         }
         
         getNextStep(): AlgorithmStep {
             throw "Method not implemented [getNextStep]";
         }
         
-        protected static generateSeqeunce(config: GameConfig.SequenceConfig): number[] {
+        protected generateSeqeunce(config: any): any[] {
 
             var varElements = config.maxElementsInSeq - config.minElementsInSeq;    
-            var count = config.minElementsInSeq + this.getRandomInteger(0, varElements);
+            var count = config.minElementsInSeq + Algorithm.getRandomInteger(0, varElements);
     
             var newGeneratedArray: number[] = [];
             
             for (var i = 0; i < count; i++) { 
-                var y = Algorithm.getRandomInteger(config.minSeqNumber, config.maxSeqNumber);
+                var y = this.getRandomSeqNumber();
                 newGeneratedArray.push(y);
+                console.log("New element created " + y);
             }
             
-            if (config.sorted || false) {
+            if (config.sorted) {
+                console.log("Sorting array");
                 newGeneratedArray.sort(function(a,b){return a-b;});
             }
             
@@ -37,6 +65,10 @@ module Common {
         
         public get sequence(): number[] {
             return this._sequence;
+        }
+        
+        protected getRandomSeqNumber(): number {
+            return Algorithm.getRandomInteger(this.config.minSeqNumber, this.config.maxSeqNumber);
         }
         
         protected static getRandomInteger(from: number, to: number): number {
@@ -123,9 +155,7 @@ module Common {
         }
         
         private startGame(): void {
-            
-            this._algorithmStep = this._algorithm.getNextStep();
-            this.addTimerEvents();
+            this.onNewStep();
             this._game.dispatch(Events.GAME_STARTED, this, 
                 this.levelSave.practiseDone);
 
@@ -164,8 +194,7 @@ module Common {
                 if (step.isLast) {
                     this.onLastStep();
                 } else {
-                    this._algorithmStep = this._algorithm.getNextStep();
-                    this.addTimerEvents();
+                    this.onNewStep();
                 }
                 this.checkPractiseDone();
 
@@ -174,6 +203,11 @@ module Common {
                 this._game.dispatch(Events.GAME_WRONG_STEP_DONE, this);
             }
         }
+        
+        protected onNewStep(): void {
+            this._algorithmStep = this._algorithm.getNextStep();
+            this.addTimerEvents();
+        };
         
         protected onCorrectAction(): void {}
         

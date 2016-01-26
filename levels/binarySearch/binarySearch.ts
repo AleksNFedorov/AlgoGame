@@ -57,7 +57,7 @@ module BinarySearch {
         private _elementToFindIndex: number;
         private _nextStep: BinarySearchStep;
         
-        constructor(config: GameConfig.SequenceConfig) {
+        constructor(config: any) {
             super(config);
             this._elementToFindIndex = this.defineElementToFind();
             

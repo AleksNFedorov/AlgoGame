@@ -51,7 +51,7 @@ var globalConfig = {
                     maxSeqNumber: 1000,
                     minElementsInSeq: 14,
                     maxElementsInSeq: 20,
-                    sorted: true
+                    sorted: false
                 }
             },
             exam: {
@@ -68,7 +68,41 @@ var globalConfig = {
                     maxSeqNumber: 1000,
                     minElementsInSeq: 6,
                     maxElementsInSeq: 21,
-                    sorted: true
+                    sorted: false
+                }
+            }
+        },
+        debthFirstSearch: {
+            practise: {
+                stageName: "debthFirstSearchPractise",
+                stepsToPass: 5,
+                menu: {
+                    MENU_BUTTON_MENU: "menu",
+                    MENU_BUTTON_DESCRIPTION: "http://google.com",
+                    MENU_BUTTON_PRACTISE: "",
+                    MENU_BUTTON_EXAM:"debthFirstSearchExam",
+                },
+                gamePlay: {
+                    minSeqNumber: 10,
+                    maxSeqNumber: 100,
+                    columns: 5,
+                    rows: 5,
+                }
+            },
+            exam: {
+                stageName: "debthFirstSearchExam",
+                stepsToPass: 2,
+                menu: {
+                    MENU_BUTTON_MENU: "menu",
+                    MENU_BUTTON_DESCRIPTION: "http://fb.com",
+                    MENU_BUTTON_OBJECTIVES: "OBJECTIVES",
+                    MENU_BUTTON_PRACTISE: "debthFirstSearchPractise",
+                },
+                gamePlay: {
+                    minSeqNumber: 10,
+                    maxSeqNumber: 100,
+                    columns: 5,
+                    rows: 5,
                 }
             }
         },

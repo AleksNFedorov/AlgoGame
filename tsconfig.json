@@ -24,6 +24,7 @@
         "game.ts",
         "menuState.ts",
         "levels/binarySearch/binarySearch.ts",
-        "levels/sort/sortcommon.ts"
+        "levels/sort/sortcommon.ts",
+        "levels/graph/traverse.ts"
     ]
 }
