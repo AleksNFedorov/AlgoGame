@@ -91,7 +91,7 @@ var globalConfig = {
             },
             exam: {
                 stageName: "debthFirstSearchExam",
-                stepsToPass: 2,
+                stepsToPass: 20,
                 menu: {
                     MENU_BUTTON_MENU: "menu",
                     MENU_BUTTON_DESCRIPTION: "http://fb.com",

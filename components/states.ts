@@ -215,7 +215,7 @@ module Common {
         }
         
         protected getStageType(): string {
-            return "Practise";
+            return "Exam";
         }
         
         private initModalWindows(): void {

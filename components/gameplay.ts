@@ -32,7 +32,7 @@ module Common {
         
         private _steps: AlgorithmStep[] = [];
         private _lastRequestedStepNumber: number = -1;
-        private _sequence: any[];
+        protected _sequence: any[];
         protected config: any;
         
         constructor(config: any) {
@@ -76,7 +76,7 @@ module Common {
             return newGeneratedArray;
         }
         
-        public get sequence(): number[] {
+        public get sequence(): any[] {
             return this._sequence;
         }
         

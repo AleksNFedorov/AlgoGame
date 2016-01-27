@@ -2,8 +2,10 @@
 declare module GraphJS {
     
     export class Node {
+        id: number;
         x: number;
         y: number;
+        name: string;
         constructor(name: string);
         addEdge(node: Node, wight: number): void;
         getAdjList(): Node[];
@@ -13,7 +15,7 @@ declare module GraphJS {
     
     export class Graph {
         addNode(node: Node): Node;
-        getAllNodex(): Node[];
+        getAllNodes(): Node[];
         getDFSTravaersal(): Node[];
     }
     

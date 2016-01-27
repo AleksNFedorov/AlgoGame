@@ -101,3 +101,33 @@ class InsertionSortPractise extends Common.PractiseState {
         this._gamePlay = new Sort.SortPractiseGamePlay(this.algoGame);
     }
 }
+
+class DebthFirstSearchPractise extends Common.PractiseState {
+    
+    private _gamePlay: Graph.DebthFirstSearchGamePlay;
+    
+    public shutdown(): void {
+        super.shutdown();
+        this._gamePlay.destroy();
+    }
+
+    protected initGamePlay(): void {
+        this._gamePlay = new Graph.DebthFirstSearchGamePlay(this.algoGame);
+    }
+}
+
+class DebthFirstSearchExam extends Common.ExamState {
+
+    private _gamePlay: Graph.DebthFirstSearchExamGamePlay;
+
+    public shutdown(): void {
+        super.shutdown();
+        this._gamePlay.destroy();
+    }
+
+    protected initGamePlay(): void {
+        this._gamePlay = new Graph.DebthFirstSearchExamGamePlay(this.algoGame);
+    }
+}
+
+
