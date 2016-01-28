@@ -76,23 +76,21 @@ module Sort {
         }
     }
     
-    class ShiftBoxLine {
+    class AbstractSortingBoxLine {
         
-        private _boxes: BoxContainer[] = [];
-        private _separatorIndex: number[] = [];
-        private _boxLine: Phaser.Group;
-        private _game: Common.AlgoGame;
+        protected _boxes: BoxContainer[] = [];
+        protected _boxLine: Phaser.Group;
+        protected _game: Common.AlgoGame;
+        
         private _boxClickedCallback: Function;
-        private _separator: Phaser.Sprite;
         
         private _dragging: boolean = false;
-        private _placeToInsert: number = -1;
+        protected _placeToInsert: number = -1;
 
         constructor(game: Common.AlgoGame, boxClickedCallback:Function, sequence: number[]) {
             this._game = game;
             this._boxClickedCallback = boxClickedCallback;
             this.init(sequence);
-            this._separator = this.createSeparator();
         }
         
         private init(seqeunce: number[]) {
@@ -101,7 +99,6 @@ module Sort {
             this._boxLine.y = 300;
 
             this._boxes = this.createBoxes(seqeunce);
-            this._separatorIndex = this.createSeparatorIndex();
             this._game.input.addMoveCallback(this.move, this);
         }
         
@@ -109,6 +106,10 @@ module Sort {
             if (this._dragging) {
                 this.updateSeparator(x, y);
             }
+        }
+        
+        protected updateSeparator(x, y): void {
+            throw "Method is not implemented [updateSeprator]";
         }
 
         private onBoxStartDragging(index: number): void {
@@ -127,7 +128,106 @@ module Sort {
             }
         }
         
-        private updateSeparator(x: number, y: number): void {
+        public hideSeparator(): void {
+            throw "Method is not implemented [hideSeparator]";
+        }
+
+        public applyAction(action: SortAction): void {
+            throw "Method is not implemented [applyAction]";
+        }
+        
+        protected moveBox(box: BoxContainer, newPosition: number): void {
+            this._boxes[newPosition] = box;
+            box.setBoxIndex(newPosition);
+        }
+        
+        protected createBoxes(seqeunce: number[]): BoxContainer[] {
+            
+            var boxes: BoxContainer[] = [];
+            var boxInterval = 1000/seqeunce.length;
+            
+            for(var index = 0; index < seqeunce.length; ++index) {
+                var boxContainer: BoxContainer = this.createBox(index, seqeunce[index]);
+                this._boxLine.add(boxContainer);
+                boxContainer.x = boxInterval * index;
+                boxContainer.y = 0;
+                
+                boxes.push(boxContainer);
+                
+                var boxIndexText: Phaser.Text = this._game.add.text(boxContainer.x + 30,  boxContainer.y + 60 , "" + (index + 1), Constants.CONTROL_PANEL_MESSAGE_STYLE);
+                boxIndexText.anchor.setTo(0.5);
+                this._boxLine.add(boxIndexText);
+            }
+            
+            return boxes;
+        }
+        
+        private createBox(index: number, value: number): BoxContainer {
+            var boxContainer: BoxContainer = new BoxContainer(this._game,
+                    value,
+                    this.onBoxStartDragging.bind(this),
+                    this.onBoxStopDragging.bind(this)
+                );
+            boxContainer.setBoxIndex(index);
+            return boxContainer;
+        }
+
+        public destroy(): void {
+            for(var box of this._boxes) {
+                box.destroy();
+            }
+            
+            this._boxes = [];
+            this._boxLine.destroy();
+        }
+        
+    }
+    
+    class SwapBoxLine extends AbstractSortingBoxLine {
+        
+        constructor(game: Common.AlgoGame, boxClickedCallback:Function, sequence: number[]) {
+            super(game, boxClickedCallback, sequence);
+        }
+        
+        public applyAction(action: SortAction): void {
+            
+            var fromBoxIndex = action.index;
+            var toBoxIndex = action.position;
+            
+            var fromBox: BoxContainer = this._boxes[fromBoxIndex];
+            var toBox: BoxContainer = this._boxes[toBoxIndex];
+
+            var fromBoxMoveUp: Phaser.Tween = this._game.add.tween(fromBox).to({y: fromBox.y - 60}, 70, "Quart.easeOut");
+            var fromBoxMoveTo: Phaser.Tween = this._game.add.tween(fromBox).to({y: toBox.y, x: toBox.x}, 70, "Quart.easeOut");
+            
+            fromBoxMoveUp.chain(fromBoxMoveTo);
+
+            var toBoxMoveUp: Phaser.Tween = this._game.add.tween(toBox).to({y: toBox.y - 60}, 70, "Quart.easeOut");
+            var toBoxMoveFrom: Phaser.Tween = this._game.add.tween(toBox).to({y: fromBox.y, x: fromBox.x}, 70, "Quart.easeOut");
+            
+            toBoxMoveUp.chain(toBoxMoveFrom);
+            
+            fromBoxMoveUp.start();
+            toBoxMoveUp.start();
+            
+            this.moveBox(fromBox, toBoxIndex);
+            this.moveBox(toBox, fromBoxIndex);
+        }
+
+    }
+    
+    class ShiftBoxLine extends AbstractSortingBoxLine {
+        
+        private _separator: Phaser.Sprite;
+        private _separatorIndex: number[] = [];
+        
+        constructor(game: Common.AlgoGame, boxClickedCallback:Function, sequence: number[]) {
+            super(game, boxClickedCallback, sequence);
+            this._separatorIndex = this.createSeparatorIndex();
+            this._separator = this.createSeparator();
+        }
+         
+        protected updateSeparator(x: number, y: number): void {
             
             var stepWidth = this._separatorIndex[1] - this._separatorIndex[0];
             x += stepWidth / 2;
@@ -145,7 +245,11 @@ module Sort {
             this._placeToInsert = indexElement;
         }
         
-        public shiftElements(targetElementIndex: number, newPosition: number): void {
+        public applyAction(action: SortAction): void {
+            
+            var targetElementIndex: number = action.index;
+            var newPosition: number = action.position;
+            
             var targetBox: BoxContainer = this._boxes[targetElementIndex];
             var moveUp: Phaser.Tween = this._game.add.tween(targetBox).to({y: targetBox.y - 60}, 70, "Quart.easeOut");
             var moveDown: Phaser.Tween = this._game.add.tween(targetBox).to({y: targetBox.y}, 70, "Quart.easeOut");
@@ -188,11 +292,6 @@ module Sort {
            moveUp.start();
         }
         
-        private moveBox(box: BoxContainer, newPosition: number): void {
-            this._boxes[newPosition] = box;
-            box.setBoxIndex(newPosition);
-        }
-        
         public hideSeparator(): void {
             this._separator.alpha = 0;
         }
@@ -221,56 +320,23 @@ module Sort {
             return index;
         }
 
-        private createBoxes(seqeunce: number[]): BoxContainer[] {
-            
-            var boxes: BoxContainer[] = [];
-            var boxInterval = 1000/seqeunce.length;
-            
-            for(var index = 0; index < seqeunce.length; ++index) {
-                var boxContainer: BoxContainer = this.createBox(index, seqeunce[index]);
-                this._boxLine.add(boxContainer);
-                boxContainer.x = boxInterval * index;
-                boxContainer.y = 0;
-                
-                boxes.push(boxContainer);
-                
-                var boxIndexText: Phaser.Text = this._game.add.text(boxContainer.x + 30,  boxContainer.y + 60 , "" + (index + 1), Constants.CONTROL_PANEL_MESSAGE_STYLE);
-                boxIndexText.anchor.setTo(0.5);
-                this._boxLine.add(boxIndexText);
-            }
-            
-            return boxes;
-        }
-        
-        private createBox(index: number, value: number): BoxContainer {
-            var boxContainer: BoxContainer = new BoxContainer(this._game,
-                    value,
-                    this.onBoxStartDragging.bind(this),
-                    this.onBoxStopDragging.bind(this)
-                );
-            boxContainer.setBoxIndex(index);
-            return boxContainer;
-        }
-
         public destroy(): void {
-            for(var box of this._boxes) {
-                box.destroy();
-            }
-            
-            this._boxes = [];
-            this._boxLine.destroy();
+            super.destroy();
+            this._separator.destroy();
+            this._separatorIndex = null;
         }
     }
     
-    
-    export class ShiftSortPractiseGamePlay< T extends Common.Algorithm > extends Common.PractiseGamePlay<SortAction, T> {
+    class AbstractSortPractiseGamePlay<T extends Common.Algorithm> extends Common.PractiseGamePlay<SortAction, T> {
         
-        protected _boxLine: ShiftBoxLine;
+        protected _boxLine: AbstractSortingBoxLine;
         
         protected onInit(): void {
-            this._boxLine = new ShiftBoxLine(this._game,     
-                this.boxClicked.bind(this), 
-                this._algorithm.sequence);
+            this._boxLine = this.createBoxLine();
+        }
+        
+        protected createBoxLine(): AbstractSortingBoxLine {
+            throw "Method is not implemented [createBoxLine]";
         }
         
         protected createAlgorithm(config: any): T {
@@ -292,7 +358,7 @@ module Sort {
         
         protected onCorrectAction(): void {
             var step: Step = this.getCurrentStep();
-            this._boxLine.shiftElements(step.stepNumber, step.newPosition);
+            this._boxLine.applyAction(new SortAction(step.stepNumber, step.newPosition));
         }
         
         protected destroyTempObjects():void {
@@ -307,14 +373,16 @@ module Sort {
         }
     }
     
-    export class ShiftSortExamGamePlay< T extends Common.Algorithm > extends Common.ExamGamePlay<SortAction, T> {
+    class AbstractSortExamGamePlay < T extends Common.Algorithm > extends Common.ExamGamePlay<SortAction, T> {
         
-        protected _boxLine: ShiftBoxLine;
+        protected _boxLine: AbstractSortingBoxLine;
         
         protected onInit(): void {
-            this._boxLine = new ShiftBoxLine(this._game,     
-                this.boxClicked.bind(this), 
-                this._algorithm.sequence);
+            this._boxLine = this.createBoxLine();
+        }
+        
+        protected createBoxLine(): AbstractSortingBoxLine {
+            throw "Method is not implemented [createBoxLine]";
         }
         
         protected createAlgorithm(config: any): T {
@@ -334,7 +402,7 @@ module Sort {
         
         protected onCorrectAction(): void {
             var step: Step = this.getCurrentStep();
-            this._boxLine.shiftElements(step.stepNumber, step.newPosition);
+            this._boxLine.applyAction(new SortAction(step.stepNumber, step.newPosition));
         }
         
         protected destroyTempObjects():void {
@@ -347,6 +415,42 @@ module Sort {
         protected getCurrentStep(): Step {
             return <Step>this._algorithmStep;
         }
+
     }
     
+    export class ShiftSortPractiseGamePlay< T extends Common.Algorithm > extends AbstractSortPractiseGamePlay<T> {
+        
+        protected createBoxLine(): AbstractSortingBoxLine {
+            return new ShiftBoxLine(this._game,     
+                this.boxClicked.bind(this), 
+                this._algorithm.sequence);
+        }
+    }
+    
+    export class ShiftSortExamGamePlay< T extends Common.Algorithm > extends AbstractSortExamGamePlay<T> {
+        
+        protected createBoxLine(): AbstractSortingBoxLine {
+            return new ShiftBoxLine(this._game,     
+                this.boxClicked.bind(this), 
+                this._algorithm.sequence);
+        }
+    }
+    
+    export class SwapSortPractiseGamePlay< T extends Common.Algorithm > extends AbstractSortPractiseGamePlay<T> {
+        
+        protected createBoxLine(): AbstractSortingBoxLine {
+            return new SwapBoxLine(this._game,     
+                this.boxClicked.bind(this), 
+                this._algorithm.sequence);
+        }
+    }
+    
+    export class SwapSortExamGamePlay< T extends Common.Algorithm > extends AbstractSortExamGamePlay<T> {
+        
+        protected createBoxLine(): AbstractSortingBoxLine {
+            return new SwapBoxLine(this._game,     
+                this.boxClicked.bind(this), 
+                this._algorithm.sequence);
+        }
+    }
 }
