@@ -27,5 +27,7 @@ class Constants {
         boundsAlignV: "middle" 
     }
     
+    static CONTROL_PANEL_MESSAGES_HISTORY_SIZE = 3;
+    
     static STEP_TIME = 4000;
 }

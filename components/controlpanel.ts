@@ -6,7 +6,7 @@ module Common {
    
     class InfoTextPanel extends GameComponentContainer {
         
-        protected _infoText: Common.Text;
+        protected _messages: Common.Text[] = [];
 
         constructor(game: AlgoGame) {
             super(game);
@@ -14,25 +14,63 @@ module Common {
         }
         
         protected createElements(): void {
-            this._infoText = new Common.Text(this._game, 250, 500, "Control panel text", Constants.CONTROL_PANEL_MESSAGE_STYLE);
-            this._game.add.existing(this._infoText);
-            this.addGameElement(Common.GameElements.CONTROL_PANEL_TEXT, this._infoText);
+            
+            for(var i=0; i< Constants.CONTROL_PANEL_MESSAGES_HISTORY_SIZE; ++i) {
+                var text = this.createNewMessageText("", Common.MessageType.INFO);
+                text.x = 250;
+                text.y = 500 + i * 50;
+                this._messages.push(text);
+            }
+            
+            this.addGameElement(Common.GameElements.CONTROL_PANEL_TEXT, this._messages[0]);
         }
         
         dispatchEvent(event: any, param1: any) {
             super.dispatchEvent(event, param1);
             switch(event.type) {
+                case Events.GAME_CORRECT_STEP_DONE:
+                    var paramArray: any[] = param1;
+                    if (paramArray[1] === false) {
+                        break;
+                    }
                 default:
-                this.setInfoMessageFromDictionary(event.type);
-                console.log("Control panel event [" + event.type + "]");
+                    this.setInfoMessageFromDictionary(event.type);
             }
         }
         
         private setInfoMessageFromDictionary(key: string) {
-            var messages: any[] = Dictionary[key];
-            if (messages != null) {
-                this._infoText.text = Phaser.ArrayUtils.getRandomItem(messages, 0, messages.length);
+            var eventMessages: any = Dictionary[key];
+            if (eventMessages != null) {
+                var messageTypeString: string = eventMessages.type.toUpperCase();
+                var messagesArray: string[] = eventMessages.messages;
+
+                var messageType: Common.MessageType = Common.MessageType[messageTypeString];
+                var message: string = Phaser.ArrayUtils.getRandomItem(messagesArray, 0, messagesArray.length);
+                this.updateMessages(message, messageType);
+                this.displayNewMessage();
             } 
+        }
+        
+        private updateMessages(newMessage: string, type: Common.MessageType): void {
+            var newText = this.createNewMessageText(newMessage, type);
+            this._messages.unshift(newText);
+            for(var i=0; i<(this._messages.length - 1); ++i) {
+                this._messages[i].x = this._messages[i + 1].x;
+                this._messages[i].y = this._messages[i + 1].y;
+            }
+            this._messages.pop().destroy();
+        }
+        
+        private displayNewMessage(): void {
+            var messageToDisplay = this._messages[0];
+            this._game.add.tween(messageToDisplay).to({alpha: 1}, 200, "Quart.easeOut").start();
+        }
+        
+        private createNewMessageText(message: string, type: Common.MessageType): Common.Text {
+            var text = new Common.Text(this._game, 250, 500, message, Constants.CONTROL_PANEL_MESSAGE_STYLE);
+            this._game.add.existing(text);
+            text.alpha = 0;
+            return text;
         }
         
         initEventListners(): void {
@@ -44,7 +82,9 @@ module Common {
         
         destroy() {
            super.destroy(); 
-           this._infoText.destroy();
+           for(var text of this._messages) {
+               text.destroy();
+           }
         }
     }
    

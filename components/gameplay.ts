@@ -192,8 +192,6 @@ module Common {
             
             this._stepPerformed = true;
 
-            console.log("Box clicked [" + action + "]");
-            
             var step: Common.AlgorithmStep = this._algorithmStep;
             
             if (this.isCorrectStep(action)) {
@@ -210,8 +208,8 @@ module Common {
                     this.onNewStep();
                 }
                 this.checkPractiseDone();
-
                 this._stepPerformed = false;
+
             } else {
                 this._game.dispatch(Events.GAME_WRONG_STEP_DONE, this);
             }

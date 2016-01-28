@@ -125,7 +125,6 @@ module Graph {
         private _nodeClickedCallback: Function;
         private _nodes: Phaser.Group[] = [];        
         
-        private _nodeToFind: Phaser.Group;
         private _graphics: Phaser.Graphics;
         
         constructor(game: Common.AlgoGame, nodes: GraphJS.Node[], nodeClickedCallback: Function, nodeToFind: GraphJS.Node) {
@@ -133,12 +132,7 @@ module Graph {
             this._nodeClickedCallback = nodeClickedCallback;
             this.init(nodes);
             
-            this._nodeToFind = this.createNode(nodeToFind, false);
-            this._nodeToFind.x = 50;
-            this._nodeToFind.y = 100;
-            
             this.onNodeClicked(nodeToFind.id);
-            
         }
         
         private init(nodes: GraphJS.Node[]): void {
@@ -213,7 +207,6 @@ module Graph {
                 node.destroy();
             }
             this._graphics.destroy();
-            this._nodeToFind.destroy();
             this._game = null;
             this._nodeClickedCallback = null;
         }

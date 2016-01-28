@@ -32,7 +32,7 @@ module Sort {
             super(config);
         }
         
-        protected runalgorithm(): Step[] {
+        protected runAlgorithm(): Step[] {
             
             var steps: Step[] = [];
             var values = this.sequence.slice(0);
@@ -93,7 +93,6 @@ module Sort {
         }
         
         public setBoxIndex(boxIndex: number): void {
-            console.log("Set box index [" + boxIndex + "][" + this._boxIndex + "]");
             this._boxIndex = boxIndex;
         } 
         
@@ -154,6 +153,7 @@ module Sort {
             this._boxes[index].alpha = 1;
             this.hideSeparator();
             if (this._dragging) {
+                console.log("Box [" + index + "][" + this._placeToInsert + "]");
                 this._boxClickedCallback(new SortAction(index, this._placeToInsert));
                 this._dragging = false;
             }
@@ -225,7 +225,7 @@ module Sort {
             box.setBoxIndex(newPosition);
         }
         
-        private hideSeparator(): void {
+        public hideSeparator(): void {
             this._separator.alpha = 0;
         }
         
@@ -313,6 +313,8 @@ module Sort {
         protected clickBox() {
             var step: Step = this.getCurrentStep();
             this.boxClicked(new SortAction(step.stepNumber, step.newPosition), false);
+            this._boxLine.hideSeparator();
+            console.log("Timer clicked " + step.stepNumber);
         }
 
         protected isCorrectStep(action: SortAction): boolean {
