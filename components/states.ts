@@ -134,11 +134,13 @@ module Common {
     //State for Practise stages only
     export class PractiseState extends Common.State {
         
-        protected _menu: Common.Menu;
-        protected _controlPanel: Common.PractisePanel;
-        protected _progressPanel: Common.ProgressPanel;
-        protected _practiseManager: StageInfo.PractiseManager;
-        protected _modalWindow: GameModal.ModalWindow;
+        private _menu: Common.Menu;
+        private _controlPanel: Common.PractisePanel;
+        private _progressPanel: Common.ProgressPanel;
+        private _practiseManager: StageInfo.PractiseManager;
+        private _modalWindow: GameModal.ModalWindow;
+        private _gamePlay: PractiseGamePlay<Common.GamePlayAction, Common.Algorithm>;
+        
         
         public shutdown(): void {
             super.shutdown();
@@ -146,6 +148,7 @@ module Common {
             this._controlPanel.destroy();
             this._practiseManager.destroy();
             this._modalWindow.destroy();
+            this._gamePlay.destroy();
             this._menu = null;
         }
     
@@ -156,14 +159,14 @@ module Common {
             
             this._menu = new Common.PractiseMenu(this.algoGame);
             this._controlPanel = new Common.PractisePanel(this.algoGame);
-            this.initGamePlay();
+            this._gamePlay = this.buildGamePlay();
             this._progressPanel = new Common.ProgressPanel(this.algoGame);
             this._practiseManager = new StageInfo.PractiseManager(this.algoGame);
             
             super.onCreate();        
         }
         
-        protected initGamePlay():void {
+        protected buildGamePlay(): PractiseGamePlay<Common.GamePlayAction, Common.Algorithm> {
             throw "Game play not initizliaed";
         }
         
@@ -188,12 +191,15 @@ module Common {
         private _controlPanel: Common.ExamPanel;
         private _progressPanel: Common.ProgressPanel;
         private _modalWindow: GameModal.ModalWindow;
+        private _gamePlay: ExamGamePlay<Common.GamePlayAction, Common.Algorithm>;
+        
     
         public shutdown(): void {
             super.shutdown();
             this._menu.destroy();
             this._controlPanel.destroy();
             this._modalWindow.destroy();
+            this._gamePlay.destroy();
             this._menu = null;
         }
     
@@ -204,13 +210,13 @@ module Common {
     
             this._menu = new Common.ExamMenu(this.algoGame);
             this._controlPanel = new Common.ExamPanel(this.algoGame);
-            this.initGamePlay();
+            this._gamePlay = this.buildGamePlay();
             this._progressPanel = new Common.ProgressPanel(this.algoGame);
     
             super.onCreate();
         }
         
-        protected initGamePlay():void {
+        protected buildGamePlay(): ExamGamePlay<Common.GamePlayAction, Common.Algorithm> {
             throw "Game play not initizliaed";
         }
         

@@ -61,86 +61,43 @@ class LevelMenuState extends Common.State {
 
 class BinarySearchPractise extends Common.PractiseState {
     
-    private _gamePlay: BinarySearch.BinarySearchPractiseGamePlay;
-    
-    public shutdown(): void {
-        super.shutdown();
-        this._gamePlay.destroy();
-    }
-
-    protected initGamePlay(): void {
-        this._gamePlay = new BinarySearch.BinarySearchPractiseGamePlay(this.algoGame);
+    protected buildGamePlay(): Common.PractiseGamePlay<Common.GamePlayAction, Common.Algorithm> {
+        return new BinarySearch.BinarySearchPractiseGamePlay(this.algoGame);
     }
 }
 
 class BinarySearchExam extends Common.ExamState {
 
-    private _gamePlay: BinarySearch.BinarySearchExamGamePlay;
-
-    public shutdown(): void {
-        super.shutdown();
-        this._gamePlay.destroy();
-    }
-
-
-    protected initGamePlay(): void {
-        this._gamePlay = new BinarySearch.BinarySearchExamGamePlay(this.algoGame);
+    protected buildGamePlay(): Common.ExamGamePlay<Common.GamePlayAction, Common.Algorithm> {
+        return new BinarySearch.BinarySearchExamGamePlay(this.algoGame);
     }
 }
 
 class InsertionSortPractise extends Common.PractiseState {
     
-    private _gamePlay: Sort.InsertionSortPractiseGamePlay;
-    
-    public shutdown(): void {
-        super.shutdown();
-        this._gamePlay.destroy();
-    }
-
-    protected initGamePlay(): void {
-        this._gamePlay = new Sort.InsertionSortPractiseGamePlay(this.algoGame);
+    protected buildGamePlay(): Common.PractiseGamePlay<Common.GamePlayAction, Common.Algorithm> {
+        return new Sort.InsertionSortPractiseGamePlay(this.algoGame);
     }
 }
 
 class InsertionSortExam extends Common.ExamState {
     
-    private _gamePlay: Sort.InsertionSortExamGamePlay;
-    
-    public shutdown(): void {
-        super.shutdown();
-        this._gamePlay.destroy();
-    }
-
-    protected initGamePlay(): void {
-        this._gamePlay = new Sort.InsertionSortExamGamePlay(this.algoGame);
+    protected buildGamePlay(): Common.ExamGamePlay<Common.GamePlayAction, Common.Algorithm> {
+        return new Sort.InsertionSortExamGamePlay(this.algoGame);
     }
 }
 
 class DebthFirstSearchPractise extends Common.PractiseState {
     
-    private _gamePlay: Graph.DebthFirstSearchGamePlay;
-    
-    public shutdown(): void {
-        super.shutdown();
-        this._gamePlay.destroy();
-    }
-
-    protected initGamePlay(): void {
-        this._gamePlay = new Graph.DebthFirstSearchGamePlay(this.algoGame);
+    protected buildGamePlay(): Common.PractiseGamePlay<Common.GamePlayAction, Common.Algorithm> {
+        return new Graph.DebthFirstSearchGamePlay(this.algoGame);
     }
 }
 
 class DebthFirstSearchExam extends Common.ExamState {
 
-    private _gamePlay: Graph.DebthFirstSearchExamGamePlay;
-
-    public shutdown(): void {
-        super.shutdown();
-        this._gamePlay.destroy();
-    }
-
-    protected initGamePlay(): void {
-        this._gamePlay = new Graph.DebthFirstSearchExamGamePlay(this.algoGame);
+    protected buildGamePlay(): Common.ExamGamePlay<Common.GamePlayAction, Common.Algorithm> {
+        return new Graph.DebthFirstSearchExamGamePlay(this.algoGame);
     }
 }
 

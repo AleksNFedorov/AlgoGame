@@ -72,6 +72,41 @@ var globalConfig = {
                 }
             }
         },
+        selectionSort: {
+            practise: {
+                stageName: "selectionSortPractise",
+                stepsToPass: 5,
+                menu: {
+                    MenuButtonMenu: "menu",
+                    MenuButtonDescription: "http://google.com",
+                    MenuButtonPractise: "",
+                    MenuButtonExam:"selectionSortExam",
+                },
+                gamePlay: {
+                    minSeqNumber: 100,
+                    maxSeqNumber: 1000,
+                    minElementsInSeq: 14,
+                    maxElementsInSeq: 20,
+                    sorted: false
+                }
+            },
+            exam: {
+                stageName: "selectionSortExam",
+                stepsToPass: 2,
+                menu: {
+                    MenuButtonMenu: "menu",
+                    MenuButtonDescription: "http://fb.com",
+                    MenuButtonPractise: "selectionSortPractise",
+                },
+                gamePlay: {
+                    minSeqNumber: 100,
+                    maxSeqNumber: 1000,
+                    minElementsInSeq: 6,
+                    maxElementsInSeq: 14,
+                    sorted: false
+                }
+            }
+        },
         debthFirstSearch: {
             practise: {
                 stageName: "debthFirstSearchPractise",
@@ -103,42 +138,6 @@ var globalConfig = {
                     maxSeqNumber: 100,
                     columns: 5,
                     rows: 5,
-                }
-            }
-        },
-        
-        bubbleSort: {
-            dependsOn: "binarySearch",
-            practise: {
-                stageName: "bubbleSortPractise",
-                stepsToPass: 5,
-                menu: {
-                    MenuButtonMenu: "menu",
-                    MenuButtonDescription: "http://google.com",
-                    MenuButtonPractise: "",
-                    MenuButtonExam:"bubbleSortExam",
-                },
-                gamePlay: {
-                    minSeqNumber: 100,
-                    maxSeqNumber: 1000,
-                    minElementsInSeq: 14,
-                    maxElementsInSeq: 20
-                }
-            },
-            exam: {
-                stageName: "bubbleSortExam",
-                stepsToPass: 10,
-                menu: {
-                    MenuButtonMenu: "menu",
-                    MenuButtonDescription: "http://fb.com",
-                    MenuButtonObjectives: "OBJECTIVES",
-                    MenuButtonPractise: "bubbleSortPractise",
-                },
-                gamePlay: {
-                    minSeqNumber: 100,
-                    maxSeqNumber: 1000,
-                    minElementsInSeq: 6,
-                    maxElementsInSeq: 21
                 }
             }
         },
