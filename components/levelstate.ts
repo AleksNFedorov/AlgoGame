@@ -142,7 +142,7 @@ module Common {
             for(var levelInfo of this._levelLocker.levelInfos) {
                 yOffset += 100;
                 var levelButton = new LevelButton(this._game, levelInfo, 50, yOffset, [12,2,82,2, 6]);
-                this.addGameElement(GameElements.LEVEL_BUTTON, levelButton);
+                this.addGameElement(GameElements.LevelButton, levelButton);
             }
         }
     }

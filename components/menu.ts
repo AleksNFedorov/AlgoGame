@@ -26,11 +26,11 @@ module Common {
         }
         
         protected createButtons(): void {
-            this.addButtonToMenu(Common.GameElements.MENU_BUTTON_MENU, Events.MENU_EVENT_GO_MENU, [12,2,82,2, 6], 50, 30);
-            this.addButtonToMenu(Common.GameElements.MENU_BUTTON_DESCRIPTION, Events.MENU_EVENT_OPEN_ALGO_DESCR, [3,3,68,3, 81], 110, 30);
-            this.addButtonToMenu(Common.GameElements.MENU_BUTTON_OBJECTIVES, Events.MENU_EVENT_SHOW_LEVEL_OBJECT, [77,77,53,77, 66], 170, 30);
-            this.addButtonToMenu(Common.GameElements.MENU_BUTTON_PRACTISE, Events.MENU_EVENT_GO_PRACTISE, [63,63,39,63, 0], 870, 30);
-            this.addButtonToMenu(Common.GameElements.MENU_BUTTON_EXAM, Events.MENU_EVENT_GO_EXAM, [5,5,14,5, 31], 940, 30);
+            this.addButtonToMenu(Common.GameElements.MenuButtonMenu, Events.MENU_EVENT_GO_MENU, [12,2,82,2, 6], 50, 30);
+            this.addButtonToMenu(Common.GameElements.MenuButtonDescription, Events.MENU_EVENT_OPEN_ALGO_DESCR, [3,3,68,3, 81], 110, 30);
+            this.addButtonToMenu(Common.GameElements.MenuButtonObjectives, Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES, [77,77,53,77, 66], 170, 30);
+            this.addButtonToMenu(Common.GameElements.MenuButtonPractise, Events.MENU_EVENT_GO_PRACTISE, [63,63,39,63, 0], 870, 30);
+            this.addButtonToMenu(Common.GameElements.MenuButtonExam, Events.MENU_EVENT_GO_EXAM, [5,5,14,5, 31], 940, 30);
             console.log("Button has been added");
         }
         
@@ -55,19 +55,19 @@ module Common {
             super.dispatchEvent(event, param1);
             switch(event.type) {
                 case Events.MENU_EVENT_GO_MENU:
-                    var elementIdName = GameElements[GameElements.MENU_BUTTON_MENU];
+                    var elementIdName = GameElements[GameElements.MenuButtonMenu];
                     this._game.state.start(this.stateConfig.menu[elementIdName]);
                     break;
                 case Events.MENU_EVENT_OPEN_ALGO_DESCR:
-                    var elementIdName = GameElements[GameElements.MENU_BUTTON_DESCRIPTION];
+                    var elementIdName = GameElements[GameElements.MenuButtonDescription];
                     window.open(this.stateConfig.menu[elementIdName], "_blank");
                     break;
                 case Events.MENU_EVENT_GO_PRACTISE:
-                    var elementIdName = GameElements[GameElements.MENU_BUTTON_PRACTISE];
+                    var elementIdName = GameElements[GameElements.MenuButtonPractise];
                     this._game.state.start(this.stateConfig.menu[elementIdName]);
                     break;
                 case Events.MENU_EVENT_GO_EXAM:
-                    var elementIdName = GameElements[GameElements.MENU_BUTTON_EXAM];
+                    var elementIdName = GameElements[GameElements.MenuButtonExam];
                     this._game.state.start(this.stateConfig.menu[elementIdName]);
                     break;
                     break;
@@ -90,10 +90,10 @@ module Common {
         
         constructor(game: AlgoGame) {
             super(game);
-            var goPractiseButton = this._menuButtons[GameElements.MENU_BUTTON_PRACTISE];
+            var goPractiseButton = this._menuButtons[GameElements.MenuButtonPractise];
             goPractiseButton.deactivate();
 
-            var goExamButton = this._menuButtons[GameElements.MENU_BUTTON_EXAM];
+            var goExamButton = this._menuButtons[GameElements.MenuButtonExam];
             goExamButton.deactivate();
         }
         
@@ -106,7 +106,7 @@ module Common {
             super.dispatchEvent(event, param1);
             switch(event.type) {
                 case Events.GAME_PRACTISE_DONE:
-                    var goExamButton = this._menuButtons[GameElements.MENU_BUTTON_EXAM];
+                    var goExamButton = this._menuButtons[GameElements.MenuButtonExam];
                     goExamButton.activate();
                     break;
             }
@@ -118,7 +118,7 @@ module Common {
         constructor(game: AlgoGame) {
             super(game);
 
-            var goExamButton = this._menuButtons[GameElements.MENU_BUTTON_EXAM];
+            var goExamButton = this._menuButtons[GameElements.MenuButtonExam];
             goExamButton.deactivate();
         }
         

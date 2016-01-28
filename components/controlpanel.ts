@@ -22,7 +22,7 @@ module Common {
                 this._messages.push(text);
             }
             
-            this.addGameElement(Common.GameElements.CONTROL_PANEL_TEXT, this._messages[0]);
+            this.addGameElement(Common.GameElements.ControlPanelText, this._messages[0]);
         }
         
         dispatchEvent(event: any, param1: any) {
@@ -30,6 +30,7 @@ module Common {
             switch(event.type) {
                 case Events.GAME_CORRECT_STEP_DONE:
                     var paramArray: any[] = param1;
+                    //false - non user action
                     if (paramArray[1] === false) {
                         break;
                     }
@@ -105,7 +106,7 @@ module Common {
             super.createElements();
             
             this._playButton = this.createButton(
-                Common.GameElements.CONTROL_PANEL_BUTTON_PLAY, 
+                Common.GameElements.ControlPanelButtonPlay, 
                 Events.CONTROL_PANEL_EVENT_PLAY, 
                 [46, 46, 50, 46, 35]
             );
@@ -177,7 +178,7 @@ module Common {
             super.createElements();
             
             this._pauseButton = this.createButton(
-                Common.GameElements.CONTROL_PANEL_BUTTON_PAUSE,
+                Common.GameElements.ControlPanelButtonPause,
                 Events.CONTROL_PANEL_EVENT_PAUSE,
                 [61,61,37,61, 65]
             );
@@ -226,7 +227,7 @@ module Common {
             super.createElements();
             
             this._stopButton = this.createButton(
-                Common.GameElements.CONTROL_PANEL_BUTTON_STOP,
+                Common.GameElements.ControlPanelButtonStop,
                 Events.CONTROL_PANEL_EVENT_STOP,
                 [2,2,82,2, 6]
             );

@@ -137,14 +137,14 @@ module Common {
         protected _menu: Common.Menu;
         protected _controlPanel: Common.PractisePanel;
         protected _progressPanel: Common.ProgressPanel;
-     //   protected _practiseManager: StageInfo.PractiseManager;
+        protected _practiseManager: StageInfo.PractiseManager;
         protected _modalWindow: GameModal.ModalWindow;
         
         public shutdown(): void {
             super.shutdown();
             this._menu.destroy();  
             this._controlPanel.destroy();
-      //      this._practiseManager.destroy();
+            this._practiseManager.destroy();
             this._modalWindow.destroy();
             this._menu = null;
         }
@@ -158,7 +158,7 @@ module Common {
             this._controlPanel = new Common.PractisePanel(this.algoGame);
             this.initGamePlay();
             this._progressPanel = new Common.ProgressPanel(this.algoGame);
-   //         this._practiseManager = new StageInfo.PractiseManager(this.algoGame);
+            this._practiseManager = new StageInfo.PractiseManager(this.algoGame);
             
             super.onCreate();        
         }
@@ -173,8 +173,8 @@ module Common {
 
         protected initModalWindows(): void {
             var configs: GameModal.ModalConfig[] = [
-                    new GameModal.ModalConfig(Common.ModalWindows.OBJECTIVES, "cursor"),
-                    new GameModal.ModalConfig(Common.ModalWindows.PRACTISE_DONE, "cursor")
+                    new GameModal.ModalConfig(Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES, "cursor"),
+                    new GameModal.ModalConfig(Events.GAME_PRACTISE_DONE, "cursor")
                 ];
                 
             this._modalWindow.createWindows(configs);
@@ -220,11 +220,11 @@ module Common {
         
         private initModalWindows(): void {
             var configs: GameModal.ModalConfig[] = [
-                    new GameModal.ModalConfig(Common.ModalWindows.OBJECTIVES, "cursor"),
-                    new GameModal.ModalConfig(Common.ModalWindows.EXAM_DONE, "cursor")
+                    new GameModal.ModalConfig(Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES, "cursor"),
+                    new GameModal.ModalConfig(Events.GAME_EXAM_DONE, "cursor")
                 ];
                 
-            this._modalWindow.createWindows(configs)            ;
+            this._modalWindow.createWindows(configs);
         }
     
     }    

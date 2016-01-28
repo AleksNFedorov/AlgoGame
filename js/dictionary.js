@@ -1,5 +1,5 @@
 var Dictionary = {
-    StageInit:{
+    StageInit: {
         type: "info",
         messages: [
             "StageInit 1",
@@ -8,7 +8,7 @@ var Dictionary = {
             "StageInit 4"
         ],
     },
-    GameStarted:{
+    GameStarted: {
         type: "info",
         messages: [
             "Game started 1",
@@ -17,23 +17,26 @@ var Dictionary = {
             "Game started 4",
         ],
     },
-    GameCorrectStepDone:{
+    GameCorrectStepDone: {
         type: "Success",
         messages: [
             "success step",
         ],
     },
-    GameWrongStepDone:{
+    GameWrongStepDone: {
         type: "Fail",
         messages: [
             "GameWrongStepDone",
         ],
     },
-    GameMultiStepDone:{
+    GameMultiStepDone: {
         type: "Info",
         messages: [
             "GameMultiStepDone",
         ],
     },
-    
+    //Element info messages
+    ControlPanelButtonPlay: "Control panel play button description text",
+    MenuButtonMenu: "Menu button description",
+    MenuButtonPractise: "Practise button description"
 };

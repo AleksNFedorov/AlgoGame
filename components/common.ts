@@ -9,28 +9,26 @@ declare var log:any;
 module Common {
     
     export enum LevelStageState {PAUSED = 0, RUNNING = 1, CREATED = 2, END = 3, UNKNOWN = 4}
-    export enum ModalWindows {OBJECTIVES = 0, PRACTISE_DONE = 1, EXAM_DONE = 2}
     export enum MessageType {INFO, FAIL, SUCCESS};
     
     /*
         All game elements, element id should be here to show description info for it.
     */
     export enum GameElements {
-        MENU_BUTTON_MENU = 2,
-        MENU_BUTTON_DESCRIPTION = 3,
-        MENU_BUTTON_OBJECTIVES = 4,
-        MENU_BUTTON_PRACTISE = 5,
-        MENU_BUTTON_EXAM = 6,
-        PROGRESS_STEP = 7,
-        PROGRESS_COMPLETE = 8,
-        CONTROL_PANEL_BUTTON_PLAY = 9,
-        CONTROL_PANEL_BUTTON_PAUSE = 10,
-        CONTROL_PANEL_BUTTON_STOP = 11,
-        CONTROL_PANEL_TEXT = 12,
-        GAME_AREA = 13,
-        LEVEL_BUTTON = 14,
+        MenuButtonMenu = 2,
+        MenuButtonDescription = 3,
+        MenuButtonObjectives = 4,
+        MenuButtonPractise = 5,
+        MenuButtonExam = 6,
+        ProgressBarStep = 7,
+        ProgressBarComplete = 8,
+        ControlPanelButtonPlay = 9,
+        ControlPanelButtonPause = 10,
+        ControlPanelButtonStop = 11,
+        ControlPanelText = 12,
+        GameArea = 13,
+        LevelButton = 14,
     }
-    
         
     //Key info stored on borwser local store
     export class LevelSave {

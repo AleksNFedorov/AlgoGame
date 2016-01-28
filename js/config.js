@@ -5,10 +5,10 @@ var globalConfig = {
                 stageName: "binarySearchPractise",
                 stepsToPass: 5,
                 menu: {
-                    MENU_BUTTON_MENU: "menu",
-                    MENU_BUTTON_DESCRIPTION: "http://google.com",
-                    MENU_BUTTON_PRACTISE: "",
-                    MENU_BUTTON_EXAM:"binarySearchExam",
+                    MenuButtonMenu: "menu",
+                    MenuButtonDescription: "http://google.com",
+                    MenuButtonPractise: "",
+                    MenuButtonExam:"binarySearchExam",
                 },
                 gamePlay: {
                     minSeqNumber: 100,
@@ -22,10 +22,10 @@ var globalConfig = {
                 stageName: "binarySearchExam",
                 stepsToPass: 2,
                 menu: {
-                    MENU_BUTTON_MENU: "menu",
-                    MENU_BUTTON_DESCRIPTION: "http://fb.com",
-                    MENU_BUTTON_OBJECTIVES: "OBJECTIVES",
-                    MENU_BUTTON_PRACTISE: "binarySearchPractise",
+                    MenuButtonMenu: "menu",
+                    MenuButtonDescription: "http://fb.com",
+                    MenuButtonObjectives: "OBJECTIVES",
+                    MenuButtonPractise: "binarySearchPractise",
                 },
                 gamePlay: {
                     minSeqNumber: 100,
@@ -41,10 +41,10 @@ var globalConfig = {
                 stageName: "insertionSortPractise",
                 stepsToPass: 5,
                 menu: {
-                    MENU_BUTTON_MENU: "menu",
-                    MENU_BUTTON_DESCRIPTION: "http://google.com",
-                    MENU_BUTTON_PRACTISE: "",
-                    MENU_BUTTON_EXAM:"insertionSortExam",
+                    MenuButtonMenu: "menu",
+                    MenuButtonDescription: "http://google.com",
+                    MenuButtonPractise: "",
+                    MenuButtonExam:"insertionSortExam",
                 },
                 gamePlay: {
                     minSeqNumber: 100,
@@ -58,10 +58,10 @@ var globalConfig = {
                 stageName: "insertionSortExam",
                 stepsToPass: 2,
                 menu: {
-                    MENU_BUTTON_MENU: "menu",
-                    MENU_BUTTON_DESCRIPTION: "http://fb.com",
-                    MENU_BUTTON_OBJECTIVES: "OBJECTIVES",
-                    MENU_BUTTON_PRACTISE: "insertionSortPractise",
+                    MenuButtonMenu: "menu",
+                    MenuButtonDescription: "http://fb.com",
+                    MenuButtonObjectives: "OBJECTIVES",
+                    MenuButtonPractise: "insertionSortPractise",
                 },
                 gamePlay: {
                     minSeqNumber: 100,
@@ -77,10 +77,10 @@ var globalConfig = {
                 stageName: "debthFirstSearchPractise",
                 stepsToPass: 5,
                 menu: {
-                    MENU_BUTTON_MENU: "menu",
-                    MENU_BUTTON_DESCRIPTION: "http://google.com",
-                    MENU_BUTTON_PRACTISE: "",
-                    MENU_BUTTON_EXAM:"debthFirstSearchExam",
+                    MenuButtonMenu: "menu",
+                    MenuButtonDescription: "http://google.com",
+                    MenuButtonPractise: "",
+                    MenuButtonExam:"debthFirstSearchExam",
                 },
                 gamePlay: {
                     minSeqNumber: 10,
@@ -93,10 +93,10 @@ var globalConfig = {
                 stageName: "debthFirstSearchExam",
                 stepsToPass: 20,
                 menu: {
-                    MENU_BUTTON_MENU: "menu",
-                    MENU_BUTTON_DESCRIPTION: "http://fb.com",
-                    MENU_BUTTON_OBJECTIVES: "OBJECTIVES",
-                    MENU_BUTTON_PRACTISE: "debthFirstSearchPractise",
+                    MenuButtonMenu: "menu",
+                    MenuButtonDescription: "http://fb.com",
+                    MenuButtonObjectives: "OBJECTIVES",
+                    MenuButtonPractise: "debthFirstSearchPractise",
                 },
                 gamePlay: {
                     minSeqNumber: 10,
@@ -113,10 +113,10 @@ var globalConfig = {
                 stageName: "bubbleSortPractise",
                 stepsToPass: 5,
                 menu: {
-                    MENU_BUTTON_MENU: "menu",
-                    MENU_BUTTON_DESCRIPTION: "http://google.com",
-                    MENU_BUTTON_PRACTISE: "",
-                    MENU_BUTTON_EXAM:"bubbleSortExam",
+                    MenuButtonMenu: "menu",
+                    MenuButtonDescription: "http://google.com",
+                    MenuButtonPractise: "",
+                    MenuButtonExam:"bubbleSortExam",
                 },
                 gamePlay: {
                     minSeqNumber: 100,
@@ -129,10 +129,10 @@ var globalConfig = {
                 stageName: "bubbleSortExam",
                 stepsToPass: 10,
                 menu: {
-                    MENU_BUTTON_MENU: "menu",
-                    MENU_BUTTON_DESCRIPTION: "http://fb.com",
-                    MENU_BUTTON_OBJECTIVES: "OBJECTIVES",
-                    MENU_BUTTON_PRACTISE: "bubbleSortPractise",
+                    MenuButtonMenu: "menu",
+                    MenuButtonDescription: "http://fb.com",
+                    MenuButtonObjectives: "OBJECTIVES",
+                    MenuButtonPractise: "bubbleSortPractise",
                 },
                 gamePlay: {
                     minSeqNumber: 100,

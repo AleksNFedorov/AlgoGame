@@ -114,13 +114,13 @@ module Common {
         
             this._topProgressBar = this.createAndAddProgressBar(
                 "slice27_27.png", "slice16_16.png", "Step time",
-                Common.GameElements.PROGRESS_STEP);
+                Common.GameElements.ProgressBarStep);
             this._topProgressBar.x = 0;
             this._topProgressBar.y = 0;
 
             this._bottomProgressBar = this.createAndAddProgressBar(
                 "slice27_27.png", "slice35_35.png", "Steps done",
-                Common.GameElements.PROGRESS_COMPLETE);
+                Common.GameElements.ProgressBarComplete);
             this._bottomProgressBar.x = 0;
             this._bottomProgressBar.y = 60;
         }
