@@ -26,37 +26,7 @@ module Sort {
         }
     }
     
-    class InsertionSortAlgorithm extends Common.Algorithm {
-        
-        constructor(config: any) {
-            super(config);
-        }
-        
-        protected runAlgorithm(): Step[] {
-            
-            var steps: Step[] = [];
-            var values = this.sequence.slice(0);
-            
-            var length = values.length;
-            for(var i = 1; i < length; ++i) {
-                var temp = values[i];
-                var j = i - 1;
-                for(; j >= 0 && values[j] > temp; --j) {
-                    values[j+1] = values[j];
-                }
-                values[j+1] = temp;
-                
-                if (i != (j + 1)) {
-                    //No reason to keep speps with no changes
-                    steps.push(new Step(i, j+1, values));
-                }
-            }
-            return steps;
-        }
-        
-    }
-    
-    class BoxContainer extends Phaser.Group {
+    export class BoxContainer extends Phaser.Group {
 
         private _boxIndex: number;
         
@@ -104,11 +74,9 @@ module Sort {
         private onInputUp(): void {
             this._releaseCallback(this._boxIndex);
         }
-        
     }
     
-    
-    class BoxLine {
+    class ShiftBoxLine {
         
         private _boxes: BoxContainer[] = [];
         private _separatorIndex: number[] = [];
@@ -295,19 +263,18 @@ module Sort {
     }
     
     
-    export class SortPractiseGamePlay extends Common.PractiseGamePlay<SortAction, InsertionSortAlgorithm> {
+    export class ShiftSortPractiseGamePlay< T extends Common.Algorithm > extends Common.PractiseGamePlay<SortAction, T> {
         
-        protected _boxLine: BoxLine;
+        protected _boxLine: ShiftBoxLine;
         
         protected onInit(): void {
-            this._boxLine = new BoxLine(this._game,     
+            this._boxLine = new ShiftBoxLine(this._game,     
                 this.boxClicked.bind(this), 
                 this._algorithm.sequence);
         }
-
         
-        protected createAlgorithm(config: any): InsertionSortAlgorithm {
-            return new InsertionSortAlgorithm(config);
+        protected createAlgorithm(config: any): T {
+            throw "Method not implemented [createAlgorithm()]";
         }
         
         protected clickBox() {
@@ -315,6 +282,48 @@ module Sort {
             this.boxClicked(new SortAction(step.stepNumber, step.newPosition), false);
             this._boxLine.hideSeparator();
             console.log("Timer clicked " + step.stepNumber);
+        }
+
+        protected isCorrectStep(action: SortAction): boolean {
+            var step: Step = this.getCurrentStep();
+            return step.stepNumber === action.index 
+                && step.newPosition === action.position;
+        }
+        
+        protected onCorrectAction(): void {
+            var step: Step = this.getCurrentStep();
+            this._boxLine.shiftElements(step.stepNumber, step.newPosition);
+        }
+        
+        protected destroyTempObjects():void {
+            super.destroyTempObjects();
+            if (this._boxLine != null) {
+                this._boxLine.destroy();            
+            }
+        }
+        
+        protected getCurrentStep(): Step {
+            return <Step>this._algorithmStep;
+        }
+    }
+    
+    export class ShiftSortExamGamePlay< T extends Common.Algorithm > extends Common.ExamGamePlay<SortAction, T> {
+        
+        protected _boxLine: ShiftBoxLine;
+        
+        protected onInit(): void {
+            this._boxLine = new ShiftBoxLine(this._game,     
+                this.boxClicked.bind(this), 
+                this._algorithm.sequence);
+        }
+        
+        protected createAlgorithm(config: any): T {
+            throw "Method not implemented [createAlgorithm()]";
+        }
+        
+        protected clickBox() {
+            this.boxClicked(new SortAction(0, 0), false);
+            this._boxLine.hideSeparator();
         }
 
         protected isCorrectStep(action: SortAction): boolean {

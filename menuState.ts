@@ -90,7 +90,7 @@ class BinarySearchExam extends Common.ExamState {
 
 class InsertionSortPractise extends Common.PractiseState {
     
-    private _gamePlay: Sort.SortPractiseGamePlay;
+    private _gamePlay: Sort.InsertionSortPractiseGamePlay;
     
     public shutdown(): void {
         super.shutdown();
@@ -98,7 +98,21 @@ class InsertionSortPractise extends Common.PractiseState {
     }
 
     protected initGamePlay(): void {
-        this._gamePlay = new Sort.SortPractiseGamePlay(this.algoGame);
+        this._gamePlay = new Sort.InsertionSortPractiseGamePlay(this.algoGame);
+    }
+}
+
+class InsertionSortExam extends Common.ExamState {
+    
+    private _gamePlay: Sort.InsertionSortExamGamePlay;
+    
+    public shutdown(): void {
+        super.shutdown();
+        this._gamePlay.destroy();
+    }
+
+    protected initGamePlay(): void {
+        this._gamePlay = new Sort.InsertionSortExamGamePlay(this.algoGame);
     }
 }
 
