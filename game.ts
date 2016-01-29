@@ -20,6 +20,10 @@ class Game extends Common.AlgoGame {
         this.state.add("selectionSortPractise", SelectionSortPractise);
         this.state.add("selectionSortExam", SelectionSortExam);
 
+        this.state.add("mergeSortPractise", MergeSortPractise);
+        this.state.add("mergeSortSortExam", MergeSortExam);
+
+
         this.state.add("debthFirstSearchPractise", DebthFirstSearchPractise);
         this.state.add("debthFirstSearchExam", DebthFirstSearchExam);
 

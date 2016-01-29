@@ -2,6 +2,10 @@
 
 module Common {   
     
+    
+    export enum FlagPosition {CENTER, LEFT, RIGHT};
+    export enum FlagLevel {TOP, MIDDLE, BOTTOM};
+    
     export interface GamePlayAction {}
     
     // Abstract algorithm step, represents single step of given algorithm.
@@ -90,6 +94,84 @@ module Common {
         
     }   
     
+    // contains location info for given flag, used to show on game arena as helpers
+    export class FlagLocationInfo {
+        constructor(public index: number, public position: FlagPosition, public level: FlagLevel) {};
+    }
+    
+    export class LineGameArena< T extends Phaser.Group> {
+        
+        protected _boxes: T[] = [];
+        protected _boxLine: Phaser.Group;
+        
+        protected _game: AlgoGame;
+        
+        private _flags: Phaser.Sprite[] = [];
+        private _boxSpace: number;
+        
+        constructor(game: AlgoGame) {
+            this._game = game;
+        }
+        
+        public showFlags(flags: FlagLocationInfo[]): void {
+            
+            this._boxSpace = this._boxes[1].x - (this._boxes[0].x + this._boxes[0].width);
+            
+            for(var flag of flags) {
+                var flagSprite = this.createSpriteForFlag(flag.position, flag.level);
+                var anchor = this._boxes[flag.index];
+                flagSprite.x = this.getXPosition(anchor, flag.position);
+                flagSprite.y = this.getYPosition(anchor, flag.level);
+                this._flags.push(flagSprite);
+            }
+        }
+        
+        private getXPosition(anchor: T, position: FlagPosition): number {
+            switch(position) {
+                case FlagPosition.CENTER:
+                    return anchor.x + anchor.width/2 + this._boxLine.x; 
+                case FlagPosition.LEFT:
+                    return anchor.x - this._boxSpace/2 + this._boxLine.x;
+                case FlagPosition.RIGHT:
+                    return anchor.x + anchor.width + this._boxSpace/2 + this._boxLine.x;
+            }
+            throw `Unknown position for flag [${position}]`;
+        }
+        
+        private getYPosition(anchor: T, level: FlagLevel): number {
+            switch(level) {
+                case FlagLevel.TOP:
+                case FlagLevel.MIDDLE:
+                    return anchor.y + anchor.width + 20 + this._boxLine.y;
+                case FlagLevel.BOTTOM:
+                    return anchor.y + anchor.width + 50 + this._boxLine.y;
+            }
+            throw `Unknown level for flag [${level}]`;
+        }
+        
+        
+        private createSpriteForFlag(position: FlagPosition, level: FlagLevel): Phaser.Sprite {
+            var box: Phaser.Sprite = this._game.add.sprite(0,0, 'box');
+            box.scale.setTo(0.2);
+            box.anchor.setTo(0.5);
+            return box;
+        }
+        
+        public destroy(): void {
+            for(var box of this._boxes) {
+                box.destroy();
+            }
+            
+            for(var flag of this._flags) {
+                flag.destroy();
+            }
+            
+            this._boxLine.destroy();
+            this._boxes = null;
+        }
+        
+    }
+    
     export class PractiseGamePlay<T extends GamePlayAction, A extends Algorithm> extends Common.GameContainerWithStoreSupport {
 
         protected _algorithm: A;
@@ -159,7 +241,7 @@ module Common {
         protected onInit(): void {
             
         }
-
+        
         protected createGamePlayInfo(): Common.GamePlayInfo {
             return  new Common.GamePlayInfo(
                 Constants.STEP_TIME,

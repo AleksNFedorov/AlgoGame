@@ -11,7 +11,7 @@ module Sort {
         private _newPosition: number;
         private _currentArray: number[];
       
-        constructor(stepNumber: number, newPosition: number, array: number[]) {
+        constructor(stepNumber: number, newPosition: number, array: number[] = []) {
             super(false, stepNumber);
             this._newPosition = newPosition;
             this._currentArray = array.slice(0);
@@ -76,11 +76,7 @@ module Sort {
         }
     }
     
-    class AbstractSortingBoxLine {
-        
-        protected _boxes: BoxContainer[] = [];
-        protected _boxLine: Phaser.Group;
-        protected _game: Common.AlgoGame;
+    class AbstractSortingBoxLine extends Common.LineGameArena<BoxContainer> {
         
         private _boxClickedCallback: Function;
         
@@ -88,18 +84,24 @@ module Sort {
         protected _placeToInsert: number = -1;
 
         constructor(game: Common.AlgoGame, boxClickedCallback:Function, sequence: number[]) {
-            this._game = game;
+            super(game);
             this._boxClickedCallback = boxClickedCallback;
             this.init(sequence);
         }
         
         private init(seqeunce: number[]) {
             this._boxLine = this._game.add.group();
-            this._boxLine.x = 20;
+            this._boxLine.x = 50;
             this._boxLine.y = 300;
 
             this._boxes = this.createBoxes(seqeunce);
             this._game.input.addMoveCallback(this.move, this);
+        }
+        
+        public highlightBox(index: number): void {
+            if (index != null) {
+                this._boxes[index].alpha = 0.5;
+            }
         }
         
         private move(pointer: any, x: number, y: number): void {
@@ -171,16 +173,6 @@ module Sort {
             boxContainer.setBoxIndex(index);
             return boxContainer;
         }
-
-        public destroy(): void {
-            for(var box of this._boxes) {
-                box.destroy();
-            }
-            
-            this._boxes = [];
-            this._boxLine.destroy();
-        }
-        
     }
     
     class SwapBoxLine extends AbstractSortingBoxLine {
@@ -253,8 +245,8 @@ module Sort {
         
         constructor(game: Common.AlgoGame, boxClickedCallback:Function, sequence: number[]) {
             super(game, boxClickedCallback, sequence);
-            this._separatorIndex = this.createSeparatorIndex();
             this._separator = this.createSeparator();
+            this._separatorIndex = this.createSeparatorIndex();
         }
          
         protected updateSeparator(x: number, y: number): void {
@@ -264,8 +256,7 @@ module Sort {
             var leftBorder = this._separatorIndex[0];
             var nx = Math.max(leftBorder, x);
             nx = Math.min(this._boxLine.x + this._boxLine.width + stepWidth / 2, nx);
-            
-            
+
             var indexElement = Math.floor( (nx-leftBorder)/stepWidth);
             
             this._separator.alpha = 1;
@@ -365,6 +356,10 @@ module Sort {
             this._boxLine = this.createBoxLine();
         }
         
+        protected highlightElement(index: number) {
+            this._boxLine.highlightBox(index);
+        }
+        
         protected createBoxLine(): AbstractSortingBoxLine {
             throw "Method is not implemented [createBoxLine]";
         }
@@ -411,8 +406,12 @@ module Sort {
             this._boxLine = this.createBoxLine();
         }
         
+        protected highlightElement(index: number) {
+            this._boxLine.highlightBox(index);
+        }
+        
         protected createBoxLine(): AbstractSortingBoxLine {
-            throw "Method is not implemented [createBoxLine]";
+            throw "Method is not implemented [createBoxLine()]";
         }
         
         protected createAlgorithm(config: any): T {

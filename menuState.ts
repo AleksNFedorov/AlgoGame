@@ -59,6 +59,10 @@ class LevelMenuState extends Common.State {
     
 }
 
+//
+// Search algorithms
+//
+
 class BinarySearchPractise extends Common.PractiseState {
     
     protected buildGamePlay(): Common.PractiseGamePlay<Common.GamePlayAction, Common.Algorithm> {
@@ -72,6 +76,10 @@ class BinarySearchExam extends Common.ExamState {
         return new BinarySearch.BinarySearchExamGamePlay(this.algoGame);
     }
 }
+
+//
+// Sort algorithms
+//
 
 class InsertionSortPractise extends Common.PractiseState {
     
@@ -101,6 +109,23 @@ class SelectionSortExam extends Common.ExamState {
     }
 }
 
+class MergeSortPractise extends Common.PractiseState {
+    
+    protected buildGamePlay(): Common.PractiseGamePlay<Common.GamePlayAction, Common.Algorithm> {
+        return new Sort.MergeSortPractiseGamePlay(this.algoGame);
+    }
+}
+
+class MergeSortExam extends Common.ExamState {
+    
+    protected buildGamePlay(): Common.ExamGamePlay<Common.GamePlayAction, Common.Algorithm> {
+        return new Sort.MergeSortExamGamePlay(this.algoGame);
+    }
+}
+
+//
+// Graph algorithms
+//
 class DebthFirstSearchPractise extends Common.PractiseState {
     
     protected buildGamePlay(): Common.PractiseGamePlay<Common.GamePlayAction, Common.Algorithm> {
