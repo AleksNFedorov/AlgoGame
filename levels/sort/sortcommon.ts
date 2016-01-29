@@ -32,6 +32,7 @@ module Sort {
         
         private _pressCallback: Function;
         private _releaseCallback: Function;
+        private _overCallback: Function;
         
         constructor(game:Common.AlgoGame, boxValue: number, pressCallback: Function, releaseCallback: Function) {
             super(game);
@@ -56,7 +57,6 @@ module Sort {
             boxKeyText.inputEnabled = true;
             boxKeyText.events.onInputDown.add(this.onInputDown.bind(this));
             boxKeyText.events.onInputUp.add(this.onInputUp.bind(this));
-
             
             this.add(box);
             this.add(boxKeyText);
@@ -185,8 +185,16 @@ module Sort {
     
     class SwapBoxLine extends AbstractSortingBoxLine {
         
+        private _stepSize: number;
+        private _swapBox: BoxContainer
+        
         constructor(game: Common.AlgoGame, boxClickedCallback:Function, sequence: number[]) {
             super(game, boxClickedCallback, sequence);
+            this._stepSize = this.calcualteStepSize();
+        }
+        
+        private calcualteStepSize(): number {
+            return this._boxes[1].x - this._boxes[0].x;
         }
         
         public applyAction(action: SortAction): void {
@@ -197,13 +205,13 @@ module Sort {
             var fromBox: BoxContainer = this._boxes[fromBoxIndex];
             var toBox: BoxContainer = this._boxes[toBoxIndex];
 
-            var fromBoxMoveUp: Phaser.Tween = this._game.add.tween(fromBox).to({y: fromBox.y - 60}, 70, "Quart.easeOut");
-            var fromBoxMoveTo: Phaser.Tween = this._game.add.tween(fromBox).to({y: toBox.y, x: toBox.x}, 70, "Quart.easeOut");
+            var fromBoxMoveUp: Phaser.Tween = this._game.add.tween(fromBox).to({y: fromBox.y - 60}, 300, "Quart.easeOut");
+            var fromBoxMoveTo: Phaser.Tween = this._game.add.tween(fromBox).to({y: toBox.y, x: toBox.x}, 300, "Quart.easeOut");
             
             fromBoxMoveUp.chain(fromBoxMoveTo);
 
-            var toBoxMoveUp: Phaser.Tween = this._game.add.tween(toBox).to({y: toBox.y - 60}, 70, "Quart.easeOut");
-            var toBoxMoveFrom: Phaser.Tween = this._game.add.tween(toBox).to({y: fromBox.y, x: fromBox.x}, 70, "Quart.easeOut");
+            var toBoxMoveUp: Phaser.Tween = this._game.add.tween(toBox).to({y: toBox.y - 60}, 300, "Quart.easeOut");
+            var toBoxMoveFrom: Phaser.Tween = this._game.add.tween(toBox).to({y: fromBox.y, x: fromBox.x}, 300, "Quart.easeOut");
             
             toBoxMoveUp.chain(toBoxMoveFrom);
             
@@ -213,7 +221,29 @@ module Sort {
             this.moveBox(fromBox, toBoxIndex);
             this.moveBox(toBox, fromBoxIndex);
         }
+        
+        protected updateSeparator(x, y): void {
 
+            this.hideSeparator();
+
+            var elementIndex = Math.floor((x - this._boxLine.x) / this._stepSize);
+            elementIndex = Math.max(0, elementIndex);
+            elementIndex = Math.min(this._boxes.length - 1, elementIndex);
+            
+            console.log(`Element index [${elementIndex}] `);
+            this._swapBox = this._boxes[elementIndex];
+            this._swapBox.alpha = 0.5;
+            
+            this._placeToInsert = elementIndex;
+
+        }
+
+        public hideSeparator(): void {
+            
+            if (this._swapBox != null) {
+                this._swapBox.alpha = 1;
+            }
+        }
     }
     
     class ShiftBoxLine extends AbstractSortingBoxLine {

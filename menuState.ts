@@ -87,6 +87,20 @@ class InsertionSortExam extends Common.ExamState {
     }
 }
 
+class SelectionSortPractise extends Common.PractiseState {
+    
+    protected buildGamePlay(): Common.PractiseGamePlay<Common.GamePlayAction, Common.Algorithm> {
+        return new Sort.SelectionSortPractiseGamePlay(this.algoGame);
+    }
+}
+
+class SelectionSortExam extends Common.ExamState {
+    
+    protected buildGamePlay(): Common.ExamGamePlay<Common.GamePlayAction, Common.Algorithm> {
+        return new Sort.SelectionSortExamGamePlay(this.algoGame);
+    }
+}
+
 class DebthFirstSearchPractise extends Common.PractiseState {
     
     protected buildGamePlay(): Common.PractiseGamePlay<Common.GamePlayAction, Common.Algorithm> {

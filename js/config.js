@@ -75,7 +75,7 @@ var globalConfig = {
         selectionSort: {
             practise: {
                 stageName: "selectionSortPractise",
-                stepsToPass: 5,
+                stepsToPass: 50,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://google.com",
@@ -83,10 +83,10 @@ var globalConfig = {
                     MenuButtonExam:"selectionSortExam",
                 },
                 gamePlay: {
-                    minSeqNumber: 100,
-                    maxSeqNumber: 1000,
-                    minElementsInSeq: 14,
-                    maxElementsInSeq: 20,
+                    minSeqNumber: 1,
+                    maxSeqNumber: 30,
+                    minElementsInSeq: 5,
+                    maxElementsInSeq: 9,
                     sorted: false
                 }
             },
@@ -99,10 +99,10 @@ var globalConfig = {
                     MenuButtonPractise: "selectionSortPractise",
                 },
                 gamePlay: {
-                    minSeqNumber: 100,
-                    maxSeqNumber: 1000,
-                    minElementsInSeq: 6,
-                    maxElementsInSeq: 14,
+                    minSeqNumber: 1,
+                    maxSeqNumber: 20,
+                    minElementsInSeq: 4,
+                    maxElementsInSeq: 7,
                     sorted: false
                 }
             }

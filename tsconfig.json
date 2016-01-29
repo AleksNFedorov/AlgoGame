@@ -26,6 +26,7 @@
         "levels/binarySearch/binarySearch.ts",
         "levels/sort/sortcommon.ts",
         "levels/sort/insertion.ts",
+        "levels/sort/selection.ts",
         "levels/graph/traverse.ts"
     ]
 }

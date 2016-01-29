@@ -23,7 +23,7 @@ module Sort {
                 }
                 
                 if(tmp!=i)  {
-                    tmp2 = sortMe[tmp];
+                    tmp2 = values[tmp];
                     values[tmp] = values[i];
                     values[i] = tmp2;
                     steps.push(new Step(i, tmp, values));
@@ -34,13 +34,13 @@ module Sort {
         
     }
     
-    export class InsertionSortPractiseGamePlay extends SwapSortPractiseGamePlay<SelectionSortAlgorithm> {
+    export class SelectionSortPractiseGamePlay extends SwapSortPractiseGamePlay<SelectionSortAlgorithm> {
         protected createAlgorithm(config: any): SelectionSortAlgorithm {
             return new SelectionSortAlgorithm(config);
         }
     }
     
-    export class InsertionSortExamGamePlay extends SwapSortExamGamePlay<SelectionSortAlgorithm> {
+    export class SelectionSortExamGamePlay extends SwapSortExamGamePlay<SelectionSortAlgorithm> {
         protected createAlgorithm(config: any): SelectionSortAlgorithm {
             return new SelectionSortAlgorithm(config);
         }
