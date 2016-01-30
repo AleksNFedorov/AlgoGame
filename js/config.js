@@ -142,6 +142,41 @@ var globalConfig = {
                 }
             }
         },
+        quickSort: {
+            practise: {
+                stageName: "quickSortPractise",
+                stepsToPass: 50,
+                menu: {
+                    MenuButtonMenu: "menu",
+                    MenuButtonDescription: "http://google.com",
+                    MenuButtonPractise: "",
+                    MenuButtonExam:"quickSortExam",
+                },
+                gamePlay: {
+                    minSeqNumber: 1,
+                    maxSeqNumber: 10,
+                    minElementsInSeq: 7,
+                    maxElementsInSeq: 10,
+                    sorted: false
+                }
+            },
+            exam: {
+                stageName: "quickSortExam",
+                stepsToPass: 2,
+                menu: {
+                    MenuButtonMenu: "menu",
+                    MenuButtonDescription: "http://fb.com",
+                    MenuButtonPractise: "quickSortPractise",
+                },
+                gamePlay: {
+                    minSeqNumber: 1,
+                    maxSeqNumber: 20,
+                    minElementsInSeq: 7,
+                    maxElementsInSeq: 10,
+                    sorted: false
+                }
+            }
+        },
         // Graphs
         debthFirstSearch: {
             practise: {

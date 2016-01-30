@@ -113,6 +113,13 @@ module Common {
             this._game = game;
         }
         
+        public clearFlags(): void {
+            for(var flag of this._flags) {
+                flag.destroy();
+            }
+            this._flags = [];
+        }
+        
         public showFlags(flags: FlagLocationInfo[]): void {
             
             this._boxSpace = this._boxes[1].x - (this._boxes[0].x + this._boxes[0].width);
@@ -149,7 +156,6 @@ module Common {
             throw `Unknown level for flag [${level}]`;
         }
         
-        
         private createSpriteForFlag(position: FlagPosition, level: FlagLevel): Phaser.Sprite {
             var box: Phaser.Sprite = this._game.add.sprite(0,0, 'box');
             box.scale.setTo(0.2);
@@ -162,10 +168,8 @@ module Common {
                 box.destroy();
             }
             
-            for(var flag of this._flags) {
-                flag.destroy();
-            }
-            
+            this.clearFlags();
+
             this._boxLine.destroy();
             this._boxes = null;
         }

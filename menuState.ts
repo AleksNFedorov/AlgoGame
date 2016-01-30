@@ -123,6 +123,19 @@ class MergeSortExam extends Common.ExamState {
     }
 }
 
+class QuickSortPractise extends Common.PractiseState {
+    
+    protected buildGamePlay(): Common.PractiseGamePlay<Common.GamePlayAction, Common.Algorithm> {
+        return new Sort.QuickSortPractiseGamePlay(this.algoGame);
+    }
+}
+
+class QuickSortExam extends Common.ExamState {
+    
+    protected buildGamePlay(): Common.ExamGamePlay<Common.GamePlayAction, Common.Algorithm> {
+        return new Sort.QuickSortExamGamePlay(this.algoGame);
+    }
+}
 //
 // Graph algorithms
 //

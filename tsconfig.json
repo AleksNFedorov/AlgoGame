@@ -28,6 +28,7 @@
         "levels/sort/insertion.ts",
         "levels/sort/selection.ts",
         "levels/sort/merge.ts",
+        "levels/sort/quick.ts",
         "levels/graph/traverse.ts"
     ]
 }

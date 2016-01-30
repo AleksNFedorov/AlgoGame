@@ -3,6 +3,10 @@
 
 module Sort {
 
+    export class ElementWithIndex {
+        constructor(public value: number, public index: number){}
+    }
+
     export class SortAction implements Common.GamePlayAction {
         constructor(public index: number, public position: number){};
     }
@@ -15,6 +19,10 @@ module Sort {
             super(false, stepNumber);
             this._newPosition = newPosition;
             this._currentArray = array.slice(0);
+        }
+        
+        public get parameters(): number[] {
+            return this._currentArray.slice(0);
         }
         
         public get newPosition(): number {

@@ -2,10 +2,6 @@
 
 module Sort {
 
-    class ElementWithIndex {
-        constructor(public value: number, public index: number){}
-    }
-
     class MergeSortAlgorithm extends Common.Algorithm {
         
         private mergeSteps: Step[];
