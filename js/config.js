@@ -11,10 +11,10 @@ var globalConfig = {
                     MenuButtonExam:"binarySearchExam",
                 },
                 gamePlay: {
-                    minSeqNumber: 100,
-                    maxSeqNumber: 1000,
-                    minElementsInSeq: 14,
-                    maxElementsInSeq: 20,
+                    minSeqNumber: 1,
+                    maxSeqNumber: 10,
+                    minElementsInSeq: 5,
+                    maxElementsInSeq: 9,
                     sorted: true
                 }
             },
@@ -28,10 +28,10 @@ var globalConfig = {
                     MenuButtonPractise: "binarySearchPractise",
                 },
                 gamePlay: {
-                    minSeqNumber: 100,
-                    maxSeqNumber: 1000,
+                    minSeqNumber: 1,
+                    maxSeqNumber: 10,
                     minElementsInSeq: 6,
-                    maxElementsInSeq: 21,
+                    maxElementsInSeq: 9,
                     sorted: true
                 }
             }
@@ -86,7 +86,7 @@ var globalConfig = {
                     minSeqNumber: 1,
                     maxSeqNumber: 30,
                     minElementsInSeq: 5,
-                    maxElementsInSeq: 9,
+                    maxElementsInSeq: 7,
                     sorted: false
                 }
             },

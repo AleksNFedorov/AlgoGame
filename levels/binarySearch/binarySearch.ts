@@ -139,145 +139,19 @@ module BinarySearch {
         
     }
     
-    class BoxContainer {
-        
-        constructor(
-            public boxGroup: Phaser.Group, 
-            public boxAndTextGroup: Phaser.Group
-            ) {}
-            
-        destroy(): void {
-          this.boxAndTextGroup.destroy();
-        }
-        
-    }
-    
-    class BoxLine {
-        
-        private _boxes: BoxContainer[] = [];
-        private _boxToFind: Phaser.Group;
-        private _boxLine: Phaser.Group;
-        private _game: Common.AlgoGame;
-        private _boxClickedCallback: Function;
+    class BoxLine extends Common.LineGameArena <BinarySearchAction>{
         
         constructor(game: Common.AlgoGame, boxClickedCallback:Function, sequence: number[], elementToFindIndex: number) {
-            this._game = game;
-            this._boxClickedCallback = boxClickedCallback;
-            this.init(sequence, elementToFindIndex);
-        }
-        
-        private init(seqeunce: number[], elementToFindIndex: number) {
-            this._boxLine = this._game.add.group();
-            this._boxLine.x = 20;
-            this._boxLine.y = 300;
-
-            this._boxes = this.createBoxes(seqeunce);
-            
-            //Creating element to find box
-            this._boxToFind = this.createElementToFindBox(seqeunce[elementToFindIndex]);
-            this._boxToFind.x = 20;
-            this._boxToFind.y = 200;
-        }
-        
-        public hideBoxesOutOf(from: number, to: number) {
-          
-          for(var i = 0; i< this._boxes.length; ++i) {
-              if (i < from || i > to) {
-                this._boxes[i].boxGroup.alpha = 0.5;
-              }
-          }
-        }
-        
-        public higlightBox(boxIndex: number) {
-            var boxContainer: BoxContainer = this._boxes[boxIndex];
-            var boxGroup: Phaser.Group = boxContainer.boxGroup;
-
-            this._game.add.tween(boxGroup).to({y:boxGroup.y - 4}, 
-                300, 
-                Phaser.Easing.Exponential.Out, true);
+            super(game, boxClickedCallback, sequence);
+            this.higlightBox(elementToFindIndex);
         }
         
         public selectBox(boxIndex: number) {
             this.higlightBox(boxIndex);
         }
         
-        private createBoxes(seqeunce: number[]): BoxContainer[] {
-            
-            var boxes: BoxContainer[] = [];
-            var boxInterval = 1000/seqeunce.length;
-            
-            for(var index = 0; index < seqeunce.length; ++index) {
-                var boxContainer: BoxContainer = this.createBoxWithIndex(index, seqeunce[index]);
-                this._boxLine.add(boxContainer.boxAndTextGroup);
-                boxContainer.boxAndTextGroup.x = boxInterval * index;
-                boxContainer.boxAndTextGroup.y = 0;
-                
-                boxes.push(boxContainer);
-            }
-            
-            return boxes;
-        }
-        
-        private createBoxWithIndex(index: number, value:number): BoxContainer {
-            
-            var boxAndTextGroup: Phaser.Group = this._game.add.group();
-            
-            var boxGroup = this._game.add.group();
-            var box: Phaser.Sprite =  this._game.add.sprite(0,0, 'box');
-            var boxKeyText: Phaser.Text = this._game.add.text(box.height/2, box.width/2 , "" + value, Constants.CONTROL_PANEL_MESSAGE_STYLE);
-            boxKeyText.anchor.setTo(0.5);
-            
-            var boxIndexText: Phaser.Text = this._game.add.text(boxKeyText.x,  boxKeyText.y + 35 , "" + (index + 1), Constants.CONTROL_PANEL_MESSAGE_STYLE);
-            boxKeyText.anchor.setTo(0.5);
-            
-            boxGroup.add(box);
-            boxGroup.add(boxKeyText);
-            boxAndTextGroup.add(boxGroup);
-            boxAndTextGroup.add(boxIndexText);
-            
-            var boxClicked = this.createBoxClickCallback(index);
-            
-            box.inputEnabled = true;
-            boxKeyText.inputEnabled = true;
-            
-            box.events.onInputDown.add(boxClicked);
-            boxKeyText.events.onInputDown.add(boxClicked);
-            
-            return new BoxContainer(boxGroup, boxAndTextGroup);
-        }
-        
-        private createElementToFindBox(value: number) {
-
-            var boxGroup = this._game.add.group();
-
-            var box: Phaser.Sprite =  this._game.add.sprite(0,0, 'box');
-            var boxKeyText: Phaser.Text = this._game.add.text(box.height/2, box.width/2 , "" + value, Constants.CONTROL_PANEL_MESSAGE_STYLE);
-            boxKeyText.anchor.setTo(0.5);
-            
-            boxGroup.add(box);
-            boxGroup.add(boxKeyText);
-
-            box.inputEnabled = true;
-            boxKeyText.inputEnabled = true;
-        
-            return boxGroup;
-
-        }
-        
-        private createBoxClickCallback(index: number): Function {
-            return function() {
-                this._boxClickedCallback(new BinarySearchAction(index));
-            }.bind(this);
-        }
-        
-        public destroy(): void {
-            for(var box of this._boxes) {
-                box.destroy();
-            }
-            
-            this._boxes = [];
-            this._boxLine.destroy();
-            this._boxToFind.destroy();
+        protected onBoxClickPressed(index: number): void {
+            this.onAction(new BinarySearchAction(index));
         }
     }
 

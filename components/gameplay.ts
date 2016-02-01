@@ -99,18 +99,158 @@ module Common {
         constructor(public index: number, public position: FlagPosition, public level: FlagLevel) {};
     }
     
-    export class LineGameArena< T extends Phaser.Group> {
+    export class BoxContainer extends Phaser.Group {
+
+        private _boxIndex: number;
         
-        protected _boxes: T[] = [];
+        private _pressCallback: Function;
+        private _releaseCallback: Function;
+        
+        constructor(game:Common.AlgoGame, boxValue: number, pressCallback?: Function, releaseCallback?: Function) {
+            super(game);
+            this._pressCallback = pressCallback;
+            this._releaseCallback = releaseCallback;
+            
+            this.initBox(game, boxValue);
+            
+            game.add.existing(this);
+        }
+        
+        private initBox(game: Common.AlgoGame, value: number): void {
+
+            var box: Phaser.Sprite =  game.add.sprite(0,0, 'box');
+            var boxKeyText: Phaser.Text = game.add.text(box.height/2, box.width/2 , "" + value, Constants.CONTROL_PANEL_MESSAGE_STYLE);
+            boxKeyText.anchor.setTo(0.5);
+            
+            box.inputEnabled = true;
+            boxKeyText.inputEnabled = true;
+
+            if (this._pressCallback != null) {
+                box.events.onInputDown.add(this.onInputDown.bind(this));
+                boxKeyText.events.onInputDown.add(this.onInputDown.bind(this));
+            }
+
+            if (this._releaseCallback != null) {
+                box.events.onInputUp.add(this.onInputUp.bind(this));
+                boxKeyText.events.onInputUp.add(this.onInputUp.bind(this));
+            }
+            
+            this.add(box);
+            this.add(boxKeyText);
+        }
+        
+        public setBoxIndex(boxIndex: number): void {
+            this._boxIndex = boxIndex;
+        } 
+        
+        private onInputDown(): void {
+            this._pressCallback(this._boxIndex);
+        }
+        
+        private onInputUp(): void {
+            this._releaseCallback(this._boxIndex);
+        }
+    }
+    
+    export class LineGameArena<T extends Common.GamePlayAction> {
+        
+        protected _boxes: BoxContainer[] = [];
+        protected _boxIndexes: Phaser.Text[] = [];
         protected _boxLine: Phaser.Group;
         
         protected _game: AlgoGame;
         
         private _flags: Phaser.Sprite[] = [];
-        private _boxSpace: number;
+        private _boxSpace: number = 20;
         
-        constructor(game: AlgoGame) {
+        private _boxClickedCallback: Function;
+        
+        constructor(game: Common.AlgoGame, boxClickedCallback:Function, sequence: number[]) {
             this._game = game;
+            this._boxClickedCallback = boxClickedCallback;
+            this.init(sequence);
+        }
+        
+        
+        protected init(seqeunce: number[]) {
+            this._boxLine = this._game.add.group();
+            this._boxLine.x = 50;
+            this._boxLine.y = 300;
+
+            this._boxes = this.createBoxes(seqeunce);
+        }
+        
+        protected createBoxes(seqeunce: number[]): BoxContainer[] {
+            
+            var boxes: BoxContainer[] = [];
+            var boxInterval = 1000/seqeunce.length;
+            
+            for(var index = 0; index < seqeunce.length; ++index) {
+                var boxContainer: BoxContainer = this.createBox(index, seqeunce[index]);
+                this._boxLine.add(boxContainer);
+                boxContainer.x = boxInterval * index;
+                boxContainer.y = 0;
+                
+                boxes.push(boxContainer);
+                
+                var boxIndexText: Phaser.Text = this._game.add.text(boxContainer.x + 30,  boxContainer.y + 60 , "" + (index + 1), Constants.CONTROL_PANEL_MESSAGE_STYLE);
+                boxIndexText.anchor.setTo(0.5);
+                this._boxLine.add(boxIndexText);
+                this._boxIndexes.push(boxIndexText);
+            }
+            
+            return boxes;
+        }
+        
+        private createBox(index: number, value: number): BoxContainer {
+            var boxContainer: BoxContainer = new BoxContainer(this._game,
+                    value,
+                    this.onBoxClickPressed.bind(this),
+                    this.onBoxClickReleased.bind(this)
+                );
+            boxContainer.setBoxIndex(index);
+            return boxContainer;
+        }
+        
+        protected onBoxClickPressed(index: number): void {
+        }
+        
+        protected onBoxClickReleased(index: number): void {
+        }
+        
+        protected onAction(action: T): void {
+            this._boxClickedCallback(action);
+        }
+        
+        public higlightBox(boxIndex: number) {
+            var boxContainer: Common.BoxContainer = this._boxes[boxIndex];
+
+            this._game.add.tween(boxContainer).to({y:boxContainer.y - 14}, 
+                300, 
+                Phaser.Easing.Exponential.Out, true);
+        }
+        
+        public highlightBox(index: number): void {
+            if (index != null) {
+                this._boxes[index].alpha = 0.5;
+            }
+        }
+        
+        public hideBoxesOutOf(from: number, to: number): void {
+          
+          for(var i = 0; i< this._boxes.length; ++i) {
+              if (i < from || i > to) {
+                this._boxes[i].alpha = 0.5;
+              }
+          }
+        }
+        
+        public hideBoxesIn(from: number, to: number): void {
+          for(var i = 0; i< this._boxes.length; ++i) {
+              if (i >= from && i <= to) {
+                this._boxes[i].alpha = 0.5;
+              }
+          }
         }
         
         public clearFlags(): void {
@@ -122,18 +262,16 @@ module Common {
         
         public showFlags(flags: FlagLocationInfo[]): void {
             
-            this._boxSpace = this._boxes[1].x - (this._boxes[0].x + this._boxes[0].width);
-            
             for(var flag of flags) {
                 var flagSprite = this.createSpriteForFlag(flag.position, flag.level);
-                var anchor = this._boxes[flag.index];
+                var anchor = this._boxIndexes[flag.index];
                 flagSprite.x = this.getXPosition(anchor, flag.position);
                 flagSprite.y = this.getYPosition(anchor, flag.level);
                 this._flags.push(flagSprite);
             }
         }
         
-        private getXPosition(anchor: T, position: FlagPosition): number {
+        private getXPosition(anchor: Phaser.Text, position: FlagPosition): number {
             switch(position) {
                 case FlagPosition.CENTER:
                     return anchor.x + anchor.width/2 + this._boxLine.x; 
@@ -145,7 +283,7 @@ module Common {
             throw `Unknown position for flag [${position}]`;
         }
         
-        private getYPosition(anchor: T, level: FlagLevel): number {
+        private getYPosition(anchor: Phaser.Text, level: FlagLevel): number {
             switch(level) {
                 case FlagLevel.TOP:
                 case FlagLevel.MIDDLE:
@@ -168,10 +306,15 @@ module Common {
                 box.destroy();
             }
             
+            for(var boxIndex of this._boxIndexes) {
+                boxIndex.destroy();
+            }
+
             this.clearFlags();
 
             this._boxLine.destroy();
             this._boxes = null;
+            this._boxIndexes = null;
         }
         
     }

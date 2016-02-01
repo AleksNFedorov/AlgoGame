@@ -34,82 +34,19 @@ module Sort {
         }
     }
     
-    export class BoxContainer extends Phaser.Group {
-
-        private _boxIndex: number;
-        
-        private _pressCallback: Function;
-        private _releaseCallback: Function;
-        private _overCallback: Function;
-        
-        constructor(game:Common.AlgoGame, boxValue: number, pressCallback: Function, releaseCallback: Function) {
-            super(game);
-            this._pressCallback = pressCallback;
-            this._releaseCallback = releaseCallback;
-            
-            this.initBox(game, boxValue);
-            
-            game.add.existing(this);
-        }
-        
-        private initBox(game: Common.AlgoGame, value: number): void {
-
-            var box: Phaser.Sprite =  game.add.sprite(0,0, 'box');
-            var boxKeyText: Phaser.Text = game.add.text(box.height/2, box.width/2 , "" + value, Constants.CONTROL_PANEL_MESSAGE_STYLE);
-            boxKeyText.anchor.setTo(0.5);
-            
-            box.inputEnabled = true;
-            box.events.onInputDown.add(this.onInputDown.bind(this));
-            box.events.onInputUp.add(this.onInputUp.bind(this));
-
-            boxKeyText.inputEnabled = true;
-            boxKeyText.events.onInputDown.add(this.onInputDown.bind(this));
-            boxKeyText.events.onInputUp.add(this.onInputUp.bind(this));
-            
-            this.add(box);
-            this.add(boxKeyText);
-        }
-        
-        public setBoxIndex(boxIndex: number): void {
-            this._boxIndex = boxIndex;
-        } 
-        
-        private onInputDown(): void {
-            console.log("Index clicked " + this._boxIndex);
-            this._pressCallback(this._boxIndex);
-        }
-        
-        private onInputUp(): void {
-            this._releaseCallback(this._boxIndex);
-        }
-    }
     
-    class AbstractSortingBoxLine extends Common.LineGameArena<BoxContainer> {
-        
-        private _boxClickedCallback: Function;
+    class AbstractSortingBoxLine extends Common.LineGameArena<SortAction> {
         
         private _dragging: boolean = false;
         protected _placeToInsert: number = -1;
-
+        
         constructor(game: Common.AlgoGame, boxClickedCallback:Function, sequence: number[]) {
-            super(game);
-            this._boxClickedCallback = boxClickedCallback;
-            this.init(sequence);
+            super(game, boxClickedCallback, sequence);
         }
-        
-        private init(seqeunce: number[]) {
-            this._boxLine = this._game.add.group();
-            this._boxLine.x = 50;
-            this._boxLine.y = 300;
 
-            this._boxes = this.createBoxes(seqeunce);
+        protected init(sequence: number[]): void {
+            super.init(sequence);
             this._game.input.addMoveCallback(this.move, this);
-        }
-        
-        public highlightBox(index: number): void {
-            if (index != null) {
-                this._boxes[index].alpha = 0.5;
-            }
         }
         
         private move(pointer: any, x: number, y: number): void {
@@ -122,18 +59,18 @@ module Sort {
             throw "Method is not implemented [updateSeprator]";
         }
 
-        private onBoxStartDragging(index: number): void {
+        protected onBoxClickPressed(index: number): void {
             this._dragging = true;
             this._placeToInsert = index;
             this._boxes[index].alpha = 0.5;
         }
         
-        private onBoxStopDragging(index: number): void {
+        protected onBoxClickReleased(index: number): void {
             this._boxes[index].alpha = 1;
             this.hideSeparator();
             if (this._dragging) {
                 console.log("Box [" + index + "][" + this._placeToInsert + "]");
-                this._boxClickedCallback(new SortAction(index, this._placeToInsert));
+                this.onAction(new SortAction(index, this._placeToInsert));
                 this._dragging = false;
             }
         }
@@ -146,47 +83,12 @@ module Sort {
             throw "Method is not implemented [applyAction]";
         }
         
-        protected moveBox(box: BoxContainer, newPosition: number): void {
-            this._boxes[newPosition] = box;
-            box.setBoxIndex(newPosition);
-        }
-        
-        protected createBoxes(seqeunce: number[]): BoxContainer[] {
-            
-            var boxes: BoxContainer[] = [];
-            var boxInterval = 1000/seqeunce.length;
-            
-            for(var index = 0; index < seqeunce.length; ++index) {
-                var boxContainer: BoxContainer = this.createBox(index, seqeunce[index]);
-                this._boxLine.add(boxContainer);
-                boxContainer.x = boxInterval * index;
-                boxContainer.y = 0;
-                
-                boxes.push(boxContainer);
-                
-                var boxIndexText: Phaser.Text = this._game.add.text(boxContainer.x + 30,  boxContainer.y + 60 , "" + (index + 1), Constants.CONTROL_PANEL_MESSAGE_STYLE);
-                boxIndexText.anchor.setTo(0.5);
-                this._boxLine.add(boxIndexText);
-            }
-            
-            return boxes;
-        }
-        
-        private createBox(index: number, value: number): BoxContainer {
-            var boxContainer: BoxContainer = new BoxContainer(this._game,
-                    value,
-                    this.onBoxStartDragging.bind(this),
-                    this.onBoxStopDragging.bind(this)
-                );
-            boxContainer.setBoxIndex(index);
-            return boxContainer;
-        }
     }
     
     class SwapBoxLine extends AbstractSortingBoxLine {
         
         private _stepSize: number;
-        private _swapBox: BoxContainer
+        private _swapBox: Common.BoxContainer
         
         constructor(game: Common.AlgoGame, boxClickedCallback:Function, sequence: number[]) {
             super(game, boxClickedCallback, sequence);
@@ -202,8 +104,10 @@ module Sort {
             var fromBoxIndex = action.index;
             var toBoxIndex = action.position;
             
-            var fromBox: BoxContainer = this._boxes[fromBoxIndex];
-            var toBox: BoxContainer = this._boxes[toBoxIndex];
+            var fromBox: Common.BoxContainer = this._boxes[fromBoxIndex];
+            var toBox: Common.BoxContainer = this._boxes[toBoxIndex];
+
+            this.swapBoxes(fromBoxIndex, toBoxIndex);
 
             var fromBoxMoveUp: Phaser.Tween = this._game.add.tween(fromBox).to({y: fromBox.y - 60}, 300, "Quart.easeOut");
             var fromBoxMoveTo: Phaser.Tween = this._game.add.tween(fromBox).to({y: toBox.y, x: toBox.x}, 300, "Quart.easeOut");
@@ -217,9 +121,17 @@ module Sort {
             
             fromBoxMoveUp.start();
             toBoxMoveUp.start();
+        }
+        
+        private swapBoxes(fromIndex: number, toIndex: number) {
+            var fromBox = this._boxes[fromIndex];
+            var toBox = this._boxes[toIndex];
             
-            this.moveBox(fromBox, toBoxIndex);
-            this.moveBox(toBox, fromBoxIndex);
+            fromBox.setBoxIndex(toIndex);
+            toBox.setBoxIndex(fromIndex);
+            
+            this._boxes[fromIndex] = toBox;
+            this._boxes[toIndex] = fromBox;
         }
         
         protected updateSeparator(x, y): void {
@@ -279,12 +191,12 @@ module Sort {
             var targetElementIndex: number = action.index;
             var newPosition: number = action.position;
             
-            var targetBox: BoxContainer = this._boxes[targetElementIndex];
+            var targetBox: Common.BoxContainer = this._boxes[targetElementIndex];
             var moveUp: Phaser.Tween = this._game.add.tween(targetBox).to({y: targetBox.y - 60}, 70, "Quart.easeOut");
             var moveDown: Phaser.Tween = this._game.add.tween(targetBox).to({y: targetBox.y}, 70, "Quart.easeOut");
             
             var headTween: Phaser.Tween = moveUp;
-            var shiftedBox: BoxContainer = targetBox;
+            var shiftedBox: Common.BoxContainer = targetBox;
             
             if (targetElementIndex < newPosition) {
                 //shifting right
@@ -348,7 +260,12 @@ module Sort {
             
             return index;
         }
-
+        
+        protected moveBox(box: Common.BoxContainer, newPosition: number): void {
+            this._boxes[newPosition] = box;
+            box.setBoxIndex(newPosition);
+        }
+        
         public destroy(): void {
             super.destroy();
             this._separator.destroy();

@@ -6,6 +6,8 @@ module Sort {
         
         private _mergeSteps: Step[];
         private _currentPivotIndex: number;
+        private _currentLeft: number;
+        private _currentRight: number;
         
         constructor(config: any) {
             super(config);
@@ -16,11 +18,6 @@ module Sort {
             this._mergeSteps = [];
             
             var values = this.sequence.slice(0);
-/*            var indexedValues: ElementWithIndex[] = [];
-            for(var i = 0; i < values.length; ++i) {
-                indexedValues.push(new ElementWithIndex(values[i], i));
-            }
-*/            
             this.quickSort(values, 0, values.length - 1);
             
             for(var value of values) {
@@ -31,9 +28,7 @@ module Sort {
         }
         
         private quickSort(items: number[], left: number, right: number) {
-
-            console.log(`Quicksort ${items.length} - left [${left}], reight - [${right}]`);
-
+            
             var index;
         
             if (items.length > 1) {
@@ -58,6 +53,9 @@ module Sort {
             console.log(`Partition ${items.length} - left [${left}], reight - [${right}]`);
 
             this._currentPivotIndex = Math.floor((right + left) / 2);
+            this._currentLeft = left;
+            this._currentRight = right;
+            
             var pivot = items[this._currentPivotIndex];
             var i = left;
             var j = right;
@@ -92,7 +90,11 @@ module Sort {
             items[secondIndex] = temp;
             
             if (firstIndex != secondIndex) {
-                this._mergeSteps.push(new Step(firstIndex,secondIndex, [this._currentPivotIndex]));
+                this._mergeSteps.push(new Step(firstIndex,secondIndex, [
+                    this._currentPivotIndex,
+                    this._currentLeft,
+                    this._currentRight
+                    ]));
             }
             
         }
@@ -115,7 +117,21 @@ module Sort {
                 Common.FlagPosition.CENTER,
                 Common.FlagLevel.BOTTOM
                 ));
-                
+               
+            flags.push(new Common.FlagLocationInfo(
+                step.parameters[1], 
+                Common.FlagPosition.LEFT,
+                Common.FlagLevel.MIDDLE
+                ));
+
+            flags.push(new Common.FlagLocationInfo(
+                step.parameters[2], 
+                Common.FlagPosition.RIGHT,
+                Common.FlagLevel.MIDDLE
+                ));
+
+            console.log(`Points to show ${step.parameters[0]}, ${step.parameters[1]}, ${step.parameters[2]}`);
+
             this._boxLine.showFlags(flags);
             
         }        
