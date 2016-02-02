@@ -88,6 +88,9 @@ module Graph {
         
         private indexEdges(node: GraphJS.Node): void {
             for(var edge of node.getAdjList()) {
+                if (edge.id >= 0) {
+                    continue;
+                }
                 edge.id = this._edgeSequence++;
                 if (edge.toNode.getAdjList().length > 0) {
                     this.indexEdges(edge.toNode);
@@ -123,14 +126,19 @@ module Graph {
     class DjikstraGraphUI extends Graph.GraphUI {
         
         private _edgeWitghtText: EdgeUI[];
+        private _extraStepCallback: Function;
+        
+        private _numberLine: Phaser.Group;
         
         constructor(game: Common.AlgoGame, nodes: GraphJS.Node[], 
             nodeClickedCallback: Function, 
             sourceNode: GraphJS.Node,
-            destinationNode: GraphJS.Node) {
+            destinationNode: GraphJS.Node,
+            extraStepCallback: Function) {
         
             super(game, nodes, nodeClickedCallback, sourceNode);
             this._nodes[destinationNode.id].alpha = 0.2;
+            this._extraStepCallback = extraStepCallback;
         }
         
         protected init(nodes: GraphJS.Node[]): void {
@@ -138,12 +146,76 @@ module Graph {
             super.init(nodes);
         }
         
-        public updateNodeWeight(index: number, weight: number): void {
-            var node = this._nodes[index];
-            var nodeText: Phaser.Text = <Phaser.Text>node.children[1];
-            nodeText.text = "" + weight;
+        public showExtraNumbers(step: DjikstraStep): void {
+            var targetNode = this._nodes[step.edge.toNode.id];
+            var nodeText: Phaser.Text = <Phaser.Text>targetNode.children[1];
+            var currentWeight = parseInt(nodeText.text || "0");
+            var edgeWeight = step.edge.weight;
+            var stepWeight = step.weight;
+            
+            if (stepWeight == currentWeight) {
+                currentWeight = stepWeight + Common.Algorithm.getRandomInteger(1, 5);
+            } 
+            
+            if (stepWeight == edgeWeight) {
+                edgeWeight = edgeWeight + Common.Algorithm.getRandomInteger(1, 5);
+            }
+            
+            this._numberLine = this.createNumberBoxes([
+                edgeWeight,
+                currentWeight,
+                stepWeight]);
+            this._numberLine.x = targetNode.x + targetNode.width + 10;
+            this._numberLine.y = targetNode.y;
         }
         
+        private createNumberBoxes(numbers: number[]): Phaser.Group {
+            var numberLine = this._game.add.group();
+            Phaser.ArrayUtils.shuffle(numbers);
+            for(var i = 0; i< numbers.length; ++i) {
+                var value = numbers[i];
+                var boxContainer = this.createNumberBox(value);
+                numberLine.add(boxContainer);
+                boxContainer.x = 30 * i;
+            }
+            
+            return numberLine;
+        }
+        
+        private createNumberBox(boxValue: number): Common.BoxContainer {
+            var boxContainer: Common.BoxContainer = new Common.BoxContainer(
+                this._game,
+                boxValue, 
+                this.numberBoxPressed.bind(this)
+            );
+            
+            boxContainer.scale.setTo(0.6);
+            boxContainer.setBoxIndex(boxValue);
+            return boxContainer;
+        }
+        
+        private numberBoxPressed(boxValue: number) {
+            this._extraStepCallback(boxValue);
+            this._numberLine.destroy();
+        }
+        
+        public clearState(): void {
+            if (this._numberLine != null) {
+                this._numberLine.destroy();
+            }
+        }
+        
+        public higlightEdge(step: DjikstraStep): void {
+            this._edgeWitghtText[step.edge.id].text.text = step.edge.weight + "**";
+        }
+
+        public updateNodeWeight(step: DjikstraStep): void {
+            this._edgeWitghtText[step.edge.id].text.text = "" + step.edge.weight;
+            var node = this._nodes[step.stepNumber];
+            var nodeText: Phaser.Text = <Phaser.Text>node.children[1];
+            nodeText.text = "" + step.weight;
+        }
+
         protected drawEdge(edge: GraphJS.Edge): void {
             super.drawEdge(edge);
             var parentPoint = this.getNodeScreenCoordinates(edge.fromNode);
@@ -157,7 +229,7 @@ module Graph {
             
             var edgeWeightText: Phaser.Text = this._game.add.text(wightTextX, wightTextY, "" + edge.weight , Constants.CONTROL_PANEL_MESSAGE_STYLE);
             edgeWeightText.anchor.setTo(0.5);
-            this._edgeWitghtText.push(new EdgeUI(edge, edgeWeightText));
+            this._edgeWitghtText[edge.id] = new EdgeUI(edge, edgeWeightText);
         }
         
         public destroy(): void {
@@ -189,9 +261,10 @@ module Graph {
         protected onInit(): void {
             this._graphUI = new DjikstraGraphUI(this._game,     
                 this._algorithm.sequence,
-                this.boxClicked.bind(this),
+                this.clickNode.bind(this),
                 this._algorithm.sourceNode,
-                this._algorithm.destinationNode
+                this._algorithm.destinationNode,
+                this.extraStepAction.bind(this)
             );
         }
         
@@ -199,10 +272,47 @@ module Graph {
             return new DjikstraSearchAlgorithm(config);
         }
         
+        protected onNewStep(): void {
+            super.onNewStep();
+            var step: DjikstraStep = this.getCurrentStep();
+            
+            this._graphUI.clearState();
+            this._graphUI.higlightEdge(step);
+        };
+        
+        
         protected clickBox() {
             var step: DjikstraStep = this.getCurrentStep();
             this.boxClicked(new DjikstraGamePlayAction(step.edge.toNode.id, step.weight), false);
             return false;
+        }
+        
+        private clickNode(action: GraphAction): void {
+        
+            if (!this.checkStepAllowed(true)) {
+                return;
+            }
+            
+            this._stepPerformed = false;
+        
+            var step: DjikstraStep = this.getCurrentStep();
+            if (step.stepNumber === action.index) {
+                //show extra step
+                this._graphUI.showExtraNumbers(step);
+//                this.boxClicked(new DjikstraGamePlayAction(step.edge.toNode.id, step.weight), true);
+            } else {
+                this.boxClicked(new DjikstraGamePlayAction(action.index, -1), true);
+            }
+        }
+        
+        private extraStepAction(value: number) {
+            console.log(`Extra step action ${value}`);
+            var step: DjikstraStep = this.getCurrentStep();
+            if (step.weight === value) {
+                this.boxClicked(new DjikstraGamePlayAction(step.edge.toNode.id, step.weight), true);
+            } else {
+                this.boxClicked(new DjikstraGamePlayAction(step.edge.toNode.id, -1), true);
+            }
         }
 
         protected isCorrectStep(action: DjikstraGamePlayAction): boolean {
@@ -213,7 +323,7 @@ module Graph {
         
         protected onCorrectAction(): void {
             var step: DjikstraStep = this.getCurrentStep();
-            this._graphUI.updateNodeWeight(step.stepNumber, step.weight);
+            this._graphUI.updateNodeWeight(step);
         }
         
         protected destroyTempObjects():void {
@@ -233,13 +343,13 @@ module Graph {
         protected _graphUI: GraphUI;
         
         protected onInit(): void {
-            this._graphUI = new DjikstraGraphUI(this._game,     
+/*            this._graphUI = new DjikstraGraphUI(this._game,     
                 this._algorithm.sequence,
                 this.boxClicked.bind(this),
                 this._algorithm.sourceNode,
                 this._algorithm.destinationNode
             );
-        }
+*/        }
         
         protected createAlgorithm(config: any): DjikstraSearchAlgorithm {
             return new DjikstraSearchAlgorithm(config);

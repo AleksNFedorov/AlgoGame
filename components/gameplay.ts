@@ -88,7 +88,7 @@ module Common {
             return Algorithm.getRandomInteger(this.config.minSeqNumber, this.config.maxSeqNumber);
         }
         
-        protected static getRandomInteger(from: number, to: number): number {
+        public static getRandomInteger(from: number, to: number): number {
             return Math.floor(Math.random() * (to - from) + from);
         }
         
@@ -408,18 +408,7 @@ module Common {
         
         protected boxClicked(action: T, isUser:boolean = true) {
             
-            if (this.isNotCurrentState(Common.LevelStageState.RUNNING)) {
-                this._game.dispatch(Events.GAME_STEP_ON_PAUSE, this);
-                return;
-            }
-            
-            if (isUser && this._stepPerformed) {
-                console.log("Unable to make a second step");
-                this._game.dispatch(Events.GAME_MULTI_STEP_DONE, this);
-                return;
-            }
-            
-            this._stepPerformed = true;
+            this.checkStepAllowed(isUser);
 
             var step: Common.AlgorithmStep = this._algorithmStep;
             
@@ -442,6 +431,23 @@ module Common {
             } else {
                 this._game.dispatch(Events.GAME_WRONG_STEP_DONE, this);
             }
+        }
+        
+        protected checkStepAllowed(isUser: boolean): boolean {
+            if (this.isNotCurrentState(Common.LevelStageState.RUNNING)) {
+                this._game.dispatch(Events.GAME_STEP_ON_PAUSE, this);
+                return false;
+            }
+            
+            if (isUser && this._stepPerformed) {
+                console.log("Unable to make a second step");
+                this._game.dispatch(Events.GAME_MULTI_STEP_DONE, this);
+                return false;
+            }
+            
+            this._stepPerformed = true;
+            
+            return true;
         }
         
         protected onNewStep(): void {

@@ -185,7 +185,7 @@ module Graph {
             return new Phaser.Point(x,y);
         }
         
-        private createNodeClickCallback(index: number): Function {
+        protected createNodeClickCallback(index: number): Function {
             return function() {
                 this._nodeClickedCallback(new GraphAction(index));
             }.bind(this);
