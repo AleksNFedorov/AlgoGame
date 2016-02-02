@@ -189,6 +189,7 @@ var globalConfig = {
                     MenuButtonExam:"debthFirstSearchExam",
                 },
                 gamePlay: {
+                    minElements: 5,
                     minSeqNumber: 10,
                     maxSeqNumber: 100,
                     columns: 5,
@@ -201,10 +202,45 @@ var globalConfig = {
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://fb.com",
-                    MenuButtonObjectives: "OBJECTIVES",
                     MenuButtonPractise: "debthFirstSearchPractise",
                 },
                 gamePlay: {
+                    minElements: 5,
+                    minSeqNumber: 10,
+                    maxSeqNumber: 100,
+                    columns: 5,
+                    rows: 5,
+                }
+            }
+        },
+        djikstra: {
+            practise: {
+                stageName: "djikstraPractise",
+                stepsToPass: 5,
+                menu: {
+                    MenuButtonMenu: "menu",
+                    MenuButtonDescription: "http://google.com",
+                    MenuButtonPractise: "",
+                    MenuButtonExam:"djikstraExam",
+                },
+                gamePlay: {
+                    minElements: 5,
+                    minSeqNumber: 1,
+                    maxSeqNumber: 10,
+                    columns: 4,
+                    rows: 3,
+                }
+            },
+            exam: {
+                stageName: "djikstraExam",
+                stepsToPass: 20,
+                menu: {
+                    MenuButtonMenu: "menu",
+                    MenuButtonDescription: "http://fb.com",
+                    MenuButtonPractise: "djikstraPractise",
+                },
+                gamePlay: {
+                    minElements: 5,
                     minSeqNumber: 10,
                     maxSeqNumber: 100,
                     columns: 5,

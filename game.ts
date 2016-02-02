@@ -29,6 +29,9 @@ class Game extends Common.AlgoGame {
         this.state.add("debthFirstSearchPractise", DebthFirstSearchPractise);
         this.state.add("debthFirstSearchExam", DebthFirstSearchExam);
 
+        this.state.add("djikstraPractise", DjikstraPractise);
+        this.state.add("djikstraExam", DjikstraExam);
+
 
         this.state.start("boot");        
         

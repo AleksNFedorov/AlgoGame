@@ -60,7 +60,60 @@ function Graph(){
 		}
 		return ans;
 	};
-
+	
+	this.dijkstra = function(source,destination) {
+		
+		this.traversalSteps = [];
+		
+		this.previousNode=[];
+		this.distance=new Array();				
+		this.distance[source.id]=0;
+		this.pq=new MinPQ();
+		
+		var nodes=this.getAllNodes();
+		var length=nodes.length;
+		
+		for(var i=0;i<length;i++){
+			if(nodes[i]!=source){
+				this.distance[nodes[i].id] = Number.POSITIVE_INFINITY;
+			}
+	        this.pq.push(nodes[i],this.distance[nodes[i].id]);
+		}
+	
+		while(this.pq.size()!=0){
+			var u=this.pq.pop();
+			var adjList=u.adjList;
+			for (var i = 0; i < adjList.length; i++) {
+				var v=adjList[i];
+				if(this.distance[u.id]!=Number.POSITIVE_INFINITY) {
+					
+					var step = {
+						node: v
+					};
+					
+					var alt=this.distance[u.id]+u.weight[i];
+					if(alt<this.distance[v.id]){
+						step.weight = alt;	
+						this.distance[v.id]=alt;
+						this.previousNode[v.id]=u.id;
+	                    this.pq.remove(v);
+	                    this.pq.push(v,this.distance[v.id]);
+					} else {
+						step.weight = this.distance[v.id];	
+					}
+					this.traversalSteps.push(step);
+				}
+			}
+		}
+		if(typeof destination==='undefined'){
+	
+		} else {
+			return {
+				distance: this.distance[destination.name],
+				steps: this.traversalSteps
+			}
+		}
+	}
 }
 
 function Node(Name){
@@ -68,7 +121,7 @@ function Node(Name){
 	this.name = Name;
 	this.adjList = [];
 	this.weight = [];
-	
+
 	this.addEdge = function (neighbour,weight){
 		this.adjList.push(neighbour);
 		this.weight.push(weight);	
@@ -233,42 +286,6 @@ function MinPQNodes(content,priority){
 }
 
 
-function dijkstra(graph,source,destination){
-
-	this.previousNode=[];
-	this.distance=new Array();				
-	this.distance[source.name]=0;
-	this.pq=new MinPQ();
-	var nodes=graph.getAllNodes();
-	length=nodes.length;
-	for(var i=0;i<length;i++){
-		if(nodes[i]!=source){
-			this.distance[nodes[i].name]=Number.POSITIVE_INFINITY;
-		}
-        this.pq.push(nodes[i],this.distance[nodes[i].name]);
-	}
-	
-	while(this.pq.size()!=0){
-		u=this.pq.pop();
-		adjList=u.adjList;
-		for (var i = 0; i < adjList.length; i++) {
-			v=adjList[i];
-			if(this.distance[u.name]!=Number.POSITIVE_INFINITY){
-				alt=this.distance[u.name]+u.weight[i];
-				if(alt<this.distance[v.name]){
-					this.distance[v.name]=alt;
-					this.previousNode[v.name]=u.name;
-                    this.pq.remove(v);
-                    this.pq.push(v,this.distance[v.name]);
-				}
-			}
-		}
-	}
-	if(typeof destination==='undefined'){
-
-	}else 
-	return this.distance[destination.name];
-}
 
 function bellman_ford(graph,source,destination){
 	this.previousNode=[];

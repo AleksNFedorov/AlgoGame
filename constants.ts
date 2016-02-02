@@ -29,5 +29,5 @@ class Constants {
     
     static CONTROL_PANEL_MESSAGES_HISTORY_SIZE = 3;
     
-    static STEP_TIME = 10000;
+    static STEP_TIME = 4000;
 }

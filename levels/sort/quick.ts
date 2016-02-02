@@ -5,10 +5,14 @@ module Sort {
     class QuickSortAlgorithm extends Common.Algorithm {
         
         private _mergeSteps: Step[];
+        
         private _currentPivotIndex: number;
         private _currentLeft: number;
         private _currentRight: number;
         
+        private _sortedFrom: number;
+        private _sortedTo: number;
+
         constructor(config: any) {
             super(config);
         }
@@ -39,10 +43,14 @@ module Sort {
         
                 if (left < index - 1) {
                     this.quickSort(items, left, index - 1);
+                    this._sortedFrom = left;
+                    this._sortedTo = index - 1;
                 }
         
                 if (index < right) {
                     this.quickSort(items, index, right);
+                    this._sortedFrom = index;
+                    this._sortedTo = right;
                 }
             }
             return items;
@@ -93,7 +101,9 @@ module Sort {
                 this._mergeSteps.push(new Step(firstIndex,secondIndex, [
                     this._currentPivotIndex,
                     this._currentLeft,
-                    this._currentRight
+                    this._currentRight,
+                    this._sortedFrom,
+                    this._sortedTo
                     ]));
             }
             
@@ -109,6 +119,8 @@ module Sort {
         protected onNewStep(): void {
             super.onNewStep();
             var step: Step = <Step>this._algorithmStep;
+            
+            this._boxLine.hideBoxesIn(step.parameters[3], step.parameters[4]);
             this._boxLine.clearFlags();
             
             var flags: Common.FlagLocationInfo[] = [];
@@ -133,7 +145,6 @@ module Sort {
             console.log(`Points to show ${step.parameters[0]}, ${step.parameters[1]}, ${step.parameters[2]}`);
 
             this._boxLine.showFlags(flags);
-            
         }        
     }
 

@@ -140,7 +140,7 @@ module Common {
             var yOffset = 0;
             
             for(var levelInfo of this._levelLocker.levelInfos) {
-                yOffset += 100;
+                yOffset += 80;
                 var levelButton = new LevelButton(this._game, levelInfo, 50, yOffset, [12,2,82,2, 6]);
                 this.addGameElement(GameElements.LevelButton, levelButton);
             }

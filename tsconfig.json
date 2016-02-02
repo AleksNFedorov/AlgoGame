@@ -29,6 +29,8 @@
         "levels/sort/selection.ts",
         "levels/sort/merge.ts",
         "levels/sort/quick.ts",
-        "levels/graph/traverse.ts"
+        "levels/graph/graphcommon.ts",
+        "levels/graph/traverse.ts",
+        "levels/graph/djikstra.ts"
     ]
 }
