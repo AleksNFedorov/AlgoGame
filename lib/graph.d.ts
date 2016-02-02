@@ -1,21 +1,26 @@
 
 declare module GraphJS {
     
+    export class Edge {
+        id: number;
+        fromNode: Node;
+        toNode: Node;
+        weight: number;
+    }
+    
     export class Node {
         id: number;
         x: number;
         y: number;
         name: string;
-        weight: number[];
         constructor(name: string);
         addEdge(node: Node, wight: number): void;
-        getAdjList(): Node[];
-        compare(node: Node): boolean;
+        getAdjList(): Edge[];
         
     }
     
     export class DjikstraStep {
-        node: Node;
+        edge: Edge;
         weight: number;
     }
     
@@ -28,7 +33,7 @@ declare module GraphJS {
         addNode(node: Node): Node;
         getAllNodes(): Node[];
         getDFSTravaersal(): Node[];
-        dijkstra(source: Node, destination: Node):DjikstraResult;
+        dijkstra(source: Node, destination: Node): DjikstraResult;
     }
     
     

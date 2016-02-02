@@ -45,13 +45,13 @@ function Graph(){
 		traversedNodes.push(this.nodes[0]);
 		var marked={};
 		while(traversedNodes.length!=0){
-			var v=traversedNodes.pop();
-			marked[v.id]=true;
-			var adjList=v.adjList;
+			var v = traversedNodes.pop();
+			marked[v.id] = true;
+			var adjList = v.getAdjList();
 			console.log(v);
 			ans.push(v);
-			for (var i=0;i<adjList.length;i++){
-				var u=adjList[i];
+			for (var i = 0;i < adjList.length;i++){
+				var u = adjList[i].toNode;
 				if(marked[u.id]!=true){
 					traversedNodes.push(u);
 					marked[u.id]=true;
@@ -65,37 +65,39 @@ function Graph(){
 		
 		this.traversalSteps = [];
 		
-		this.previousNode=[];
-		this.distance=new Array();				
-		this.distance[source.id]=0;
-		this.pq=new MinPQ();
+		this.previousNode = [];
+		this.distance = new Array();				
+		this.distance[source.id] = 0;
+		this.pq = new MinPQ();
 		
-		var nodes=this.getAllNodes();
-		var length=nodes.length;
+		var nodes = this.getAllNodes();
+		var length = nodes.length;
 		
-		for(var i=0;i<length;i++){
-			if(nodes[i]!=source){
+		for(var i = 0;i < length;i++){
+			if(nodes[i] != source){
 				this.distance[nodes[i].id] = Number.POSITIVE_INFINITY;
 			}
 	        this.pq.push(nodes[i],this.distance[nodes[i].id]);
 		}
 	
-		while(this.pq.size()!=0){
-			var u=this.pq.pop();
-			var adjList=u.adjList;
+		while(this.pq.size() != 0){
+			var u = this.pq.pop();
+			var adjList = u.getAdjList();
 			for (var i = 0; i < adjList.length; i++) {
-				var v=adjList[i];
-				if(this.distance[u.id]!=Number.POSITIVE_INFINITY) {
+				var edge = adjList[i];
+				var v = edge.toNode;
+				
+				if(this.distance[u.id] != Number.POSITIVE_INFINITY) {
 					
 					var step = {
-						node: v
+						edge: edge
 					};
 					
-					var alt=this.distance[u.id]+u.weight[i];
-					if(alt<this.distance[v.id]){
+					var alt = this.distance[u.id] + edge.weight;
+					if(alt < this.distance[v.id]){
 						step.weight = alt;	
-						this.distance[v.id]=alt;
-						this.previousNode[v.id]=u.id;
+						this.distance[v.id] = alt;
+						this.previousNode[v.id] = u.id;
 	                    this.pq.remove(v);
 	                    this.pq.push(v,this.distance[v.id]);
 					} else {
@@ -105,7 +107,7 @@ function Graph(){
 				}
 			}
 		}
-		if(typeof destination==='undefined'){
+		if(typeof destination === 'undefined'){
 	
 		} else {
 			return {
@@ -116,23 +118,23 @@ function Graph(){
 	}
 }
 
+function Edge(fromNode, toNode, weight) {
+	this.fromNode = fromNode;
+	this.toNode = toNode;
+	this.weight = weight;
+}
+
 function Node(Name){
 	
 	this.name = Name;
-	this.adjList = [];
-	this.weight = [];
+	this.edges = [];
 
-	this.addEdge = function (neighbour,weight){
-		this.adjList.push(neighbour);
-		this.weight.push(weight);	
+	this.addEdge = function (toNode, weight){
+		this.edges.push(new Edge(this, toNode, weight ));
 	};
 	
 	this.getAdjList = function(){
-		return this.adjList;
-	};
-	
-	this.compare = function(node2){
-		return this.weight-node2.weight;
+		return this.edges;
 	};
 }
 

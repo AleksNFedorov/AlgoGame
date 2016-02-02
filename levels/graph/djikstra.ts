@@ -5,28 +5,21 @@ module Graph {
     
     class DjikstraStep extends Common.AlgorithmStep {
         
+        private _edge: GraphJS.Edge;
         private _weight: number;
         
-        constructor(isLast: boolean, index: number, weight: number) {
-            super(isLast, index);
+        constructor(isLast: boolean, edge: GraphJS.Edge, weight: number) {
+            super(isLast, edge.toNode.id);
+            this._edge = edge;
             this._weight = weight;
         }
         
         public get weight(): number {
             return this._weight;
         }
-    }
-    
-    class DjikstraGamePlayAction extends GraphAction {
-        private _weight: number;
         
-        constructor(index: number, weight: number) {
-            super(index);
-            this._weight = weight;
-        }
-
-        public get weight(): number {
-            return this._weight;
+        public get edge(): GraphJS.Edge {
+            return this._edge;
         }
     }
     
@@ -35,11 +28,20 @@ module Graph {
         private _sourceNode: GraphJS.Node;
         private _destinationNode: GraphJS.Node;
         
+        private _columns: number;
+        private _rows: number;
+        
+        private _edgeSequence: number;
+        
         constructor(config: any) {
             super(config);
         }
         
         protected generateSeqeunce(config: any): any[] {
+
+            this._columns = config.columns;
+            this._rows = config.rows;
+            this._edgeSequence = 0;
 
             var sequence = super.generateSeqeunce(config);
             this.addExtraEdges();
@@ -47,15 +49,13 @@ module Graph {
         }
        
         private addExtraEdges(): void {
-           var rows = this._presenceMatrix[0].length;
-           var cols = this._presenceMatrix.length;
-           
+
            var fromNode: GraphJS.Node;
            var toNode: GraphJS.Node;
            
-           for(var row = 0; row < rows; ++row) {
+           for(var row = 0; row < this._rows; ++row) {
                fromNode = null;
-               for(var col = 0; col < cols; ++col) {
+               for(var col = 0; col < this._columns; ++col) {
                    var currentNode = this._presenceMatrix[col][row]; 
                    if ( currentNode != null) {
                        if (fromNode != null) {
@@ -73,19 +73,37 @@ module Graph {
         protected runAlgorithm(): DjikstraStep[] {
             var algoSteps:DjikstraStep[] = [];
             this._sourceNode = this._sequence[0];
-            this._destinationNode = this._sourceNode;
-            
-            while(this._sourceNode === this._destinationNode) {
-                this._destinationNode = this._sequence[Common.Algorithm.getRandomInteger(1, this._sequence.length-1)];
-            }                
+            this._destinationNode = this.defineDestinationNode();
             
             var djikstraResult: GraphJS.DjikstraResult = this._graph.dijkstra(this._sourceNode, this._destinationNode);
+            
+            this.indexEdges(this._sourceNode);
+            
             for(var step of djikstraResult.steps) {
-                console.log(`Step ${step.node.id} - weight ${step.weight}`);
-                algoSteps.push(new DjikstraStep(false, step.node.id, step.weight));
+                algoSteps.push(new DjikstraStep(false, step.edge, step.weight));
             }
             
             return algoSteps;
+        }
+        
+        private indexEdges(node: GraphJS.Node): void {
+            for(var edge of node.getAdjList()) {
+                edge.id = this._edgeSequence++;
+                if (edge.toNode.getAdjList().length > 0) {
+                    this.indexEdges(edge.toNode);
+                }
+            }
+        }
+        
+        public defineDestinationNode(): GraphJS.Node {
+            //Get random node from all bottom nodes
+            var bottomNodes: GraphJS.Node[] = [];
+            for(var node of this.sequence) {
+                if (node.y == (this._rows - 1)) {
+                    bottomNodes.push(node);
+                }
+            }
+            return Phaser.ArrayUtils.getRandomItem(bottomNodes);
         }
         
         public get sourceNode(): GraphJS.Node {
@@ -98,9 +116,13 @@ module Graph {
 
     }
     
+    class EdgeUI {
+        constructor(public edge: GraphJS.Edge, public text:Phaser.Text){}
+    }
+    
     class DjikstraGraphUI extends Graph.GraphUI {
         
-        private _edgeWitghtText: Phaser.Text[];
+        private _edgeWitghtText: EdgeUI[];
         
         constructor(game: Common.AlgoGame, nodes: GraphJS.Node[], 
             nodeClickedCallback: Function, 
@@ -122,10 +144,10 @@ module Graph {
             nodeText.text = "" + weight;
         }
         
-        protected drawEdge(parent: GraphJS.Node, child: GraphJS.Node, weight: number): void {
-            super.drawEdge(parent, child, weight);
-            var parentPoint = this.getNodeScreenCoordinates(parent);
-            var childPoint = this.getNodeScreenCoordinates(child);
+        protected drawEdge(edge: GraphJS.Edge): void {
+            super.drawEdge(edge);
+            var parentPoint = this.getNodeScreenCoordinates(edge.fromNode);
+            var childPoint = this.getNodeScreenCoordinates(edge.toNode);
             
             var xDiff = childPoint.x - parentPoint.x;
             var yDiff = childPoint.y - parentPoint.y;
@@ -133,16 +155,30 @@ module Graph {
             var wightTextX = parentPoint.x + xDiff * 0.85;
             var wightTextY = parentPoint.y + yDiff * 0.85;
             
-            var edgeWeightText: Phaser.Text = this._game.add.text(wightTextX, wightTextY, "" + weight , Constants.CONTROL_PANEL_MESSAGE_STYLE);
+            var edgeWeightText: Phaser.Text = this._game.add.text(wightTextX, wightTextY, "" + edge.weight , Constants.CONTROL_PANEL_MESSAGE_STYLE);
             edgeWeightText.anchor.setTo(0.5);
-            this._edgeWitghtText.push(edgeWeightText);
+            this._edgeWitghtText.push(new EdgeUI(edge, edgeWeightText));
         }
         
         public destroy(): void {
             super.destroy();
-            for(var text of this._edgeWitghtText) {
-                text.destroy();
+            for(var edgeUI of this._edgeWitghtText) {
+                edgeUI.text.destroy();
             }
+        }
+    }
+    
+    class DjikstraGamePlayAction extends GraphAction {
+        
+        private _weight: number;
+        
+        constructor(index: number, weight: number) {
+            super(index);
+            this._weight = weight;
+        }
+
+        public get weight(): number {
+            return this._weight;
         }
     }
     
@@ -165,7 +201,7 @@ module Graph {
         
         protected clickBox() {
             var step: DjikstraStep = this.getCurrentStep();
-            this.boxClicked(new DjikstraGamePlayAction(step.stepNumber, step.weight), false);
+            this.boxClicked(new DjikstraGamePlayAction(step.edge.toNode.id, step.weight), false);
             return false;
         }
 
@@ -210,8 +246,8 @@ module Graph {
         }
         
         protected clickBox() {
-            var step: Common.AlgorithmStep = this.getCurrentStep();
-            this.boxClicked(new DjikstraGamePlayAction(-1, -1), false);
+            var step: DjikstraStep = this.getCurrentStep();
+            this.boxClicked(new DjikstraGamePlayAction(step.edge.toNode.id, step.edge.weight), false);
             return false;
         }
 

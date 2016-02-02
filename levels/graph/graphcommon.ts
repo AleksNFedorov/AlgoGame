@@ -10,8 +10,9 @@ module Graph {
     
     export class AbstractTraverseAlgorithm extends Common.Algorithm {
        
-       protected _presenceMatrix: GraphJS.Node[][];
        private _workSeqeunce: GraphJS.Node[];
+
+       protected _presenceMatrix: GraphJS.Node[][];
        protected _graph: GraphJS.Graph;
        
        constructor(config: any) {
@@ -31,6 +32,7 @@ module Graph {
        }
        
        protected createGraph(columns: number): void {
+           
            this._presenceMatrix = [];
            this._workSeqeunce = [];
            
@@ -163,16 +165,14 @@ module Graph {
         }
         
         private drawEdges(parent: GraphJS.Node): void {
-            for(var index in parent.getAdjList()) {
-                var child = parent.getAdjList()[index];
-                var weight = parent.weight[index];
-                this.drawEdge(parent, child, weight);
+            for(var edge of parent.getAdjList()) {
+                this.drawEdge(edge);
             }
         }
         
-        protected drawEdge(parent: GraphJS.Node, child: GraphJS.Node, weight: number): void {
-            var parentPoint = this.getNodeScreenCoordinates(parent);
-            var childPoint = this.getNodeScreenCoordinates(child);
+        protected drawEdge(edge: GraphJS.Edge): void {
+            var parentPoint = this.getNodeScreenCoordinates(edge.fromNode);
+            var childPoint = this.getNodeScreenCoordinates(edge.toNode);
             
             this._graphics.moveTo(parentPoint.x + 15, parentPoint.y + 15);
             this._graphics.lineStyle(2, 0x33FF00);
