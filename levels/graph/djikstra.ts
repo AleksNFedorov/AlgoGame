@@ -237,6 +237,7 @@ module Graph {
             for(var edgeUI of this._edgeWitghtText) {
                 edgeUI.text.destroy();
             }
+            this.clearState();
         }
     }
     
@@ -299,7 +300,6 @@ module Graph {
             if (step.stepNumber === action.index) {
                 //show extra step
                 this._graphUI.showExtraNumbers(step);
-//                this.boxClicked(new DjikstraGamePlayAction(step.edge.toNode.id, step.weight), true);
             } else {
                 this.boxClicked(new DjikstraGamePlayAction(action.index, -1), true);
             }
@@ -340,25 +340,54 @@ module Graph {
     
     export class DjikstraExamGamePlay extends Common.ExamGamePlay<DjikstraGamePlayAction, DjikstraSearchAlgorithm> {
     
-        protected _graphUI: GraphUI;
+       protected _graphUI: DjikstraGraphUI;
         
         protected onInit(): void {
-/*            this._graphUI = new DjikstraGraphUI(this._game,     
+            this._graphUI = new DjikstraGraphUI(this._game,     
                 this._algorithm.sequence,
-                this.boxClicked.bind(this),
+                this.clickNode.bind(this),
                 this._algorithm.sourceNode,
-                this._algorithm.destinationNode
+                this._algorithm.destinationNode,
+                this.extraStepAction.bind(this)
             );
-*/        }
+        }
         
         protected createAlgorithm(config: any): DjikstraSearchAlgorithm {
             return new DjikstraSearchAlgorithm(config);
         }
         
-        protected clickBox() {
+        protected onNewStep(): void {
+            super.onNewStep();
             var step: DjikstraStep = this.getCurrentStep();
-            this.boxClicked(new DjikstraGamePlayAction(step.edge.toNode.id, step.edge.weight), false);
-            return false;
+            
+            this._graphUI.clearState();
+            this._graphUI.higlightEdge(step);
+        };
+        
+        
+        protected clickBox() {
+            this.boxClicked(new DjikstraGamePlayAction(-1, -1), false);
+        }
+        
+        private clickNode(action: GraphAction): void {
+        
+            var step: DjikstraStep = this.getCurrentStep();
+            if (step.stepNumber === action.index) {
+                //show extra step
+                this._graphUI.showExtraNumbers(step);
+            } else {
+                this.boxClicked(new DjikstraGamePlayAction(action.index, -1), true);
+            }
+        }
+        
+        private extraStepAction(value: number) {
+            console.log(`Extra step action ${value}`);
+            var step: DjikstraStep = this.getCurrentStep();
+            if (step.weight === value) {
+                this.boxClicked(new DjikstraGamePlayAction(step.edge.toNode.id, step.weight), true);
+            } else {
+                this.boxClicked(new DjikstraGamePlayAction(step.edge.toNode.id, -1), true);
+            }
         }
 
         protected isCorrectStep(action: DjikstraGamePlayAction): boolean {
@@ -369,9 +398,8 @@ module Graph {
         
         protected onCorrectAction(): void {
             var step: DjikstraStep = this.getCurrentStep();
-            this._graphUI.onNodeClicked(step.stepNumber);
+            this._graphUI.updateNodeWeight(step);
         }
-        
         
         protected destroyTempObjects():void {
             super.destroyTempObjects();

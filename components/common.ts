@@ -2,6 +2,7 @@
 /// <reference path="../lib/gameconfig.d.ts" />
 
 declare var store: Store;
+declare var CryptoJS: any;
 declare var globalConfig: GameConfig.Config;
 declare var _LTracker:any;
 declare var log:any;
@@ -36,6 +37,35 @@ module Common {
         public practisePassed: boolean = false;
         public examDone: number = 0;
         public examPassed: boolean = false;
+    }
+    
+    class SecureSaver {
+        
+        public set(key: string, value: any): void {
+            
+            value.hash = this.hashLevelSave(value);
+            store.set(key, value);
+        }
+        
+        public get(key: string): any {
+            var value: any  = store.get(key) || {};
+            if (value.hash) {
+                var saveHash = value.hash;
+                var actualHash = this.hashLevelSave(value);
+                if (JSON.stringify(saveHash) === 
+                        JSON.stringify(actualHash)) {
+                    console.log(`Level hash missmach ${key}`);
+                    return value;
+                }
+                
+            } 
+            return null;
+        }
+        
+        private hashLevelSave(value: any): string {
+            value.hash = null;
+            return CryptoJS.MD5(JSON.stringify(value));
+        }
     }
     
     //Info to distirbute across game components when level type (practise, exam) initialized.
@@ -99,12 +129,13 @@ module Common {
     export class AlgoGame extends Phaser.Game {
     
         private _eventBus:EventBusClass;
-        private _store: Store = store;
+        private _store: SecureSaver = new SecureSaver();
         private _config: GameConfig.Config = globalConfig;
 
         constructor(gameWidth: number, gameHeight: number, mode: number, tag: string) {
             super(gameWidth, gameHeight, mode, tag);
             this._eventBus = new EventBusClass();
+            
         }
         
         public dispatch(eventId: string, caller: any, param?: any): void {

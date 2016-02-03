@@ -553,8 +553,7 @@ module Common {
                 if (step.isLast) {
                     this.onLastStep(1);
                 } else {
-                    this._algorithmStep = this._algorithm.getNextStep();
-                    this.addTimerEvents();
+                    this.onNewStep();
                 }
             } else {
                 this._game.dispatch(Events.GAME_EXAM_FAILED, this, isUser);

@@ -241,10 +241,10 @@ var globalConfig = {
                 },
                 gamePlay: {
                     minElements: 5,
-                    minSeqNumber: 10,
-                    maxSeqNumber: 100,
-                    columns: 5,
-                    rows: 5,
+                    minSeqNumber: 1,
+                    maxSeqNumber: 10,
+                    columns: 4,
+                    rows: 3,
                 }
             }
         },
