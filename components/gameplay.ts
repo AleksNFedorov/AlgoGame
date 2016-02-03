@@ -326,7 +326,7 @@ module Common {
         
         protected _gameStepTimer: Phaser.Timer;
         protected _stepPerformed: boolean = false;
-
+        
         constructor(game: Common.AlgoGame) {
             super(game);
             
@@ -391,7 +391,7 @@ module Common {
         
         protected createGamePlayInfo(): Common.GamePlayInfo {
             return  new Common.GamePlayInfo(
-                Constants.STEP_TIME,
+                this.stateConfig.stepTime,
                 this.stateConfig.stepsToPass,
                 this.levelSave.practiseDone);
         }
@@ -486,7 +486,7 @@ module Common {
         
         protected addTimerEvents(): void {
             this._gameStepTimer.removeAll();
-            this._gameStepTimer.repeat(Constants.STEP_TIME, 0, this.clickBox, this);
+            this._gameStepTimer.repeat(this.stateConfig.stepTime, 0, this.clickBox, this);
         }
         
         destroy(): void {
@@ -513,7 +513,7 @@ module Common {
 
         protected createGamePlayInfo(): Common.GamePlayInfo {
             return  new Common.GamePlayInfo(
-                Constants.STEP_TIME,
+                this.stateConfig.stepTime,
                 this.stateConfig.stepsToPass, 
                 this.levelSave.examDone);
         }

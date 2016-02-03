@@ -4,6 +4,7 @@ var globalConfig = {
             practise: {
                 stageName: "binarySearchPractise",
                 stepsToPass: 5,
+                stepTime: 2000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://google.com",
@@ -21,6 +22,7 @@ var globalConfig = {
             exam: {
                 stageName: "binarySearchExam",
                 stepsToPass: 2,
+                stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://fb.com",
@@ -40,6 +42,7 @@ var globalConfig = {
             practise: {
                 stageName: "insertionSortPractise",
                 stepsToPass: 5,
+                stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://google.com",
@@ -57,6 +60,7 @@ var globalConfig = {
             exam: {
                 stageName: "insertionSortExam",
                 stepsToPass: 2,
+                stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://fb.com",
@@ -76,6 +80,7 @@ var globalConfig = {
             practise: {
                 stageName: "selectionSortPractise",
                 stepsToPass: 50,
+                stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://google.com",
@@ -93,6 +98,7 @@ var globalConfig = {
             exam: {
                 stageName: "selectionSortExam",
                 stepsToPass: 2,
+                stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://fb.com",
@@ -111,6 +117,7 @@ var globalConfig = {
             practise: {
                 stageName: "mergeSortPractise",
                 stepsToPass: 50,
+                stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://google.com",
@@ -128,6 +135,7 @@ var globalConfig = {
             exam: {
                 stageName: "mergeSortExam",
                 stepsToPass: 2,
+                stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://fb.com",
@@ -146,6 +154,7 @@ var globalConfig = {
             practise: {
                 stageName: "quickSortPractise",
                 stepsToPass: 50,
+                stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://google.com",
@@ -163,6 +172,7 @@ var globalConfig = {
             exam: {
                 stageName: "quickSortExam",
                 stepsToPass: 2,
+                stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://fb.com",
@@ -182,6 +192,7 @@ var globalConfig = {
             practise: {
                 stageName: "debthFirstSearchPractise",
                 stepsToPass: 5,
+                stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://google.com",
@@ -199,6 +210,7 @@ var globalConfig = {
             exam: {
                 stageName: "debthFirstSearchExam",
                 stepsToPass: 20,
+                stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://fb.com",
@@ -217,6 +229,7 @@ var globalConfig = {
             practise: {
                 stageName: "djikstraPractise",
                 stepsToPass: 5,
+                stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://google.com",
@@ -234,6 +247,7 @@ var globalConfig = {
             exam: {
                 stageName: "djikstraExam",
                 stepsToPass: 20,
+                stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://fb.com",

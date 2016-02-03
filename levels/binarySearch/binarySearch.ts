@@ -3,7 +3,6 @@
 module BinarySearch {
     
     export enum Operation {Less = 1, Greater = 2, Equals = 3, NotEquals = 4, Unknown = 5}
-
     
     export class BinarySearchAction implements Common.GamePlayAction {
         constructor(public index: number){};
@@ -130,6 +129,8 @@ module BinarySearch {
                 index = BinarySearchAlgorithm.getRandomInteger(Math.floor(arrayMiddleElement) + 2, this.sequence.length - 1);
             }
             
+            console.log(`Element to find index ${index}`);
+            
             return index;
         }
 
@@ -165,7 +166,6 @@ module BinarySearch {
                 this._algorithm.sequence, 
                 this._algorithm.elementToFindIndex);
         }
-
         
         protected createAlgorithm(config: any): BinarySearchAlgorithm {
             return new BinarySearchAlgorithm(config);

@@ -5,6 +5,7 @@ declare module GameConfig {
         level: string;
         stageName: string;
         stateType: string;
+        stepTime: number; //milliseconds
         menu: any;
         stepsToPass: number;
         gamePlay: any;
