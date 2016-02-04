@@ -16,9 +16,16 @@ class Constants {
     static PROGRESS_BAR_POSITION_X = 800;
     static PROGRESS_BAR_POSITION_Y = 100;
     
+    //Banners
+    static BANNER_SHOW_TIME = 2000;
+    
     //Assets
+    static GAME_ASSETS_PATH = "/assets/images/";
     static MENU_BUTTON_ATTLAS = "menuButtons";
     static PROGRESS_BARS_ATTLAS = "progressBars";
+    static BANNERS_ATTLAS = "banners";
+    static BANNERS_AMOUNT = 4;
+    static LEVEL_ASSETS_AMOUNT = 2;
     
     //Text
     static CONTROL_PANEL_MESSAGE_STYLE = { 

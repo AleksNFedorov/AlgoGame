@@ -1,5 +1,7 @@
 /// <reference path="./common.ts" />
 
+declare var FB: any;
+
 module Common {
     
     class LevelInfo {
@@ -56,7 +58,7 @@ module Common {
             
             this._button.callback = function() {
                 console.log("Starting new level " + levelInfo.stateToStart);
-                game.state.start(levelInfo.stateToStart);
+                game.state.start(levelInfo.stateToStart, true, false, levelInfo.levelName);
             };
             
             this._text = this.game.add.text(
@@ -105,7 +107,7 @@ module Common {
             var levelPractiseConfig: GameConfig.StageConfig = levelConfig.practise;
 
             var levelInfo: LevelInfo = new LevelInfo(levelName, levelSave, levelPractiseConfig.stepsToPass);
-            levelInfo.stateToStart = levelPractiseConfig.stageName;
+            levelInfo.stateToStart = levelName + "Preload";
             
             if (levelConfig.dependsOn != null) {
                 var dependsOnLevelSave: LevelSave = this._game.store.get(levelConfig.dependsOn) || new LevelSave();
@@ -133,6 +135,19 @@ module Common {
             this._levelLocker = new LevelLocker(game);
             
             this.createLevelButtons();
+            
+            var facebookButton = new Common.Button(this._game, [12,2,82,2, 6]);
+            facebookButton.x = 300;
+            facebookButton.y = 50;
+            facebookButton.scale.setTo(0.3);
+            this._game.add.existing(facebookButton);
+            
+            facebookButton.callback = function() {
+               FB.ui( {
+                    method: 'share',
+                    href: 'http://algo.ninja'
+                }, function(response){});
+            }
         }
         
         private createLevelButtons(): void {

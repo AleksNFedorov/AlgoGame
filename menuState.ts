@@ -16,6 +16,11 @@ class Preload extends Phaser.State {
         // Put actual assets load code here
         this.load.spritesheet(Constants.MENU_BUTTON_ATTLAS, '/assets/images/menuButtons.png', 136, 136);
         
+        this.game.load.atlas(Constants.BANNERS_ATTLAS,
+        '/assets/images/banners.png',
+        '/assets/images/banners.json',
+        Phaser.Loader.TEXTURE_ATLAS_JSON_ARRAY);
+        
         this.game.load.atlas(Constants.PROGRESS_BARS_ATTLAS,
         '/assets/images/bars.png',
         '/assets/images/bars.json',
@@ -32,6 +37,10 @@ class Preload extends Phaser.State {
     private _onLoadComplete() {
         console.log("Preload complete");
         this.game.state.start("menu");
+    }
+    
+    public shutdown(): void {
+        this.load.onLoadComplete.remove(this._onLoadComplete, this);
     }
 }
 

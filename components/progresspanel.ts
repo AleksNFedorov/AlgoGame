@@ -2,7 +2,7 @@
 
 module Common {
 
-    class ProgressBar extends Phaser.Group implements Common.GameUIObjectWithState {
+    export class ProgressBar extends Phaser.Group implements Common.GameUIObjectWithState {
     
         private _maxProgressWidth: number;
         private _maxProgressValue: number; 
@@ -10,7 +10,7 @@ module Common {
         private _progressImage: Phaser.Sprite;
         private _progressText: Phaser.Text;
         
-        constructor(game: AlgoGame, backImageId: string, frontImageId: string, 
+        constructor(game: Phaser.Game, backImageId: string, frontImageId: string, 
             legendTextString: string) {
             
             super(game);
@@ -63,7 +63,7 @@ module Common {
         }
         
         public setValue(newValue: number, textValue: string): void {
-        
+            
             var completines = Math.min(1, newValue/this._maxProgressValue);
         
             this._progressImage.width = this._maxProgressWidth * completines;
