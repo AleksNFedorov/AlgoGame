@@ -7,54 +7,70 @@ module Common {
         private _maxProgressWidth: number;
         private _maxProgressValue: number; 
     
-        private _progressImage: Phaser.Sprite;
+        private _progressImage: any;
         private _progressText: Phaser.Text;
         
-        constructor(game: Phaser.Game, backImageId: string, frontImageId: string, 
-            legendTextString: string) {
+        constructor(game: Phaser.Game, type: string, legendTextString: string, isBig: boolean = false) {
             
             super(game);
+            
+            var progressBarBackground = type + "Background" + ".png";
+            var progressBarForeground = type + "Foreground" + ".png";
+            var progressBarCover = type + "Cover" + ".png";
+            
+            var textStyle = isBig ? Constants.PROGRESS_BAR_BIG_TEXT : Constants.PROGRESS_BAR_TEXT;
             
             var progressBackground = game.add.sprite(
                 0, 0, 
                 Constants.PROGRESS_BARS_ATTLAS,
-                backImageId,
+                progressBarBackground,
+                this
+                );
+            progressBackground.anchor.setTo(0.5);    
+                
+            var progressImage: any = game.add.sprite(
+                0, 0, 
+                Constants.PROGRESS_BARS_ATTLAS,
+                progressBarForeground,
+                this
+            );
+            progressImage.anchor.setTo(0.5);
+            
+            var progressCover = game.add.sprite(
+                0, 0, 
+                Constants.PROGRESS_BARS_ATTLAS,
+                progressBarCover,
                 this
                 );
                 
-            var progressImage: Phaser.Sprite = game.add.sprite(
-                4, 3, 
-                Constants.PROGRESS_BARS_ATTLAS,
-                frontImageId,
-                this
-            );
+            progressBackground.x = progressCover.width/2;                
+            progressBackground.y = progressCover.height/2;
             
+            progressImage.x = progressBackground.x;                
+            progressImage.y = progressBackground.y;
+
             var progressText: Phaser.Text = this.game.add.text(
-                progressImage.x + 5,
-                progressImage.y + 2,
+                0,
+                0,
                 '', 
-                Constants.CONTROL_PANEL_MESSAGE_STYLE,
+                textStyle,
                 this
             );
-            
-            
+            progressText.anchor.setTo(1, 0.42);
+            progressText.y = progressImage.y;
+
            var legendText = this.game.add.text(
                 progressBackground.x, 
                 progressBackground.y + progressBackground.height/2 - 4, 
                 legendTextString, 
-                Constants.CONTROL_PANEL_MESSAGE_STYLE,
+                textStyle,
                 this
             );
-                
-            
+
             legendText.anchor.y = 0;
-            
-            progressBackground.scale.setTo(0.4);
-            progressImage.scale.setTo(0.4);
             
             this._maxProgressWidth = progressImage.width;
             this._progressImage = progressImage;
-            this._progressImage.width = 0;
             this._progressText = progressText;
         }
         
@@ -66,8 +82,15 @@ module Common {
             
             var completines = Math.min(1, newValue/this._maxProgressValue);
         
-            this._progressImage.width = this._maxProgressWidth * completines;
+            var width = this._maxProgressWidth * completines;
+            var cropRect: Phaser.Rectangle = new Phaser.Rectangle(
+                0, 0, 
+                width,
+                this._progressImage.height);
+            
+            this._progressImage.crop(cropRect);
             this._progressText.text = textValue;
+            this._progressText.x = Math.max(this._progressText.width + 10, width - 10);
         }
         
         saveStateAndDisable(): void {}
@@ -112,6 +135,7 @@ module Common {
 
         protected createProgressBars(): void {
         
+        /*
             this._topProgressBar = this.createAndAddProgressBar(
                 "slice27_27.png", "slice16_16.png", "Step time",
                 Common.GameElements.ProgressBarStep);
@@ -123,10 +147,14 @@ module Common {
                 Common.GameElements.ProgressBarComplete);
             this._bottomProgressBar.x = 0;
             this._bottomProgressBar.y = 60;
+            
+        */
+        
         }
         
         protected createAndAddProgressBar(backImage: string, fromImage: string, legendText: string, elementId: Common.GameElements): ProgressBar {
-            var newProgress: ProgressBar = new ProgressBar(this._game, backImage, fromImage, legendText);
+            var newProgress;
+            // var newProgress: ProgressBar = new ProgressBar(this._game, backImage, fromImage, legendText);
             this._progressGroup.add(newProgress);
             this.addGameElement(elementId, newProgress);
             return newProgress;            

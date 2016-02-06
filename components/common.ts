@@ -316,13 +316,13 @@ module Common {
     
     export class Button extends Phaser.Button implements GameUIObjectWithState {
         
-        private _activeFrames: number[];
-        private _inactiveFrame: number;
+        private _activeFrames: any[];
+        private _inactiveFrame: any;
         private _callback: Function;
         private _savedEnabled: boolean;
         
-        constructor(game:AlgoGame, frames:number[]) {
-            super(game, 0,0, Constants.MENU_BUTTON_ATTLAS,
+        constructor(game:AlgoGame, frames:any[], attlasName: string = Constants.MENU_BUTTON_ATTLAS) {
+            super(game, 0,0, attlasName,
             this.onButtonDown, this, 
             frames[0],
             frames[1],

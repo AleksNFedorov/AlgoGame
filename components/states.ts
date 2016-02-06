@@ -18,9 +18,10 @@ module Common {
         
         public init(level: string): void {
             this._level = level;
+            this._progressValue = 0;
         }
         
-        public preload(): void {
+        public create(): void {
             this.initScreen();
             this.initLoadCallbacks();
             this.loadLevelAssets();
@@ -35,10 +36,10 @@ module Common {
                 );
             this._banner.anchor.setTo(0.5);
             
-            this._loadProgress = new ProgressBar(
-                this.game, 
-                "slice27_27.png", 
-                "slice16_16.png", "");
+            // this._loadProgress = new ProgressBar(
+            //     this.game, 
+            //     "slice27_27.png", 
+            //     "slice16_16.png", "");
                 
             this._maxProgressValue = Constants.LEVEL_ASSETS_AMOUNT + this.game.rnd.integerInRange(8, 14);               
             this._loadProgress.setMaxValue(this._maxProgressValue);
@@ -98,7 +99,8 @@ module Common {
                 levelAttlasPath,
                 levelAttlasJSONPath,
                 Phaser.Loader.TEXTURE_ATLAS_JSON_ARRAY);
-                
+              
+            this.game.load.start();                
             console.log("Level preloading started");
         }
     }

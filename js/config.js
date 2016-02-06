@@ -188,16 +188,16 @@ var globalConfig = {
             }
         },
         // Graphs
-        debthFirstSearch: {
+        debthFirst: {
             practise: {
-                stageName: "debthFirstSearchPractise",
+                stageName: "debthFirstPractise",
                 stepsToPass: 5,
                 stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://google.com",
                     MenuButtonPractise: "",
-                    MenuButtonExam:"debthFirstSearchExam",
+                    MenuButtonExam:"debthFirstExam",
                 },
                 gamePlay: {
                     minElements: 5,
@@ -208,13 +208,13 @@ var globalConfig = {
                 }
             },
             exam: {
-                stageName: "debthFirstSearchExam",
+                stageName: "debthFirstExam",
                 stepsToPass: 20,
                 stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://fb.com",
-                    MenuButtonPractise: "debthFirstSearchPractise",
+                    MenuButtonPractise: "debthFirstPractise",
                 },
                 gamePlay: {
                     minElements: 5,
@@ -226,6 +226,7 @@ var globalConfig = {
             }
         },
         djikstra: {
+            dependsOn: "debthFirst",
             practise: {
                 stageName: "djikstraPractise",
                 stepsToPass: 5,

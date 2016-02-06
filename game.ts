@@ -6,7 +6,7 @@ class Game extends Common.AlgoGame {
     
     constructor() {
         
-        super(Constants.GAME_WIDTH, Constants.GAME_HEIGHT, Phaser.AUTO, 'game');
+        super(Constants.GAME_WIDTH, Constants.GAME_HEIGHT, Phaser.CANVAS, 'game');
 
         this.state.add("boot", Boot);
         this.state.add("preload", Preload);
@@ -32,9 +32,9 @@ class Game extends Common.AlgoGame {
         this.state.add("quickSortPractise", QuickSortPractise);
         this.state.add("quickSortSortExam", QuickSortExam);
 
-        this.state.add("debthFirstSearchPreload", Common.PractisePreloadState);
-        this.state.add("debthFirstSearchPractise", DebthFirstSearchPractise);
-        this.state.add("debthFirstSearchExam", DebthFirstSearchExam);
+        this.state.add("debthFirstPreload", Common.PractisePreloadState);
+        this.state.add("debthFirstPractise", DebthFirstSearchPractise);
+        this.state.add("debthFirstExam", DebthFirstSearchExam);
 
         this.state.add("djikstraPreload", Common.PractisePreloadState);
         this.state.add("djikstraPractise", DjikstraPractise);
@@ -49,5 +49,4 @@ class Game extends Common.AlgoGame {
 window.onload = () => {
 
     var game = new Game();
-
 }

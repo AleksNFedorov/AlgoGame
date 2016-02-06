@@ -38,5 +38,14 @@ var Dictionary = {
     //Element info messages
     ControlPanelButtonPlay: "Control panel play button description text",
     MenuButtonMenu: "Menu button description",
-    MenuButtonPractise: "Practise button description"
+    MenuButtonPractise: "Practise button description",
+    
+    //Menu buttons name
+    binarySearch: "Binary",
+    insertionSort: "Insertion",
+    selectionSort: "Selection",
+    mergeSort: "Merge",
+    quickSort: "Quick",
+    debthFirst: "Debth-first",
+    djikstra: "Djikstra",
 };
