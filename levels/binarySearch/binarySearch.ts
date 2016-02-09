@@ -144,11 +144,7 @@ module BinarySearch {
         
         constructor(game: Common.AlgoGame, boxClickedCallback:Function, sequence: number[], elementToFindIndex: number) {
             super(game, boxClickedCallback, sequence);
-            this.higlightBox(elementToFindIndex);
-        }
-        
-        public selectBox(boxIndex: number) {
-            this.higlightBox(boxIndex);
+            this.selectBox(elementToFindIndex);
         }
         
         protected onBoxClickPressed(index: number): void {
@@ -183,7 +179,6 @@ module BinarySearch {
         protected onCorrectAction(): void {
             var step: BinarySearchStep = this.getCurrentStep();
             this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
-            this._boxLine.selectBox(step.elementIndex);
         }
         
         protected destroyTempObjects():void {

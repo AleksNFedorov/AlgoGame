@@ -22,15 +22,14 @@ module Common {
             
             var progressBackground = game.add.sprite(
                 0, 0, 
-                Constants.PROGRESS_BARS_ATTLAS,
+                Constants.GAME_GENERAL_ATTLAS,
                 progressBarBackground,
                 this
                 );
-            progressBackground.anchor.setTo(0.5);    
                 
             var progressImage: any = game.add.sprite(
                 0, 0, 
-                Constants.PROGRESS_BARS_ATTLAS,
+                Constants.GAME_GENERAL_ATTLAS,
                 progressBarForeground,
                 this
             );
@@ -38,16 +37,18 @@ module Common {
             
             var progressCover = game.add.sprite(
                 0, 0, 
-                Constants.PROGRESS_BARS_ATTLAS,
+                Constants.GAME_GENERAL_ATTLAS,
                 progressBarCover,
                 this
                 );
                 
-            progressBackground.x = progressCover.width/2;                
-            progressBackground.y = progressCover.height/2;
-            
-            progressImage.x = progressBackground.x;                
-            progressImage.y = progressBackground.y;
+            progressCover.anchor.setTo(0.5);    
+
+            progressImage.x = progressBackground.width/2;                
+            progressImage.y = progressBackground.height/2;
+
+            progressCover.x = progressBackground.width/2;                
+            progressCover.y = progressBackground.height/2;
 
             var progressText: Phaser.Text = this.game.add.text(
                 0,
@@ -60,12 +61,14 @@ module Common {
             progressText.y = progressImage.y;
 
            var legendText = this.game.add.text(
-                progressBackground.x, 
-                progressBackground.y + progressBackground.height/2 - 4, 
+               0,0,
                 legendTextString, 
                 textStyle,
                 this
             );
+            
+            legendText.x = progressBackground.x
+            legendText.y = progressBackground.y - legendText.height, 
 
             legendText.anchor.y = 0;
             
@@ -91,6 +94,11 @@ module Common {
             this._progressImage.crop(cropRect);
             this._progressText.text = textValue;
             this._progressText.x = Math.max(this._progressText.width + 10, width - 10);
+        }
+        
+        public destory(): void {
+            this._progressImage.destroy();
+            this._progressText.destroy();
         }
         
         saveStateAndDisable(): void {}
@@ -128,6 +136,7 @@ module Common {
             this.addEventListener(Events.STAGE_INFO_SHOW);
             this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
             this.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_REPLAY);
             this.addEventListener(Events.GAME_STARTED);
             this.addEventListener(Events.GAME_END);
             this.addEventListener(Events.GAME_CREATED);
@@ -135,26 +144,22 @@ module Common {
 
         protected createProgressBars(): void {
         
-        /*
+        
             this._topProgressBar = this.createAndAddProgressBar(
-                "slice27_27.png", "slice16_16.png", "Step time",
+                "progressBarRed", "Step time",
                 Common.GameElements.ProgressBarStep);
-            this._topProgressBar.x = 0;
-            this._topProgressBar.y = 0;
+            this._topProgressBar.x = 50;
+            this._topProgressBar.y = 30;
 
             this._bottomProgressBar = this.createAndAddProgressBar(
-                "slice27_27.png", "slice35_35.png", "Steps done",
+                "progressBarGreen", "Steps done",
                 Common.GameElements.ProgressBarComplete);
-            this._bottomProgressBar.x = 0;
-            this._bottomProgressBar.y = 60;
-            
-        */
-        
+            this._bottomProgressBar.x = this._game.width - this._bottomProgressBar.width - 50;
+            this._bottomProgressBar.y = 30;
         }
         
-        protected createAndAddProgressBar(backImage: string, fromImage: string, legendText: string, elementId: Common.GameElements): ProgressBar {
-            var newProgress;
-            // var newProgress: ProgressBar = new ProgressBar(this._game, backImage, fromImage, legendText);
+        protected createAndAddProgressBar(type: string, legendText: string, elementId: Common.GameElements): ProgressBar {
+            var newProgress: ProgressBar = new ProgressBar(this._game, type, legendText, false);
             this._progressGroup.add(newProgress);
             this.addGameElement(elementId, newProgress);
             return newProgress;            
@@ -183,7 +188,9 @@ module Common {
                     this._bottomProgressBar.setValue(<number> param1[0], param1[0]);
                     this.scheduleUpdates();
                     break;
-                case Events.CONTROL_PANEL_EVENT_PLAY:
+
+                    case Events.CONTROL_PANEL_EVENT_PLAY:
+                    case Events.CONTROL_PANEL_EVENT_REPLAY:
                     if (this._game.levelStageState == Common.LevelStageState.PAUSED) {
                         this._timer.resume();                        
                     }
@@ -213,6 +220,9 @@ module Common {
         
         destroy(): void {
           super.destroy();
+          
+          this._topProgressBar.destory();
+          this._bottomProgressBar.destory();
           
           this._progressGroup.destroy();
           this._timer.destroy();

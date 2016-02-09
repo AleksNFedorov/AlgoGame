@@ -288,7 +288,7 @@ module Common {
             switch(event.type) {
                 case Events.STAGE_INITIALIZED:
                     this.stateConfig = <GameConfig.StageConfig>param1;
-                        this._levelSave = this._game.store.get(this.stateConfig.level)
+                    this._levelSave = this._game.store.get(this.stateConfig.level)
                             || new LevelSave();
                     break;
             }
@@ -321,8 +321,8 @@ module Common {
         private _callback: Function;
         private _savedEnabled: boolean;
         
-        constructor(game:AlgoGame, frames:any[], attlasName: string = Constants.MENU_BUTTON_ATTLAS) {
-            super(game, 0,0, attlasName,
+        constructor(game:AlgoGame, frames:any[], atlasName: string = Constants.GAME_GENERAL_ATTLAS) {
+            super(game, 0,0, atlasName,
             this.onButtonDown, this, 
             frames[0],
             frames[1],

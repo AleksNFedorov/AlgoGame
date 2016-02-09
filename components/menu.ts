@@ -1,9 +1,51 @@
 /// <reference path="./common.ts" />
 
+declare var Dictionary: any;
+
 module Common {   
     
     export class Menu extends GameContainerWithStoreSupport {
         
+        private static MENU_BUTTON_FRAMES = [
+                "Menu-button_Mouse-over.png",
+                "Menu-button_Enabled.png",
+                "Menu-button_Clicked.png",
+                "Menu-button_Enabled.png",
+                "Menu-button_disable.png"
+        ];
+        
+        private static ALGO_DESCR_FRAMES = [
+                "Algorithm-description_Mouse-over.png",
+                "Algorithm-description_Enabled.png",
+                "Algorithm-description_Clicked.png",
+                "Algorithm-description_Enabled.png",
+                "Algorithm-description_disable.png"
+        ];
+
+        private static LEVEL_OBJECTIVES_FRAMES = [
+                "Level-Objectives_Mouse-over.png",
+                "Level-Objectives_Enabled.png",
+                "Level-Objectives_Clicked.png",
+                "Level-Objectives_Enabled.png",
+                "Level-Objectives_disable.png"
+        ];
+
+        private static GO_PRACTISE_FRAMES = [
+                "Go-Practise_Enabled_Mouse-over.png",
+                "Go-Practise_Enabled.png",
+                "Go-Practise_Enabled_Clicked.png",
+                "Go-Practise_Enabled.png",
+                "Go-Practise_disable.png"
+        ];
+
+        private static GO_EXAM_FRAMES = [
+                "Go-Exam_Enabled_Mouse-over.png",
+                "Go-Exam_Enabled.png",
+                "Go-Exam_Enabled_Clicked.png",
+                "Go-Exam_Enabled.png",
+                "Go-Exam_disable.png"
+        ];
+
         protected _menuButtons: Common.Button[] = [];
         private _menuGroup: Phaser.Group;
 
@@ -17,6 +59,15 @@ module Common {
             this.createButtons();
         }
         
+        private addLevelName(): void {
+            var text = Dictionary[this.stateConfig.level];
+            var levelNameText = this._game.add.text(
+                this._game.width/2, 
+                15, 
+                text, Constants.MENU_HEADER_TEXT_STYLE, this._menuGroup);
+            levelNameText.anchor.x = 0.5;            
+        }
+        
         protected initEventListners(): void {
             super.initEventListners();
             this.addEventListener(Events.MENU_EVENT_GO_MENU);
@@ -26,15 +77,15 @@ module Common {
         }
         
         protected createButtons(): void {
-            this.addButtonToMenu(Common.GameElements.MenuButtonMenu, Events.MENU_EVENT_GO_MENU, [12,2,82,2, 6], 50, 30);
-            this.addButtonToMenu(Common.GameElements.MenuButtonDescription, Events.MENU_EVENT_OPEN_ALGO_DESCR, [3,3,68,3, 81], 110, 30);
-            this.addButtonToMenu(Common.GameElements.MenuButtonObjectives, Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES, [77,77,53,77, 66], 170, 30);
-            this.addButtonToMenu(Common.GameElements.MenuButtonPractise, Events.MENU_EVENT_GO_PRACTISE, [63,63,39,63, 0], 870, 30);
-            this.addButtonToMenu(Common.GameElements.MenuButtonExam, Events.MENU_EVENT_GO_EXAM, [5,5,14,5, 31], 940, 30);
+            this.addButtonToMenu(Common.GameElements.MenuButtonMenu, Events.MENU_EVENT_GO_MENU, Menu.MENU_BUTTON_FRAMES , 50, 10);
+            this.addButtonToMenu(Common.GameElements.MenuButtonDescription, Events.MENU_EVENT_OPEN_ALGO_DESCR, Menu.ALGO_DESCR_FRAMES, 110, 10);
+            this.addButtonToMenu(Common.GameElements.MenuButtonObjectives, Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES, Menu.LEVEL_OBJECTIVES_FRAMES, 170, 10);
+            this.addButtonToMenu(Common.GameElements.MenuButtonPractise, Events.MENU_EVENT_GO_PRACTISE, Menu.GO_PRACTISE_FRAMES, 870, 10);
+            this.addButtonToMenu(Common.GameElements.MenuButtonExam, Events.MENU_EVENT_GO_EXAM, Menu.GO_EXAM_FRAMES, 940, 10);
             console.log("Button has been added");
         }
         
-        protected addButtonToMenu(elementId: GameElements, eventId: string, frames: number[], x: number, y: number) {
+        protected addButtonToMenu(elementId: GameElements, eventId: string, frames: any[], x: number, y: number) {
             var newButton: Common.Button = this.createButton(frames);
             newButton.x = x;
             newButton.y = y;
@@ -45,15 +96,18 @@ module Common {
             super.addGameElement(elementId, newButton);
         }
         
-        protected createButton(frames: number[]): Common.Button {
-            var newButton: Common.Button = new Common.Button(this._game, frames);
-            newButton.scale.setTo(0.3);
+        protected createButton(frames: any[]): Common.Button {
+            var newButton: Common.Button = new Common.Button(this._game, frames, Constants.GAME_GENERAL_ATTLAS);
+            newButton.scale.setTo(0.8);
             return newButton;
         }
         
         dispatchEvent(event: any, param1: any) {
             super.dispatchEvent(event, param1);
             switch(event.type) {
+                case Events.STAGE_INITIALIZED:
+                    this.addLevelName();
+                break;
                 case Events.MENU_EVENT_GO_MENU:
                     var elementIdName = GameElements[GameElements.MenuButtonMenu];
                     this._game.state.start(this.stateConfig.menu[elementIdName]);

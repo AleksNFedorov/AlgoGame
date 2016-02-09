@@ -3,8 +3,8 @@ var globalConfig = {
         binarySearch: {
             practise: {
                 stageName: "binarySearchPractise",
-                stepsToPass: 5,
-                stepTime: 2000,
+                stepsToPass: 15,
+                stepTime: 12000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://google.com",
@@ -52,8 +52,8 @@ var globalConfig = {
                 gamePlay: {
                     minSeqNumber: 100,
                     maxSeqNumber: 1000,
-                    minElementsInSeq: 14,
-                    maxElementsInSeq: 20,
+                    minElementsInSeq: 10,
+                    maxElementsInSeq: 16,
                     sorted: false
                 }
             },
@@ -64,14 +64,13 @@ var globalConfig = {
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://fb.com",
-                    MenuButtonObjectives: "OBJECTIVES",
                     MenuButtonPractise: "insertionSortPractise",
                 },
                 gamePlay: {
                     minSeqNumber: 100,
                     maxSeqNumber: 1000,
                     minElementsInSeq: 6,
-                    maxElementsInSeq: 21,
+                    maxElementsInSeq: 16,
                     sorted: false
                 }
             }
@@ -226,11 +225,11 @@ var globalConfig = {
             }
         },
         djikstra: {
-            dependsOn: "debthFirst",
+//            dependsOn: "debthFirst",
             practise: {
                 stageName: "djikstraPractise",
                 stepsToPass: 5,
-                stepTime: 4000,
+                stepTime: 10000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://google.com",
@@ -241,8 +240,8 @@ var globalConfig = {
                     minElements: 5,
                     minSeqNumber: 1,
                     maxSeqNumber: 10,
-                    columns: 4,
-                    rows: 3,
+                    columns: 5,
+                    rows: 5,
                 }
             },
             exam: {

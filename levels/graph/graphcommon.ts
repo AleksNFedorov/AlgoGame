@@ -10,12 +10,18 @@ module Graph {
     
     export class AbstractTraverseAlgorithm extends Common.Algorithm {
        
-       private _workSeqeunce: GraphJS.Node[];
+        private _workSeqeunce: GraphJS.Node[];
 
-       protected _presenceMatrix: GraphJS.Node[][];
-       protected _graph: GraphJS.Graph;
+        protected _presenceMatrix: GraphJS.Node[][];
+        protected _graph: GraphJS.Graph;
+        
+        protected _columns: number;
+        protected _rows: number;
        
        constructor(config: any) {
+           this._columns = config.columns;
+           this._rows = config.rows;
+           
            super(config);
        }
        
@@ -102,61 +108,190 @@ module Graph {
        protected needCreate(): boolean {
            return Common.Algorithm.getRandomInteger(0, 3) > 0;
        }
+       
+       public get columns(): number {
+           return this._columns;
+       }
+       
+       public get rows(): number {
+           return this._rows;
+       }
     }
     
-  export class GraphUI {
+    
+    enum EdgeDirection {UPDOWNRIGHT, UPDOWN, UPDOWNLEFT, LEFTRIGHT, RIGHTLEFT}
+    
+    export class EdgeUI extends Phaser.Group {
+        
+        private _edge: Phaser.Sprite;
+        private _arrow: Phaser.Sprite;
+        private _weightText: Phaser.Text;
+        
+        constructor(game: Common.AlgoGame, edge: GraphJS.Edge, hideWieght: boolean = false) {
+            super(game);   
+            this.drawEdge(edge, this.getEdgeOrientation(edge));
+            if (hideWieght) {
+                this.hideWieght();
+            }
+        }
+        
+        private getEdgeOrientation(edge: GraphJS.Edge): EdgeDirection {
+            var fromNode = edge.fromNode;
+            var toNode = edge.toNode;
+            
+            if (toNode.y > fromNode.y) {
+                if (toNode.x === fromNode.x) {
+                    return EdgeDirection.UPDOWN;
+                } else if (toNode.x > fromNode.x) {
+                    return EdgeDirection.UPDOWNRIGHT;
+                } else {
+                    return EdgeDirection.UPDOWNLEFT;
+                }
+            } else {
+                if (toNode.x < fromNode.x) {
+                    return EdgeDirection.RIGHTLEFT;
+                } else {
+                    return EdgeDirection.LEFTRIGHT;
+                }
+            }
+        }
+        
+        public hideWieght(): void {
+            this._weightText.alpha = 0;
+        }
+        
+        private drawEdge(edge: GraphJS.Edge, direction: EdgeDirection): void {
+            var fromNodePoint = GraphUI.getNodeScreenCoordinates(edge.fromNode);
+            var toNodePoint = GraphUI.getNodeScreenCoordinates(edge.toNode);
+            this._edge = this.game.add.sprite(fromNodePoint.x, fromNodePoint.y, Constants.GAME_GENERAL_ATTLAS, "graphEdge.png", this);
+            this._arrow = this.game.add.sprite(toNodePoint.x, toNodePoint.y , Constants.GAME_GENERAL_ATTLAS, "graph-arrow1.png", this);
+            this._weightText = this.game.add.text((fromNodePoint.x + toNodePoint.x)/2, (fromNodePoint.y + toNodePoint.y)/2, "" + edge.weight, Constants.GAME_AREA_GRAPH_WEIGHT_TEXT, this);
+            this._weightText.anchor.setTo(0.5);
+            switch(direction) {
+                case EdgeDirection.RIGHTLEFT:
+                    this._edge.width = toNodePoint.x - fromNodePoint.x - 59;
+                    this._edge.y += 28;
+                    this._edge.angle = -180;
+                    
+                    this._arrow.x += 67;
+                    this._arrow.y += 35;
+                    this._arrow.angle = -180;
+                    
+                    this._weightText.x -= 24;                    
+                    this._weightText.y += 14;                    
+                    break;
+                case EdgeDirection.LEFTRIGHT:
+                    this._edge.width = toNodePoint.x - fromNodePoint.x - 59;
+                    this._edge.x += 53;
+                    this._edge.y += 24;
+                    
+                    this._arrow.x += -13;
+                    this._arrow.y += 17;
+                    
+                    this._weightText.x += 20;                    
+                    this._weightText.y += 14;                    
+                    
+                    break;
+                case EdgeDirection.UPDOWN:
+                    this._edge.width -= 60;
+                    this._edge.x += 29;
+                    this._edge.y += 27;
+                    this._edge.angle = 90;
+                    
+                    this._arrow.x += 36;
+                    this._arrow.y += -11;
+                    this._arrow.angle = 90;
+
+                    this._weightText.x += 8;                    
+                    this._weightText.y += 26;                    
+
+                    break;
+                case EdgeDirection.UPDOWNLEFT:
+                    this._edge.width -= 13;
+                    this._edge.x += 27;
+                    this._edge.y += 27;
+                    this._edge.angle = -215;
+                    
+                    this._arrow.x += 60;
+                    this._arrow.y += 9;
+                    this._arrow.angle = -215;
+
+                    this._weightText.x += 18;                    
+                    this._weightText.y += 16;                    
+
+                    break;
+                case EdgeDirection.UPDOWNRIGHT:
+                    this._edge.width -= 15;
+                    this._edge.x += 27;
+                    this._edge.y += 27;
+                    this._edge.angle = 35;
+                    
+                    this._arrow.y -= 3;
+                    this._arrow.angle = 35;
+                    
+                    this._weightText.x += 28;                    
+                    this._weightText.y += 15;                    
+                    break;
+            }
+           
+        }
+        
+        public highlightEdge(): void {
+            this._arrow.frameName = "graph-arrow4.png";
+        }
+        
+        public stopHiglightingEdge(): void {
+            this._arrow.frameName = "graph-arrow1.png";
+        }
+
+    }
+    
+    export class GraphUI {
         
         private TOP_LEFT_X: number = 150;
         private TOP_LEFT_Y: number = 100;
-        private STEP_X: number = 110;
-        private STEP_Y: number = 80;
+        
+        public static STEP_X: number = 110;
+        public static STEP_Y: number = 80;
         
         protected _game: Common.AlgoGame;
         private _nodeClickedCallback: Function;
-        protected _nodes: Phaser.Group[] = [];        
+        protected _nodes: Common.BoxContainer[] = [];        
         
-        protected _graphics: Phaser.Graphics;
+        protected _graph: Phaser.Group;
         
-        constructor(game: Common.AlgoGame, nodes: GraphJS.Node[], nodeClickedCallback: Function, nodeToFind: GraphJS.Node) {
+        constructor(game: Common.AlgoGame, nodes: GraphJS.Node[], nodeClickedCallback: Function, nodeToFind: GraphJS.Node, columns: number = 5) {
             this._game = game;
             this._nodeClickedCallback = nodeClickedCallback;
+            
+            this._graph = game.add.group();
+            
             this.init(nodes);
             
-            this.onNodeClicked(nodeToFind.id);
+            this._graph.y = Constants.GAME_AREA_Y;
+            this._graph.x = game.width/2 - (columns * GraphUI.STEP_X)/2;
+            
+            this._nodes[nodeToFind.id].setState(Common.BoxState.SELECTED_ORANGE);
         }
         
         protected init(nodes: GraphJS.Node[]): void {
             
-            this._graphics = this._game.add.graphics(0, 0);
-            
             for(var node of nodes) {
-                this._nodes.push(this.createNode(node));               
+                var newNode = this.drawNode(node);
+                this._graph.add(newNode);
+                this._nodes.push(newNode);               
             }
+            
         }
         
-        private createNode(node: GraphJS.Node, drawEdges: boolean = true): Phaser.Group {
+        private drawNode(node: GraphJS.Node, drawEdges: boolean = true): Common.BoxContainer {
             
-            if (drawEdges) {
-                this.drawEdges(node);
-            }
+             if (drawEdges) {
+                 this.drawEdges(node);
+             }
             
-            var nodeGroup = this._game.add.group();
-            
-            var box: Phaser.Sprite = this._game.add.sprite(0,0, 'box');
-            box.scale.setTo(0.7);
-            var boxKeyText: Phaser.Text = this._game.add.text(box.height/2, box.width/2 , "", Constants.CONTROL_PANEL_MESSAGE_STYLE);
-            boxKeyText.anchor.setTo(0.5);
-
-            box.inputEnabled = true;
-            box.events.onInputDown.add(this.createNodeClickCallback(node.id));
-
-            boxKeyText.inputEnabled = true;
-            boxKeyText.events.onInputDown.add(this.createNodeClickCallback(node.id));
-            
-            nodeGroup.add(box);
-            nodeGroup.add(boxKeyText);
-            
-            var nodePoint = this.getNodeScreenCoordinates(node);
+            var nodeGroup = this.createNode(node);
+            var nodePoint = GraphUI.getNodeScreenCoordinates(node);
             
             nodeGroup.x = nodePoint.x;
             nodeGroup.y = nodePoint.y;
@@ -164,24 +299,24 @@ module Graph {
             return nodeGroup;
         }
         
+        protected createNode(node: GraphJS.Node): Common.BoxContainer {
+            return new Common.BoxContainer(this._game, node.id, this.createNodeClickCallback(node.id), function(){});
+        }
+        
         private drawEdges(parent: GraphJS.Node): void {
             for(var edge of parent.getAdjList()) {
-                this.drawEdge(edge);
+                var newEdge = this.drawEdge(edge);
+                this._graph.add(newEdge);
             }
         }
         
-        protected drawEdge(edge: GraphJS.Edge): void {
-            var parentPoint = this.getNodeScreenCoordinates(edge.fromNode);
-            var childPoint = this.getNodeScreenCoordinates(edge.toNode);
-            
-            this._graphics.moveTo(parentPoint.x + 15, parentPoint.y + 15);
-            this._graphics.lineStyle(2, 0x33FF00);
-            this._graphics.lineTo(childPoint.x + 15, childPoint.y + 15);                    
+        protected drawEdge(edge: GraphJS.Edge): EdgeUI {
+            return new EdgeUI(this._game, edge, true);
         }
         
-        protected getNodeScreenCoordinates(node: GraphJS.Node): Phaser.Point {
-            var x = this.TOP_LEFT_X + this.STEP_X * node.x;
-            var y = this.TOP_LEFT_Y + this.STEP_Y * node.y;
+        public static getNodeScreenCoordinates(node: GraphJS.Node): Phaser.Point {
+            var x = GraphUI.STEP_X * node.x;
+            var y = GraphUI.STEP_Y * node.y;
             return new Phaser.Point(x,y);
         }
         
@@ -192,14 +327,11 @@ module Graph {
         }
         
         public onNodeClicked(index: number): void {
-            this._nodes[index].alpha = 0.5;
+            this._nodes[index].setState(Common.BoxState.SELECTED_GREEN);
         }
         
         public destroy(): void {
-            for(var node of this._nodes) {
-                node.destroy();
-            }
-            this._graphics.destroy();
+            this._graph.destroy();
             this._game = null;
             this._nodeClickedCallback = null;
         }

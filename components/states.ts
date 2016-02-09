@@ -36,16 +36,13 @@ module Common {
                 );
             this._banner.anchor.setTo(0.5);
             
-            // this._loadProgress = new ProgressBar(
-            //     this.game, 
-            //     "slice27_27.png", 
-            //     "slice16_16.png", "");
-                
+            this._loadProgress = new ProgressBar(this.game, "progressBarBig", "", true);
+
             this._maxProgressValue = Constants.LEVEL_ASSETS_AMOUNT + this.game.rnd.integerInRange(8, 14);               
             this._loadProgress.setMaxValue(this._maxProgressValue);
             this._loadProgress.setValue(this._progressValue, "");
                 
-            this._loadProgress.x = this._banner.x;
+            this._loadProgress.x = 0;
             this._loadProgress.y = this._banner.y + this._banner.height + 10;
         }
         
@@ -238,6 +235,7 @@ module Common {
     //State for Practise stages only
     export class PractiseState extends Common.State {
         
+        private _background: BackgroundGraphics;
         private _menu: Common.Menu;
         private _controlPanel: Common.PractisePanel;
         private _progressPanel: Common.ProgressPanel;
@@ -253,10 +251,15 @@ module Common {
             this._practiseManager.destroy();
             this._modalWindow.destroy();
             this._gamePlay.destroy();
+            this._progressPanel.destroy();
+            this._background.destroy();
             this._menu = null;
         }
     
         public create(): void {
+            this._background = new BackgroundGraphics(this.algoGame);
+            this.drawBackground();
+        
             this._modalWindow = new GameModal.ModalWindow(this.algoGame);
             this.initModalWindows();
             
@@ -268,6 +271,15 @@ module Common {
             
             super.onCreate();        
         }
+        
+        private drawBackground(): void {
+            this._background.drawLine(0, 80, this.algoGame.width, 80);
+            this._background.drawLine(0, 600, this.algoGame.width, 600);
+            
+            this._background.drawLine(350, 600, 350, this.algoGame.height);
+            
+        }
+        
         
         protected buildGamePlay(): PractiseGamePlay<Common.GamePlayAction, Common.Algorithm> {
             throw "Game play not initizliaed";
@@ -303,6 +315,7 @@ module Common {
             this._controlPanel.destroy();
             this._modalWindow.destroy();
             this._gamePlay.destroy();
+            this._progressPanel.destroy();
             this._menu = null;
         }
     

@@ -144,7 +144,7 @@ module Sort {
             
             console.log(`Element index [${elementIndex}] `);
             this._swapBox = this._boxes[elementIndex];
-            this._swapBox.alpha = 0.5;
+            this._swapBox.setState(Common.BoxState.SELECTED_GREEN);
             
             this._placeToInsert = elementIndex;
 
@@ -153,7 +153,7 @@ module Sort {
         public hideSeparator(): void {
             
             if (this._swapBox != null) {
-                this._swapBox.alpha = 1;
+                this._swapBox.setState(Common.BoxState.ACTIVE);
             }
         }
     }
@@ -238,10 +238,10 @@ module Sort {
         }
         
         private createSeparator(): Phaser.Sprite {
-            var seprator: Phaser.Sprite =  this._game.add.sprite(0,0, 'box');
+            var seprator: Phaser.Sprite =  this._game.add.sprite(0,0, Constants.GAME_GENERAL_ATTLAS, "separator_arrow.png");
             seprator.alpha = 0;
-            seprator.width *= 0.1;
             seprator.anchor.x = 0.5;
+            seprator.anchor.y = 1.1;
             
             return seprator;
         }
@@ -251,7 +251,7 @@ module Sort {
             var boxWidth = this._boxes[0].width;
             var boxSpace = this._boxes[1].x - (this._boxes[0].x + boxWidth);
             var stepDelta = boxSpace + boxWidth;
-            var startPosition = this._boxLine.x - boxSpace/2;
+            var startPosition = Constants.GAME_AREA_MARGIN - boxSpace /2 ;
             
             var index: number[] = [];
             for(var i=0; i<= this._boxes.length; ++i) {
@@ -282,7 +282,7 @@ module Sort {
         }
         
         protected highlightElement(index: number) {
-            this._boxLine.highlightBox(index);
+            this._boxLine.selectBox(index);
         }
         
         protected createBoxLine(): AbstractSortingBoxLine {
@@ -332,7 +332,7 @@ module Sort {
         }
         
         protected highlightElement(index: number) {
-            this._boxLine.highlightBox(index);
+            this._boxLine.selectBox(index);
         }
         
         protected createBoxLine(): AbstractSortingBoxLine {

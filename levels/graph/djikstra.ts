@@ -28,9 +28,6 @@ module Graph {
         private _sourceNode: GraphJS.Node;
         private _destinationNode: GraphJS.Node;
         
-        private _columns: number;
-        private _rows: number;
-        
         private _edgeSequence: number;
         
         constructor(config: any) {
@@ -38,9 +35,6 @@ module Graph {
         }
         
         protected generateSeqeunce(config: any): any[] {
-
-            this._columns = config.columns;
-            this._rows = config.rows;
             this._edgeSequence = 0;
 
             var sequence = super.generateSeqeunce(config);
@@ -119,10 +113,6 @@ module Graph {
 
     }
     
-    class EdgeUI {
-        constructor(public edge: GraphJS.Edge, public text:Phaser.Text){}
-    }
-    
     class DjikstraGraphUI extends Graph.GraphUI {
         
         private _edgeWitghtText: EdgeUI[];
@@ -137,13 +127,18 @@ module Graph {
             extraStepCallback: Function) {
         
             super(game, nodes, nodeClickedCallback, sourceNode);
-            this._nodes[destinationNode.id].alpha = 0.2;
+            this._nodes[sourceNode.id].setState(Common.BoxState.SELECTED_GREEN);
+            this._nodes[destinationNode.id].setState(Common.BoxState.SELECTED_ORANGE);
             this._extraStepCallback = extraStepCallback;
         }
         
         protected init(nodes: GraphJS.Node[]): void {
             this._edgeWitghtText = [];
             super.init(nodes);
+        }
+        
+        protected createNode(node: GraphJS.Node): Common.BoxContainer {
+            return new Common.BoxContainer(this._game, "", this.createNodeClickCallback(node.id), function(){});
         }
         
         public showExtraNumbers(step: DjikstraStep): void {
@@ -165,8 +160,8 @@ module Graph {
                 edgeWeight,
                 currentWeight,
                 stepWeight]);
-            this._numberLine.x = targetNode.x + targetNode.width + 10;
-            this._numberLine.y = targetNode.y;
+            this._numberLine.x = targetNode.worldPosition.x + targetNode.width + 10;
+            this._numberLine.y = targetNode.worldPosition.y;
         }
         
         private createNumberBoxes(numbers: number[]): Phaser.Group {
@@ -176,7 +171,7 @@ module Graph {
                 var value = numbers[i];
                 var boxContainer = this.createNumberBox(value);
                 numberLine.add(boxContainer);
-                boxContainer.x = 30 * i;
+                boxContainer.x = 33 * i;
             }
             
             return numberLine;
@@ -191,6 +186,7 @@ module Graph {
             
             boxContainer.scale.setTo(0.6);
             boxContainer.setBoxIndex(boxValue);
+            boxContainer.setState(Common.BoxState.SELECTED_BLUE);
             return boxContainer;
         }
         
@@ -206,37 +202,24 @@ module Graph {
         }
         
         public higlightEdge(step: DjikstraStep): void {
-            this._edgeWitghtText[step.edge.id].text.text = step.edge.weight + "**";
+            this._edgeWitghtText[step.edge.id].highlightEdge();
         }
 
         public updateNodeWeight(step: DjikstraStep): void {
-            this._edgeWitghtText[step.edge.id].text.text = "" + step.edge.weight;
+            this._edgeWitghtText[step.edge.id].stopHiglightingEdge();
             var node = this._nodes[step.stepNumber];
             var nodeText: Phaser.Text = <Phaser.Text>node.children[1];
             nodeText.text = "" + step.weight;
         }
 
-        protected drawEdge(edge: GraphJS.Edge): void {
-            super.drawEdge(edge);
-            var parentPoint = this.getNodeScreenCoordinates(edge.fromNode);
-            var childPoint = this.getNodeScreenCoordinates(edge.toNode);
-            
-            var xDiff = childPoint.x - parentPoint.x;
-            var yDiff = childPoint.y - parentPoint.y;
-            
-            var wightTextX = parentPoint.x + xDiff * 0.85;
-            var wightTextY = parentPoint.y + yDiff * 0.85;
-            
-            var edgeWeightText: Phaser.Text = this._game.add.text(wightTextX, wightTextY, "" + edge.weight , Constants.CONTROL_PANEL_MESSAGE_STYLE);
-            edgeWeightText.anchor.setTo(0.5);
-            this._edgeWitghtText[edge.id] = new EdgeUI(edge, edgeWeightText);
+        protected drawEdge(edge: GraphJS.Edge): EdgeUI {
+            var newEdge = new EdgeUI(this._game, edge);
+            this._edgeWitghtText[edge.id] = newEdge;
+            return newEdge;
         }
         
         public destroy(): void {
             super.destroy();
-            for(var edgeUI of this._edgeWitghtText) {
-                edgeUI.text.destroy();
-            }
             this.clearState();
         }
     }

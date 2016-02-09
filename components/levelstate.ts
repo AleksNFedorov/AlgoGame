@@ -267,8 +267,7 @@ module Common {
                 levelName,
                 levelStats,
                 buttonSettings,
-                function(){}
-//                this.createButtonClickCallback(levelInfo)
+                this.createButtonClickCallback(levelInfo)
             );
             
             levelButton.x = x;

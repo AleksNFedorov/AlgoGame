@@ -38,7 +38,8 @@ module Graph {
             this._graphUI = new GraphUI(this._game,     
                 this._algorithm.sequence,
                 this.boxClicked.bind(this),
-                this._algorithm.nodeToFind
+                this._algorithm.nodeToFind,
+                this._algorithm.columns
                 );
         }
 

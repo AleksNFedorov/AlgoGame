@@ -99,14 +99,19 @@ module Common {
         constructor(public index: number, public position: FlagPosition, public level: FlagLevel) {};
     }
     
+    export enum BoxState {ACTIVE, SELECTED_BLUE, SELECTED_GREEN, SELECTED_ORANGE, DISABLED}
+    
     export class BoxContainer extends Phaser.Group {
 
         private _boxIndex: number;
         
+        private _box: Phaser.Sprite;
+        private _boxText: Phaser.Text;
+        
         private _pressCallback: Function;
         private _releaseCallback: Function;
         
-        constructor(game:Common.AlgoGame, boxValue: number, pressCallback?: Function, releaseCallback?: Function) {
+        constructor(game:Common.AlgoGame, boxValue: any, pressCallback?: Function, releaseCallback?: Function) {
             super(game);
             this._pressCallback = pressCallback;
             this._releaseCallback = releaseCallback;
@@ -116,11 +121,13 @@ module Common {
             game.add.existing(this);
         }
         
-        private initBox(game: Common.AlgoGame, value: number): void {
+        private initBox(game: Common.AlgoGame, value: any): void {
 
-            var box: Phaser.Sprite =  game.add.sprite(0,0, 'box');
-            var boxKeyText: Phaser.Text = game.add.text(box.height/2, box.width/2 , "" + value, Constants.CONTROL_PANEL_MESSAGE_STYLE);
-            boxKeyText.anchor.setTo(0.5);
+            var box: Phaser.Sprite =  game.add.sprite(0,0, Constants.GAME_GENERAL_ATTLAS, "Active.png");
+            var boxKeyText: Phaser.Text = game.add.text(box.height/2, box.width/2 , "" + value, 
+                JSON.parse(JSON.stringify(Constants.CONTROL_PANEL_MESSAGE_STYLE)));
+            boxKeyText.anchor.x = 0.6;
+            boxKeyText.anchor.y = 0.5;
             
             box.inputEnabled = true;
             boxKeyText.inputEnabled = true;
@@ -137,6 +144,31 @@ module Common {
             
             this.add(box);
             this.add(boxKeyText);
+            
+            this._box = box;
+            this._boxText = boxKeyText;
+        }
+        
+        public setState(newState: BoxState): void {
+            this._boxText.fill = Constants.MENU_LEVEL_TEXT_ENABLED;
+            switch(newState) {
+                case BoxState.ACTIVE:
+                    this._box.frameName = "Active.png";
+                    break;
+                case BoxState.SELECTED_BLUE:
+                    this._box.frameName = "Selected_blue.png";
+                    break;
+                case BoxState.SELECTED_ORANGE:
+                    this._box.frameName = "Selected_orange.png";
+                    break;
+                case BoxState.SELECTED_GREEN:
+                    this._box.frameName = "Selected_green.png";
+                    break;
+                case BoxState.DISABLED:
+                    this._box.frameName = "Disabled.png";
+                    this._boxText.fill = Constants.MENU_LEVEL_STATS_TEXT_DISABLED;
+                    break;
+            }
         }
         
         public setBoxIndex(boxIndex: number): void {
@@ -171,30 +203,31 @@ module Common {
             this.init(sequence);
         }
         
-        
         protected init(seqeunce: number[]) {
             this._boxLine = this._game.add.group();
-            this._boxLine.x = 50;
-            this._boxLine.y = 300;
 
             this._boxes = this.createBoxes(seqeunce);
+            
+            this._boxLine.x = Constants.GAME_AREA_X;
+            this._boxLine.y = Constants.GAME_AREA_LINE_Y;
+            
         }
         
         protected createBoxes(seqeunce: number[]): BoxContainer[] {
             
             var boxes: BoxContainer[] = [];
-            var boxInterval = 1000/seqeunce.length;
+            var boxInterval = (this._game.width - Constants.GAME_AREA_MARGIN * 2 - Constants.GAME_AREA_BOX_WIDTH)/(seqeunce.length - 1);
             
             for(var index = 0; index < seqeunce.length; ++index) {
                 var boxContainer: BoxContainer = this.createBox(index, seqeunce[index]);
                 this._boxLine.add(boxContainer);
-                boxContainer.x = boxInterval * index;
+                boxContainer.x = boxInterval * index + Constants.GAME_AREA_MARGIN;
                 boxContainer.y = 0;
                 
                 boxes.push(boxContainer);
                 
-                var boxIndexText: Phaser.Text = this._game.add.text(boxContainer.x + 30,  boxContainer.y + 60 , "" + (index + 1), Constants.CONTROL_PANEL_MESSAGE_STYLE);
-                boxIndexText.anchor.setTo(0.5);
+                var boxIndexText: Phaser.Text = this._game.add.text(boxContainer.x + boxContainer.width/2,  boxContainer.y + boxContainer.height + 10 , "" + (index + 1), Constants.GAME_AREA_INDEX_TEXT);
+                boxIndexText.anchor.x = 0.7;
                 this._boxLine.add(boxIndexText);
                 this._boxIndexes.push(boxIndexText);
             }
@@ -222,25 +255,16 @@ module Common {
             this._boxClickedCallback(action);
         }
         
-        public higlightBox(boxIndex: number) {
+        public selectBox(boxIndex: number, selectType = BoxState.SELECTED_ORANGE) {
             var boxContainer: Common.BoxContainer = this._boxes[boxIndex];
-
-            this._game.add.tween(boxContainer).to({y:boxContainer.y - 14}, 
-                300, 
-                Phaser.Easing.Exponential.Out, true);
-        }
-        
-        public highlightBox(index: number): void {
-            if (index != null) {
-                this._boxes[index].alpha = 0.5;
-            }
+            boxContainer.setState(selectType);
         }
         
         public hideBoxesOutOf(from: number, to: number): void {
           
           for(var i = 0; i< this._boxes.length; ++i) {
               if (i < from || i > to) {
-                this._boxes[i].alpha = 0.5;
+                this._boxes[i].setState(BoxState.DISABLED);
               }
           }
         }
@@ -248,7 +272,7 @@ module Common {
         public hideBoxesIn(from: number, to: number): void {
           for(var i = 0; i< this._boxes.length; ++i) {
               if (i >= from && i <= to) {
-                this._boxes[i].alpha = 0.5;
+                this._boxes[i].setState(BoxState.DISABLED);
               }
           }
         }
@@ -295,7 +319,7 @@ module Common {
         }
         
         private createSpriteForFlag(position: FlagPosition, level: FlagLevel): Phaser.Sprite {
-            var box: Phaser.Sprite = this._game.add.sprite(0,0, 'box');
+            var box: Phaser.Sprite = this._game.add.sprite(0,0, Constants.GAME_GENERAL_ATTLAS, "Active.png");
             box.scale.setTo(0.2);
             box.anchor.setTo(0.5);
             return box;
@@ -339,6 +363,7 @@ module Common {
             this.addEventListener(Events.STAGE_INITIALIZED);
             this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
             this.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_REPLAY);
         }
 
         dispatchEvent(event: any, param1: any) {
@@ -363,6 +388,17 @@ module Common {
                     break;
                 case Events.CONTROL_PANEL_EVENT_PAUSE:
                     this._gameStepTimer.pause();
+                    break;
+                case Events.CONTROL_PANEL_EVENT_REPLAY:
+                    if (this.isCurrentState(Common.LevelStageState.PAUSED)) {
+                        //mid-game pause
+                        this._gameStepTimer.resume();
+                    }                    
+                    this.onLastStep();
+                    this._game.dispatch(
+                        Events.CONTROL_PANEL_EVENT_PLAY, 
+                        this,
+                        this.createGamePlayInfo());
                     break;
             }
         }
@@ -408,7 +444,9 @@ module Common {
         
         protected boxClicked(action: T, isUser:boolean = true) {
             
-            this.checkStepAllowed(isUser);
+            if (!this.checkStepAllowed(isUser)) {
+                return;
+            }
 
             var step: Common.AlgorithmStep = this._algorithmStep;
             
