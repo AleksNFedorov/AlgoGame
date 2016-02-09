@@ -447,7 +447,7 @@ module Common {
             if (!this.checkStepAllowed(isUser)) {
                 return;
             }
-
+            
             var step: Common.AlgorithmStep = this._algorithmStep;
             
             if (this.isCorrectStep(action)) {

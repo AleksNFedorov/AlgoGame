@@ -66,7 +66,8 @@ module BinarySearch {
             while(!step.isLast) {
                 step = this.evaluateNextStep(step);
                 steps.push(step);
-            }             
+            }            
+            this._elementToFindIndex = step.elementIndex;
             return steps;
         }
         
@@ -80,7 +81,7 @@ module BinarySearch {
         
             var nextStep: BinarySearchStep;
             if (pivotElement == elementToFind) {
-                
+
                 nextStep = new BinarySearchStep(true, this._stepIndex, 
                     pivotIndex, 
                     pivotIndex, 
@@ -128,8 +129,6 @@ module BinarySearch {
             } else {
                 index = BinarySearchAlgorithm.getRandomInteger(Math.floor(arrayMiddleElement) + 2, this.sequence.length - 1);
             }
-            
-            console.log(`Element to find index ${index}`);
             
             return index;
         }
@@ -179,6 +178,7 @@ module BinarySearch {
         protected onCorrectAction(): void {
             var step: BinarySearchStep = this.getCurrentStep();
             this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
+            this._boxLine.selectBox(step.elementIndex, Common.BoxState.SELECTED_GREEN);
         }
         
         protected destroyTempObjects():void {
@@ -222,7 +222,7 @@ module BinarySearch {
         protected onCorrectAction(): void {
             var step: BinarySearchStep = this.getCurrentStep();
             this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
-            this._boxLine.selectBox(step.elementIndex);
+            this._boxLine.selectBox(step.elementIndex, Common.BoxState.SELECTED_GREEN);
         }
         
         protected destroyTempObjects():void {
