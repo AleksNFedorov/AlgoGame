@@ -56,7 +56,7 @@ module Common {
         restoreState(): void {};
     }
    
-    class InfoTextPanel extends GameComponentContainer {
+    class InfoTextPanel extends GameContainerWithStoreSupport {
         
         protected _panelGroup: Phaser.Group;
         protected _messages: GameMessage[] = [];
@@ -151,6 +151,7 @@ module Common {
         protected _playButton: Common.Button;
 
         protected _autoStartTimer: Phaser.Timer;
+        protected _autoStartEnabled: boolean = true; 
         
         constructor(game: AlgoGame) {
             super(game);
@@ -187,7 +188,7 @@ module Common {
         
         protected initButton(button: Button, x: number, y: number) {
             button.x = x;
-            button.y = 0;
+            button.y = y;
             this._panelGroup.add(button);
         }
         
@@ -199,10 +200,12 @@ module Common {
                     break;
                 case Events.GAME_END:
                     console.log("Game END event received");
-                    this._autoStartTimer.repeat(
-                        Constants.GAME_AUTOSTART_INTERVAL, 0, 
-                        this.getCallbackForEventId(Events.CONTROL_PANEL_EVENT_PLAY), 
-                        this);
+                    if (this._autoStartEnabled) {
+                        this._autoStartTimer.repeat(
+                            Constants.GAME_AUTOSTART_INTERVAL, 0, 
+                            this.getCallbackForEventId(Events.CONTROL_PANEL_EVENT_PLAY), 
+                            this);
+                    }
                     break;
                 case Events.GAME_DISABLE_ALL:
                     this._autoStartTimer.pause();
@@ -230,8 +233,26 @@ module Common {
     
     export class PractisePanel extends ControlPanel {
         
+        private static AUTOSTART_FRAMES_OFF = [
+                    "AutoStart-toggle_off.png",
+                    "AutoStart-toggle_off.png",
+                    "AutoStart-toggle_off.png",
+                    "AutoStart-toggle_off.png",
+                    "AutoStart-toggle_off.png"
+                ];
+                
+        private static AUTOSTART_FRAMES_ON = [
+                    "AutoStart-toggle_on.png", 
+                    "AutoStart-toggle_on.png", 
+                    "AutoStart-toggle_on.png", 
+                    "AutoStart-toggle_on.png", 
+                    "AutoStart-toggle_off.png"
+                ];
+        
         protected _pauseButton: Button;
         protected _replayButton: Button;
+        
+        private _autoStart: Button;
         
         constructor(game: AlgoGame) {
             super(game);  
@@ -263,12 +284,15 @@ module Common {
                     "Replay-button_Disabled.png"
                 ]
             );
+            
 
-            this.initButton(this._replayButton, Constants.CONTROL_PANEL_FIRST_BUTTON_X, -1);
-            this.initButton(this._pauseButton, Constants.CONTROL_PANEL_SECOND_BUTTON_X, -1);
+            this.initButton(this._replayButton, Constants.CONTROL_PANEL_FIRST_BUTTON_X, 0);
+            this.initButton(this._pauseButton, Constants.CONTROL_PANEL_SECOND_BUTTON_X, 0);
             
             this._pauseButton.deactivate();
             this._pauseButton.alpha = 0;
+            
+            this.createAutoStartButton();
         }
         
         initEventListners(): void {
@@ -276,6 +300,40 @@ module Common {
             super.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
             super.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
             super.addEventListener(Events.GAME_END);
+        }
+        
+        createAutoStartButton(): void {
+            this._autoStart = this.createButton(
+                Common.GameElements.ControlPanelButtonAutoStart,
+                "NONE", PractisePanel.AUTOSTART_FRAMES_ON
+            );
+            this.initButton(this._autoStart, 
+            Constants.CONTROL_PANEL_AUTOSTART_X,
+            Constants.CONTROL_PANEL_AUTOSTART_Y);
+            
+            this._autoStart.callback = this.onAutostartClick.bind(this);
+            var autoStartText = this._game.add.text(
+                Constants.CONTROL_PANEL_AUTOSTART_X - 100,
+                Constants.CONTROL_PANEL_AUTOSTART_Y + 6,
+                "Autostart", Constants.PROGRESS_BAR_TEXT, this._panelGroup);
+
+        }
+        
+        private onAutostartClick(): void {
+            this._autoStartEnabled = !this._autoStartEnabled;
+            var frames: string[] = this._autoStartEnabled ? 
+                PractisePanel.AUTOSTART_FRAMES_ON :
+                PractisePanel.AUTOSTART_FRAMES_OFF;
+
+            this._autoStart.setFrames(
+                frames[0],
+                frames[1],
+                frames[2],
+                frames[3]
+            );
+            
+            this.levelSave.autoStart = this._autoStartEnabled;
+            this.saveState();
         }
         
         dispatchEvent(event: any, param1: any) {
@@ -294,6 +352,10 @@ module Common {
                     this._playButton.activate();
                     this._pauseButton.deactivate();
                     //Set correct info text here
+                    break;
+                case Events.STAGE_INITIALIZED:
+                    this._autoStartEnabled = !this.levelSave.autoStart;
+                    this.onAutostartClick();
                     break;
             }
         }

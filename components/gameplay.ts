@@ -111,12 +111,15 @@ module Common {
         private _pressCallback: Function;
         private _releaseCallback: Function;
         
+        private _state: BoxState;
+        
         constructor(game:Common.AlgoGame, boxValue: any, pressCallback?: Function, releaseCallback?: Function) {
             super(game);
             this._pressCallback = pressCallback;
             this._releaseCallback = releaseCallback;
             
             this.initBox(game, boxValue);
+            this._state = BoxState.ACTIVE;
             
             game.add.existing(this);
         }
@@ -150,7 +153,13 @@ module Common {
         }
         
         public setState(newState: BoxState): void {
+            
+            if (this._state === BoxState.DISABLED) {
+                return;
+            }
+            
             this._boxText.fill = Constants.MENU_LEVEL_TEXT_ENABLED;
+            this._state = newState;
             switch(newState) {
                 case BoxState.ACTIVE:
                     this._box.frameName = "Active.png";

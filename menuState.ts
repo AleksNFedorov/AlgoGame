@@ -13,9 +13,6 @@ class Preload extends Phaser.State {
         this.preloadBar.anchor.setTo(0.5);
         this.load.setPreloadSprite(this.preloadBar);
         
-        // Put actual assets load code here
-        this.load.spritesheet(Constants.MENU_BUTTON_ATTLAS, '/assets/images/menuButtons.png', 136, 136);
-        
         //Game general atlas
         this.game.load.atlas(Constants.GAME_GENERAL_ATTLAS,
         '/assets/images/gameGeneral.png',
@@ -33,18 +30,12 @@ class Preload extends Phaser.State {
         '/assets/images/banners.json',
         Phaser.Loader.TEXTURE_ATLAS_JSON_ARRAY);
 
-        // Tmp images
-        this.load.image('box', '/assets/images/box.png');
-        this.load.image('cursor', '/assets/images/cursor.png');
-        this.load.image('modalBg', '/assets/images/modalBG.png');
-
         this.load.onLoadComplete.add(this._onLoadComplete, this);
     }
 
     private _onLoadComplete() {
         console.log("Preload complete");
-        // this.game.state.start("menu");
-        this.game.state.start("djikstraPractise");
+        this.game.state.start("menu");
     }
     
     public shutdown(): void {

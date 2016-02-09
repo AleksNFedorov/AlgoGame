@@ -4,7 +4,7 @@ var globalConfig = {
             practise: {
                 stageName: "binarySearchPractise",
                 stepsToPass: 15,
-                stepTime: 10000,
+                stepTime: 3000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://google.com",

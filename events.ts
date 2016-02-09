@@ -19,8 +19,6 @@ class Events {
     static CONTROL_PANEL_EVENT_PAUSE = Events.createEvent("cpPause");
     static CONTROL_PANEL_EVENT_STOP = Events.createEvent("cpStop");
     static CONTROL_PANEL_EVENT_REPLAY = Events.createEvent("cpReplay");
-    static CONTROL_PANEL_EVENT_AUTOSTART_ON = Events.createEvent("cpAutostart");
-    static CONTROL_PANEL_EVENT_AUTOSTART_OFF = Events.createEvent("cpAutostartOff");
 
     //Modal window events
     static MODAL_WINDOW_DISPLAYING = Events.createEvent("ModalWindowDispl");

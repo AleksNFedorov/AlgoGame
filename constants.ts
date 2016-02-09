@@ -24,6 +24,8 @@ class Constants {
     static CONTROL_PANEL_MESSAGE_X = 390;
     static CONTROL_PANEL_FIRST_BUTTON_X = 50;
     static CONTROL_PANEL_SECOND_BUTTON_X = 170;
+    static CONTROL_PANEL_AUTOSTART_X = 190;
+    static CONTROL_PANEL_AUTOSTART_Y = 110;
 
     //Game Menu
     static GAME_AREA_BOX_WIDTH = 53;

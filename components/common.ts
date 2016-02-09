@@ -16,19 +16,21 @@ module Common {
         All game elements, element id should be here to show description info for it.
     */
     export enum GameElements {
-        MenuButtonMenu = 2,
-        MenuButtonDescription = 3,
-        MenuButtonObjectives = 4,
-        MenuButtonPractise = 5,
-        MenuButtonExam = 6,
-        ProgressBarStep = 7,
-        ProgressBarComplete = 8,
-        ControlPanelButtonPlay = 9,
-        ControlPanelButtonPause = 10,
-        ControlPanelButtonStop = 11,
-        ControlPanelText = 12,
-        GameArea = 13,
-        LevelButton = 14,
+        MenuButtonMenu,
+        MenuButtonDescription,
+        MenuButtonObjectives,
+        MenuButtonPractise,
+        MenuButtonExam,
+        ProgressBarStep,
+        ProgressBarComplete,
+        ControlPanelButtonPlay,
+        ControlPanelButtonPause,
+        ControlPanelButtonStop,
+        ControlPanelButtonReplay,
+        ControlPanelButtonAutoStart,
+        ControlPanelText,
+        GameArea,
+        LevelButton,
     }
         
     //Key info stored on borwser local store
@@ -37,6 +39,7 @@ module Common {
         public practisePassed: boolean = false;
         public examDone: number = 0;
         public examPassed: boolean = false;
+        public autoStart: boolean = true;
     }
     
     class SecureSaver {
