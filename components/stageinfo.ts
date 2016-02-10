@@ -32,48 +32,41 @@ module StageInfo {
         }
     }
     
-    export class InfoWidget implements Common.InfoWidget {
+    export class InfoWidget extends Phaser.Group implements Common.InfoWidget {
         
-        private _cursorSprite: Phaser.Sprite;
-        private _messageBox: Phaser.Group;
+        private _infoIcon: Phaser.Sprite;
         
         private _infoToShow: ShowInfo;
         
         constructor(game: Common.AlgoGame, infoToShow: ShowInfo, closeCallback?: Function) {
+            super(game);
             this._infoToShow = infoToShow;
             var message = Dictionary[Common.GameElements[infoToShow.elementId]];
             this.createWidgetUI(game, message, closeCallback);
         }
         
         private createWidgetUI(game: Common.AlgoGame, message: string, closeCallback?: Function): void {
-            var cursorSprite = game.add.sprite(-100, -100, 'cursor');
-            cursorSprite.scale.setTo(0.3);
-            game.world.bringToTop(cursorSprite);
             
-            var textBackground: Phaser.Sprite =  game.add.sprite(0,0, 'modalBg');
-            textBackground.scale.x = 0.7;
-            textBackground.scale.y = 0.5;
-            var boxIndexText: Phaser.Text = game.add.text(30,  30 , message , Constants.CONTROL_PANEL_MESSAGE_STYLE);
-
-            this._messageBox = game.add.group();
-        
-            this._messageBox.add(textBackground);
-            this._messageBox.add(boxIndexText);
+            var textBackground: Phaser.Sprite =  game.add.sprite(45 ,0, Constants.GAME_GENERAL_ATTLAS, "info_bg_rectangle.png", this);
+            this._infoIcon = game.add.sprite(0, 0, Constants.GAME_GENERAL_ATTLAS, "info_3.png", this);
+            var boxIndexText: Phaser.Text = game.add.text(textBackground.x + 10,  textBackground.y + 10 , "Some text" , Constants.GAME_AREA_INDEX_TEXT, this);
 
             if (this._infoToShow.eventToHide == null) {
                 //Close by click
-                cursorSprite.inputEnabled = true;
+                this._infoIcon.inputEnabled = true;
                 textBackground.inputEnabled = true;
                 boxIndexText.inputEnabled = true;
                 
-                cursorSprite.events.onInputDown.add(closeCallback);
+                this._infoIcon.events.onInputDown.add(closeCallback);
                 textBackground.events.onInputDown.add(closeCallback);
                 boxIndexText.events.onInputDown.add(closeCallback);
                 
             } 
             
-
-            this._cursorSprite = cursorSprite;
+            this._infoIcon.animations.add("blink", ["info_1.png", "info_2.png", "info_3.png"],3, true);
+            this._infoIcon.animations.play("blink");
+            
+            game.world.bringToTop(this);
         }
         
         public get showInfo(): ShowInfo {
@@ -89,50 +82,52 @@ module StageInfo {
             
             switch(quarter) {
                 case Quarter.TOPRIGHT:
-                    this._cursorSprite.x = element.worldPosition.x - this._cursorSprite.width - 10;
-                    this._cursorSprite.y = element.worldPosition.y + element.height - 10;
-                    this._cursorSprite.angle = 90;
-                    this._cursorSprite.anchor.setTo(0.2, 0.8);
-                    
-                    this._messageBox.x = this._cursorSprite.x - 10 - this._messageBox.width;
-                    this._messageBox.y = this._cursorSprite.y + 10 + this._cursorSprite.height;
-                    
+                    this.y = element.worldPosition.y + element.height + 10;
+                    this.x = element.worldPosition.x + element.width/2 + this._infoIcon.width/2 - this.width;            
+            
+                    var pointerSprite = this.game.add.sprite(0, 0 , Constants.GAME_GENERAL_ATTLAS, "triangle_up.png", this);
+                    pointerSprite.x = this.width - this._infoIcon.width/2 ;
+                    pointerSprite.y = -11;
+                    pointerSprite.anchor.x = 0.5;
+
                     break;
                 case Quarter.TOPLEFT:
-                    this._cursorSprite.x = element.worldPosition.x + element.width;
-                    this._cursorSprite.y = element.worldPosition.y + element.height;
+                
+                    this.y = element.worldPosition.y + element.height + 10;
+                    this.x = element.worldPosition.x + element.width/2 - this._infoIcon.width/2 ;            
+                
+                    var pointerSprite = this.game.add.sprite(0, 0 , Constants.GAME_GENERAL_ATTLAS, "triangle_up.png", this);
                     
-                    this._messageBox.x = this._cursorSprite.x + 10 + this._cursorSprite.width;
-                    this._messageBox.y = this._cursorSprite.y + 10 + this._cursorSprite.height;
+                    pointerSprite.anchor.x = 0.5;
+                    pointerSprite.x = 25;
+                    pointerSprite.y = -11;
 
                     break;
                 case Quarter.BOTTOMRIGHT:
-                    this._cursorSprite.x = element.worldPosition.x - this._cursorSprite.width - 10;
-                    this._cursorSprite.y = element.worldPosition.y - this._cursorSprite.height + 10;
-                    this._cursorSprite.anchor.setTo(1);
-                    this._cursorSprite.angle = -210;
-                    
-                    this._messageBox.x = this._cursorSprite.x - 10 - this._messageBox.width;
-                    this._messageBox.y = this._cursorSprite.y - 10 - this._messageBox.height;
+                
+                    this.y = element.worldPosition.y + element.height + 10;
+                    this.y = element.worldPosition.y - this.height - 25 ;
+            
+                    var pointerSprite = this.game.add.sprite(0, 0 , Constants.GAME_GENERAL_ATTLAS, "triangle_down.png", this);
+                    pointerSprite.x = this.width - this._infoIcon.width/2 ;
+                    pointerSprite.y = this.height;
+                    pointerSprite.anchor.x = 0.5;
 
                     break;
                 case Quarter.BOTTOMLEFT:
-                    this._cursorSprite.x = element.worldPosition.x + element.width + 10;
-                    this._cursorSprite.y = element.worldPosition.y - this._cursorSprite.height - 10;
-                    this._cursorSprite.anchor.setTo(0.8);
-                    this._cursorSprite.angle = 230;
                     
-                    this._messageBox.x = this._cursorSprite.x + 10 + this._cursorSprite.width;
-                    this._messageBox.y = this._cursorSprite.y - 10 - this._messageBox.height;
+                    this.x = element.worldPosition.x + element.width/2 - this._infoIcon.width/2 ;            
+                    this.y = element.worldPosition.y - this.height - 25 ;
+                    
+                    var pointerSprite = this.game.add.sprite(0, 0 , Constants.GAME_GENERAL_ATTLAS, "triangle_down.png", this);
+
+                    pointerSprite.anchor.x = 0.5;
+                    pointerSprite.x = 25;
+                    pointerSprite.y = this.height;
                     
                     break;
             }
             
-        }
-        
-        public destroy(): void {
-            this._cursorSprite.destroy();
-            this._messageBox.destroy();
         }
         
         private static getQuarter(x: number, y: number): Quarter {
@@ -239,8 +234,8 @@ module StageInfo {
         constructor(game: Common.AlgoGame) {
             super(game, LevelStageType.PRACTISE,
                 [
-                    new ShowInfo(Common.GameElements.MenuButtonPractise),
                     new ShowInfo(Common.GameElements.MenuButtonMenu),
+                    new ShowInfo(Common.GameElements.MenuButtonPractise),
                     new ShowInfo(Common.GameElements.ControlPanelButtonPlay,
                         Events.CONTROL_PANEL_EVENT_PLAY
                         ),

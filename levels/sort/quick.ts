@@ -97,7 +97,7 @@ module Sort {
             items[firstIndex] = items[secondIndex];
             items[secondIndex] = temp;
             
-            if (firstIndex != secondIndex) {
+            if (firstIndex != secondIndex && items[firstIndex] != items[secondIndex]) {
                 this._mergeSteps.push(new Step(firstIndex,secondIndex, [
                     this._currentPivotIndex,
                     this._currentLeft,

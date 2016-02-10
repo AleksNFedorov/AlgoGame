@@ -143,9 +143,14 @@ module BinarySearch {
         
         constructor(game: Common.AlgoGame, boxClickedCallback:Function, sequence: number[], elementToFindIndex: number) {
             super(game, boxClickedCallback, sequence);
-            this.selectBox(elementToFindIndex);
+            super.selectBox(elementToFindIndex);
         }
         
+        public selectBox(boxIndex: number, selectType: Common.BoxState) {
+            var boxContainer: Common.BoxContainer = this._boxes[boxIndex];
+            this._game.add.tween(boxContainer).to({ y: boxContainer.y - 25 }, 300, "Quart.easeOut").start();
+        }
+
         protected onBoxClickPressed(index: number): void {
             this.onAction(new BinarySearchAction(index));
         }

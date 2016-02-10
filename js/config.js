@@ -153,7 +153,7 @@ var globalConfig = {
             practise: {
                 stageName: "quickSortPractise",
                 stepsToPass: 50,
-                stepTime: 4000,
+                stepTime: 8000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://google.com",

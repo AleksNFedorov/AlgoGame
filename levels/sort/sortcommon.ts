@@ -181,7 +181,7 @@ module Sort {
             
             this._separator.alpha = 1;
             this._separator.y = this._boxLine.y;
-            this._separator.x = this._separatorIndex[indexElement];
+            this._separator.x = Math.max(this._separatorIndex[indexElement], 10);
             
             this._placeToInsert = indexElement;
         }
