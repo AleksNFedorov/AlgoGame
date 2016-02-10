@@ -44,6 +44,7 @@ class Events {
     
     //Stage info manager events
     static STAGE_INFO_SHOW = Events.createEvent("ShowStageInfo");
+    static STAGE_INFO_ALL_INFO_SHOWED = Events.createEvent("AllInfoShowed");
     
     private static createEvent(eventId: string): string {
         if (!eventId || 0 === eventId.length) {

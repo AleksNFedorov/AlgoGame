@@ -189,6 +189,7 @@ module StageInfo {
             var elementToShow = lastShowedElementId + 1;
             if (elementToShow >= this._infoToShow.length) {
                 console.log("Last show info has been displayed");
+                this._game.dispatch(Events.STAGE_INFO_ALL_INFO_SHOWED, this);
                 return;
             }
             

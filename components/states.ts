@@ -156,7 +156,7 @@ module Common {
             this._game.dispatch(Events.STAGE_INITIALIZED, this, this._stateConfig);
         }
         
-        private initEventListners(): void {
+        protected initEventListners(): void {
             this.addEventListener(Events.GAME_CREATED);
             this.addEventListener(Events.GAME_STARTED);
             this.addEventListener(Events.GAME_END);
@@ -224,11 +224,11 @@ module Common {
             }
         }
         
-        private addEventListener(eventId: string): void {
+        protected addEventListener(eventId: string): void {
             this._game.eventBus.addEventListener(eventId, this.dispatchEvent, this);  
         }
         
-        private removeEventListener(eventId: string): void {
+        protected removeEventListener(eventId: string): void {
             this._game.eventBus.removeEventListener(eventId, this.dispatchEvent, this);  
         }
         
@@ -276,6 +276,8 @@ module Common {
             this._progressPanel.destroy();
             this._background.destroy();
             this._menu = null;
+            this.removeEventListener(Events.STAGE_INFO_ALL_INFO_SHOWED);
+
         }
     
         public create(): void {
@@ -293,8 +295,21 @@ module Common {
             
             super.onCreate();        
 
-            if (this.levelSave.practiseDone == 0) {
-                this._game.dispatch(Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES, this);
+        }
+        
+        protected initEventListners(): void {
+            super.initEventListners();
+            this.addEventListener(Events.STAGE_INFO_ALL_INFO_SHOWED);
+        }
+        
+        dispatchEvent(event: any, param1: any) {
+            super.dispatchEvent(event, param1);
+            switch(event.type) {
+                case Events.STAGE_INFO_ALL_INFO_SHOWED:
+                    if (this.levelSave.practiseDone == 0) {
+                        this._game.dispatch(Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES, this);
+                    }
+                    break;
             }
         }
         
@@ -316,8 +331,8 @@ module Common {
 
         protected initModalWindows(): void {
             var configs: GameModal.ModalConfig[] = [
-                    new GameModal.ModalConfig(Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES, "cursor"),
-                    new GameModal.ModalConfig(Events.GAME_PRACTISE_DONE, "cursor")
+                    new GameModal.ModalConfig(Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES, "separator_arrow.png", Constants.GAME_GENERAL_ATTLAS),
+                    new GameModal.ModalConfig(Events.GAME_PRACTISE_DONE, "separator_arrow.png", Constants.GAME_GENERAL_ATTLAS)
                 ];
                 
             this._modalWindow.createWindows(configs);
