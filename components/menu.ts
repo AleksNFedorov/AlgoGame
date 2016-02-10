@@ -4,7 +4,7 @@ declare var Dictionary: any;
 
 module Common {   
     
-    export class Menu extends GameContainerWithStoreSupport {
+    export class Menu extends GameComponentContainer {
         
         private static MENU_BUTTON_FRAMES = [
                 "Menu-button_Mouse-over.png",

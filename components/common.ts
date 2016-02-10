@@ -142,7 +142,7 @@ module Common {
         }
         
         public dispatch(eventId: string, caller: any, param?: any): void {
-            var state: State = <State> this.state.states[this.state.current];
+            var state: State = this.currentState;
             state.dispatch(eventId, caller, param);
         }
         
@@ -159,8 +159,12 @@ module Common {
         }
         
         public get levelStageState(): LevelStageState {
-            var state: State = <State> this.state.states[this.state.current];
+            var state: State = this.currentState;
             return state.levelStageState;
+        }
+        
+        public get currentState(): State {
+            return <State> this.state.states[this.state.current];
         }
     }
 
@@ -236,6 +240,18 @@ module Common {
         protected isNotCurrentState(state: LevelStageState): boolean {
             return this._game.levelStageState != state;
         }
+        
+        public get stateConfig(): GameConfig.StageConfig {
+            return this._game.currentState.stateConfig;
+        }
+        
+        protected get levelSave(): LevelSave {
+            return this._game.currentState.levelSave;
+        }
+        
+        protected saveState(): void  {
+          this._game.currentState.saveState();
+        }
 
         dispatchEvent(event: any, param1: any) {
             switch(event.type) {
@@ -270,9 +286,10 @@ module Common {
         }
     }
     
-    //Extend this class if component need 
+/*
+  //Extend this class if component need 
     //an access to stage config and stage client save
-    export class GameContainerWithStoreSupport extends GameComponentContainer {
+    export class GameComponentContainer extends GameComponentContainer {
     
         private _levelSave: LevelSave;
         protected stateConfig: GameConfig.StageConfig;
@@ -290,7 +307,7 @@ module Common {
             super.dispatchEvent(event, param1);
             switch(event.type) {
                 case Events.STAGE_INITIALIZED:
-                    this.stateConfig = <GameConfig.StageConfig>param1;
+  //                  this.stateConfig = <GameConfig.StageConfig>param1;
                     this._levelSave = this._game.store.get(this.stateConfig.level)
                             || new LevelSave();
                     break;
@@ -306,7 +323,7 @@ module Common {
         }
 
     }
-    
+*/    
     export class Text extends Phaser.Text implements GameUIObjectWithState {
         constructor(game: AlgoGame, x: number, y: number, text: string, fontSettings: any) {
             super(game, x, y, text, fontSettings);

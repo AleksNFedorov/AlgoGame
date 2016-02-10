@@ -35,8 +35,8 @@ class Preload extends Phaser.State {
 
     private _onLoadComplete() {
         console.log("Preload complete");
-//        this.game.state.start("menu");
-        this.game.state.start("binarySearchPractise");
+        this.game.state.start("menu");
+//        this.game.state.start("binarySearchPractise");
     }
     
     public shutdown(): void {
@@ -119,6 +119,9 @@ class LevelMenuState extends Common.State {
         return null;
     }
     
+    protected loadLevelSave(): Common.LevelSave {
+        return new Common.LevelSave();
+    }
 }
 
 //

@@ -56,7 +56,7 @@ module Common {
         restoreState(): void {};
     }
    
-    class InfoTextPanel extends GameContainerWithStoreSupport {
+    class InfoTextPanel extends GameComponentContainer {
         
         protected _panelGroup: Phaser.Group;
         protected _messages: GameMessage[] = [];

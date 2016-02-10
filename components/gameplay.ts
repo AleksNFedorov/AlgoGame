@@ -352,7 +352,7 @@ module Common {
         
     }
     
-    export class PractiseGamePlay<T extends GamePlayAction, A extends Algorithm> extends Common.GameContainerWithStoreSupport {
+    export class PractiseGamePlay<T extends GamePlayAction, A extends Algorithm> extends Common.GameComponentContainer {
 
         protected _algorithm: A;
         protected _algorithmStep: Common.AlgorithmStep;

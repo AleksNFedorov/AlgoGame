@@ -1,6 +1,8 @@
 /// <reference path="./common.ts" />
 /// <reference path="./progresspanel.ts" />
 
+declare var store: Store;
+
 module Common {
     
     /*
@@ -107,11 +109,13 @@ module Common {
     */
     export class State extends Phaser.State {
         
-        private _game: AlgoGame;
+        protected _game: AlgoGame;
         private _eventsToProcess: Phaser.LinkedList = new Phaser.LinkedList();
         private _levelStageState: LevelStageState = LevelStageState.UNKNOWN;
         private _pausedByModalWindow: boolean = false;
         protected _stateConfig: GameConfig.StageConfig;
+        
+        private _levelSave: LevelSave;
 
         public dispatch(eventId: string, caller: any, param?: any) {
             log.info(`New event received by state [${eventId}][${this.key}]`);
@@ -123,6 +127,13 @@ module Common {
         public init(): void {
             this._game = <AlgoGame> this.game;
             this._stateConfig = this.getStateConfig(this.getStageType());
+            this._levelSave = this.loadLevelSave();
+            
+        }
+        
+        protected loadLevelSave(): LevelSave {
+            return this._game.store.get(this._stateConfig.level)
+                            || new LevelSave();
         }
         
         protected getStageType(): string {
@@ -220,7 +231,18 @@ module Common {
         private removeEventListener(eventId: string): void {
             this._game.eventBus.removeEventListener(eventId, this.dispatchEvent, this);  
         }
-
+        
+        public get stateConfig(): GameConfig.StageConfig {
+            return this._stateConfig;
+        }
+        
+        public get levelSave(): LevelSave {
+            return this._levelSave;
+        }
+        
+        public saveState(): void  {
+          this._game.store.set(this.stateConfig.level, this._levelSave);
+        }
         
         public get algoGame(): AlgoGame {
             return this._game;
@@ -270,6 +292,10 @@ module Common {
             this._practiseManager = new StageInfo.PractiseManager(this.algoGame);
             
             super.onCreate();        
+
+            if (this.levelSave.practiseDone == 0) {
+                this._game.dispatch(Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES, this);
+            }
         }
         
         private drawBackground(): void {
@@ -279,7 +305,6 @@ module Common {
             this._background.drawLine(350, 600, 350, this.algoGame.height);
             
         }
-        
         
         protected buildGamePlay(): PractiseGamePlay<Common.GamePlayAction, Common.Algorithm> {
             throw "Game play not initizliaed";
@@ -302,6 +327,7 @@ module Common {
     //State for Exam stages only
     export class ExamState extends Common.State {
     
+        private _background: BackgroundGraphics;
         private _menu: Common.Menu;
         private _controlPanel: Common.ExamPanel;
         private _progressPanel: Common.ProgressPanel;
@@ -316,10 +342,14 @@ module Common {
             this._modalWindow.destroy();
             this._gamePlay.destroy();
             this._progressPanel.destroy();
+            this._background.destroy();
             this._menu = null;
         }
     
         create(): void {
+    
+            this._background = new BackgroundGraphics(this.algoGame);
+            this.drawBackground();
     
             this._modalWindow = new GameModal.ModalWindow(this.algoGame);
             this.initModalWindows();
@@ -330,6 +360,14 @@ module Common {
             this._progressPanel = new Common.ProgressPanel(this.algoGame);
     
             super.onCreate();
+        }
+        
+        private drawBackground(): void {
+            this._background.drawLine(0, 80, this.algoGame.width, 80);
+            this._background.drawLine(0, 600, this.algoGame.width, 600);
+            
+            this._background.drawLine(350, 600, 350, this.algoGame.height);
+            
         }
         
         protected buildGamePlay(): ExamGamePlay<Common.GamePlayAction, Common.Algorithm> {
