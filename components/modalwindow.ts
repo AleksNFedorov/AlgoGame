@@ -1,4 +1,3 @@
-/// <reference path="../lib/gamemodal.d.ts" />
 /// <reference path="./common.ts" />
 
 module GameModal {
@@ -6,43 +5,19 @@ module GameModal {
     export class ModalConfig {
         constructor(
             public modalId: string,
-            public contentImageId: string) {};
+            public contentImageId: string,
+            public imageAtlas?: string
+            ) {};
     }
-    
-    class GameModalWindowComponent {
-        type: string;
-        content: any;
-        contentScale: number;
-        fontSize: number;
-        color: string;
-        offsetY: number; 
-        offsetX: number;
-        callback: Function;
-    }
-    
-    class GameModalOptions {
-        
-        type: string;
-        includeBackground: boolean;
-        backgroundColor: string;
-        backgroundOpacity: number;
-        modalCloseOnInput: boolean;
-        modalBackgroundCallback: boolean;
-        vCenter: boolean;
-        hCenter: boolean;
-        itemsArr: GameModalWindowComponent[];
-        hideCallback: Function;
-    }
-    
     
     export class ModalWindow extends Common.GameEventComponent {
         
-        private _gameModal;
-        private _createdWindows: ModalConfig[];
+        private _windowConfigs: ModalConfig[] = [];
+        
+        private _activeWindow: Phaser.Group;
         
         constructor(game: Common.AlgoGame) {
             super(game)
-            this._gameModal = new GameModal(game);
         }
         
         protected initEventListners(): void {
@@ -67,40 +42,51 @@ module GameModal {
         }
         
         public createWindows(configs: ModalConfig[]): void {
-            this._createdWindows = configs;
             for(var config of configs) {
-                this.createAndRegisterNewWindow(config);
+                this._windowConfigs[config.modalId] = config;
             }
         }
          
-        private createAndRegisterNewWindow(config: ModalConfig): void {
-            
-            var modalOptions: GameModalOptions = new GameModalOptions();
-            modalOptions.type = config.modalId;
-            modalOptions.includeBackground = true;
-            modalOptions.modalCloseOnInput = true;
-            modalOptions.hideCallback = this.onHide.bind(this);
-            
-            var bg: GameModalWindowComponent = new GameModalWindowComponent();
-            bg.type = "image";
-            bg.content = "modalBg";
-            bg.contentScale = 1;
-            
-            var windowContent: GameModalWindowComponent = new GameModalWindowComponent();
-            windowContent.type = "image";
-            windowContent.content = config.contentImageId;
-            windowContent.offsetY = -60;
-            windowContent.offsetX = -125;
-            windowContent.contentScale = 0.5;
-    
-            modalOptions.itemsArr = [bg, windowContent];
-            
-            this._gameModal.createModal(modalOptions);
-        }
-        
         private show(modalId: string): void {
             this.onShow();
-            this._gameModal.showModal(modalId);
+            this.showModalWindow(modalId);
+        }
+        
+        private showModalWindow(windowId: string): void {
+        
+            var config = this._windowConfigs[windowId];
+            
+            var windowGroup = this._game.add.group();
+            
+            var graphics = this._game.add.graphics(0, 0);
+            graphics.lineStyle(0);
+            graphics.beginFill(Constants.GAME_BACKGROUND_SEPARATOR, 1);
+            graphics.drawRect(0, 0, this._game.width - 100, this._game.height - 100);
+            graphics.endFill();
+            
+            windowGroup.add(this._game.add.sprite(0,0, graphics.generateTexture()));
+            graphics.destroy();
+            
+            var contentImage: Phaser.Sprite;
+            
+            if (config.imageAtlas) {
+                contentImage = this._game.add.sprite(0,0, config.imageAtlas, config.contentImageId);
+            } else {
+                contentImage = this._game.add.sprite(0,0, config.contentImageId);
+            }
+            
+            contentImage.anchor.setTo(0.5);
+            contentImage.x = windowGroup.width/2;
+            contentImage.y = windowGroup.height/2;
+            
+            windowGroup.add(contentImage);
+            
+            windowGroup.x = 50;
+            windowGroup.y = 50;
+
+            this._game.input.onUp.add(this.onHide, this);
+            
+            this._activeWindow = windowGroup;
         }
         
         
@@ -111,14 +97,14 @@ module GameModal {
         
         protected onHide(): void {
             console.log("Modal window hide");
+            this._activeWindow.destroy();
+            this._game.input.onUp.remove(this.onHide, this);
             this._game.dispatch(Events.MODAL_WINDOW_HIDE, this);
         }
         
         destroy(): void {
             super.destroy();
-            for(var config of this._createdWindows) {
-                this._gameModal.destroyModal(config.modalId);   
-            }
+            this._windowConfigs = null;
         }
     }
 }
