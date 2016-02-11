@@ -307,9 +307,9 @@ module Common {
         private getXPosition(anchor: Phaser.Text, position: FlagPosition): number {
             switch(position) {
                 case FlagPosition.CENTER:
-                    return anchor.x + anchor.width/2 + this._boxLine.x; 
+                    return anchor.x + anchor.width/2 + this._boxLine.x - 13; 
                 case FlagPosition.LEFT:
-                    return anchor.x - this._boxSpace/2 + this._boxLine.x;
+                    return anchor.x - this._boxSpace/2 + this._boxLine.x - 20;
                 case FlagPosition.RIGHT:
                     return anchor.x + anchor.width + this._boxSpace/2 + this._boxLine.x;
             }
@@ -328,10 +328,21 @@ module Common {
         }
         
         private createSpriteForFlag(position: FlagPosition, level: FlagLevel): Phaser.Sprite {
-            var box: Phaser.Sprite = this._game.add.sprite(0,0, Constants.GAME_GENERAL_ATTLAS, "Active.png");
+            var flagSprite = this.getFlagSpriteByLevel(level);
+            var box: Phaser.Sprite = this._game.add.sprite(0,0, Constants.GAME_GENERAL_ATTLAS, flagSprite);
             box.scale.setTo(0.2);
-            box.anchor.setTo(0.5);
             return box;
+        }
+        
+        private getFlagSpriteByLevel(level: FlagLevel): string {
+            switch(level) {
+                case FlagLevel.TOP:
+                    return "Selected_orange.png";
+                case FlagLevel.MIDDLE:
+                    return "Selected_green.png";
+                case FlagLevel.BOTTOM:
+                    return "Selected_blue.png";
+            }
         }
         
         public destroy(): void {

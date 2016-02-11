@@ -110,8 +110,8 @@ module Common {
     export class State extends Phaser.State {
         
         protected _game: AlgoGame;
-        private _eventsToProcess: Phaser.LinkedList = new Phaser.LinkedList();
         private _levelStageState: LevelStageState = LevelStageState.UNKNOWN;
+        private _eventsToProcess: Phaser.LinkedList = new Phaser.LinkedList();
         private _pausedByModalWindow: boolean = false;
         protected _stateConfig: GameConfig.StageConfig;
         

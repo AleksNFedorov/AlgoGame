@@ -133,6 +133,13 @@ module Graph {
             if (hideWieght) {
                 this.hideWieght();
             }
+            
+            this._arrow.animations.add("blink", [
+                    "graph-arrow1.png",
+                    "graph-arrow2.png",
+                    "graph-arrow3.png",
+                    "graph-arrow4.png"
+                    ], 6, true);
         }
         
         private getEdgeOrientation(edge: GraphJS.Edge): EdgeDirection {
@@ -237,10 +244,11 @@ module Graph {
         }
         
         public highlightEdge(): void {
-            this._arrow.frameName = "graph-arrow4.png";
+            this._arrow.animations.play("blink");
         }
         
         public stopHiglightingEdge(): void {
+            this._arrow.animations.stop("blink");
             this._arrow.frameName = "graph-arrow1.png";
         }
 
