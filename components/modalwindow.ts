@@ -41,10 +41,8 @@ module GameModal {
             }
         }
         
-        public createWindows(configs: ModalConfig[]): void {
-            for(var config of configs) {
-                this._windowConfigs[config.modalId] = config;
-            }
+        public registerWindow(config: ModalConfig): void {
+            this._windowConfigs[config.modalId] = config;
         }
          
         private show(modalId: string): void {

@@ -226,6 +226,8 @@ module Common {
             this.addEventListener(Events.STAGE_INFO_SHOW);
             this.addEventListener(Events.GAME_DISABLE_ALL);
             this.addEventListener(Events.GAME_ENABLE_ALL);
+            this.addEventListener(Events.STAGE_INITIALIZED);
+
         }
         
         protected addGameElement(elementId: GameElements, element: GameUIObjectWithState): void {

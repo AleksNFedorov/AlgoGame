@@ -7,7 +7,7 @@ var globalConfig = {
                 stepTime: 3000,
                 menu: {
                     MenuButtonMenu: "menu",
-                    MenuButtonDescription: "http://google.com",
+                    MenuButtonDescription: "http://wiki.roblox.com/index.php?title=Binary_search",
                     MenuButtonPractise: "",
                     MenuButtonExam:"binarySearchExam",
                 },
@@ -25,8 +25,7 @@ var globalConfig = {
                 stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
-                    MenuButtonDescription: "http://fb.com",
-                    MenuButtonObjectives: "OBJECTIVES",
+                    MenuButtonDescription: "http://wiki.roblox.com/index.php?title=Binary_search",
                     MenuButtonPractise: "binarySearchPractise",
                 },
                 gamePlay: {
@@ -45,7 +44,7 @@ var globalConfig = {
                 stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
-                    MenuButtonDescription: "http://google.com",
+                    MenuButtonDescription: "http://jackson-.github.io/2014/10/07/Sowhatexactlyisinsertionsort.html",
                     MenuButtonPractise: "",
                     MenuButtonExam:"insertionSortExam",
                 },
@@ -63,7 +62,7 @@ var globalConfig = {
                 stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
-                    MenuButtonDescription: "http://fb.com",
+                    MenuButtonDescription: "http://jackson-.github.io/2014/10/07/Sowhatexactlyisinsertionsort.html",
                     MenuButtonPractise: "insertionSortPractise",
                 },
                 gamePlay: {
@@ -82,7 +81,7 @@ var globalConfig = {
                 stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
-                    MenuButtonDescription: "http://google.com",
+                    MenuButtonDescription: "https://matse-hamburg.wikispaces.com/Selectionsort",
                     MenuButtonPractise: "",
                     MenuButtonExam:"selectionSortExam",
                 },
@@ -100,7 +99,7 @@ var globalConfig = {
                 stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
-                    MenuButtonDescription: "http://fb.com",
+                    MenuButtonDescription: "https://matse-hamburg.wikispaces.com/Selectionsort",
                     MenuButtonPractise: "selectionSortPractise",
                 },
                 gamePlay: {
@@ -119,7 +118,7 @@ var globalConfig = {
                 stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
-                    MenuButtonDescription: "http://google.com",
+                    MenuButtonDescription: "http://www.personal.kent.edu/~rmuhamma/Algorithms/MyAlgorithms/Sorting/mergeSort.htm",
                     MenuButtonPractise: "",
                     MenuButtonExam:"mergeSortExam",
                 },
@@ -137,7 +136,7 @@ var globalConfig = {
                 stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
-                    MenuButtonDescription: "http://fb.com",
+                    MenuButtonDescription: "http://www.personal.kent.edu/~rmuhamma/Algorithms/MyAlgorithms/Sorting/mergeSort.htm",
                     MenuButtonPractise: "mergeSortPractise",
                 },
                 gamePlay: {
@@ -156,7 +155,7 @@ var globalConfig = {
                 stepTime: 8000,
                 menu: {
                     MenuButtonMenu: "menu",
-                    MenuButtonDescription: "http://google.com",
+                    MenuButtonDescription: "http://www.mayankacademy.com/cs101/quick_sort/",
                     MenuButtonPractise: "",
                     MenuButtonExam:"quickSortExam",
                 },
@@ -174,7 +173,7 @@ var globalConfig = {
                 stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
-                    MenuButtonDescription: "http://fb.com",
+                    MenuButtonDescription: "http://www.mayankacademy.com/cs101/quick_sort/",
                     MenuButtonPractise: "quickSortPractise",
                 },
                 gamePlay: {
@@ -194,7 +193,7 @@ var globalConfig = {
                 stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
-                    MenuButtonDescription: "http://google.com",
+                    MenuButtonDescription: "https://www.cs.drexel.edu/~introcs/F2K/lectures/7.2_AI/Formal3.html",
                     MenuButtonPractise: "",
                     MenuButtonExam:"debthFirstExam",
                 },
@@ -212,7 +211,7 @@ var globalConfig = {
                 stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
-                    MenuButtonDescription: "http://fb.com",
+                    MenuButtonDescription: "https://www.cs.drexel.edu/~introcs/F2K/lectures/7.2_AI/Formal3.html",
                     MenuButtonPractise: "debthFirstPractise",
                 },
                 gamePlay: {
@@ -232,7 +231,7 @@ var globalConfig = {
                 stepTime: 10000,
                 menu: {
                     MenuButtonMenu: "menu",
-                    MenuButtonDescription: "http://google.com",
+                    MenuButtonDescription: "https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm",
                     MenuButtonPractise: "",
                     MenuButtonExam:"djikstraExam",
                 },
@@ -250,7 +249,7 @@ var globalConfig = {
                 stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
-                    MenuButtonDescription: "http://fb.com",
+                    MenuButtonDescription: "https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm",
                     MenuButtonPractise: "djikstraPractise",
                 },
                 gamePlay: {

@@ -91,8 +91,8 @@ module Common {
         private loadLevelAssets(): void {
             
             var levelAttlasName = this._level;
-            var levelAttlasPath = Constants.GAME_ASSETS_PATH + levelAttlasName + "/level.png";
-            var levelAttlasJSONPath = Constants.GAME_ASSETS_PATH + levelAttlasName + "/level.json";
+            var levelAttlasPath = Constants.GAME_ASSETS_PATH + "levels/" + levelAttlasName + ".png";
+            var levelAttlasJSONPath = Constants.GAME_ASSETS_PATH  + "levels/" +  levelAttlasName + ".json";
             
             this.game.load.atlas(levelAttlasName,
                 levelAttlasPath,
@@ -330,12 +330,18 @@ module Common {
         }
 
         protected initModalWindows(): void {
-            var configs: GameModal.ModalConfig[] = [
-                    new GameModal.ModalConfig(Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES, "separator_arrow.png", Constants.GAME_GENERAL_ATTLAS),
-                    new GameModal.ModalConfig(Events.GAME_PRACTISE_DONE, "separator_arrow.png", Constants.GAME_GENERAL_ATTLAS)
-                ];
-                
-            this._modalWindow.createWindows(configs);
+        
+            this._modalWindow.registerWindow(
+                new GameModal.ModalConfig(
+                    Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES, 
+                    "objective.png", 
+                    this.stateConfig.level));
+
+            this._modalWindow.registerWindow(
+                new GameModal.ModalConfig(
+                    Events.GAME_PRACTISE_DONE, 
+                    "separator_arrow.png", 
+                    Constants.GAME_GENERAL_ATTLAS));
         }
     }
     
@@ -394,12 +400,13 @@ module Common {
         }
         
         private initModalWindows(): void {
+            /*
             var configs: GameModal.ModalConfig[] = [
                     new GameModal.ModalConfig(Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES, "cursor"),
                     new GameModal.ModalConfig(Events.GAME_EXAM_DONE, "cursor")
                 ];
-                
             this._modalWindow.createWindows(configs);
+              */  
         }
     
     }    

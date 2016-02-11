@@ -31,7 +31,7 @@ class Constants {
     static GAME_AREA_BOX_WIDTH = 53;
     static GAME_AREA_MARGIN = 40;
     static GAME_AREA_X = 0;
-    static GAME_AREA_Y = 200;
+    static GAME_AREA_Y = 150;
     static GAME_AREA_LINE_Y = 340;
 
     //Banners
