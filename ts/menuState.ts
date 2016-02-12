@@ -15,24 +15,24 @@ class Preload extends Phaser.State {
         
         //Game general atlas
         this.game.load.atlas(Constants.GAME_GENERAL_ATTLAS,
-        '/assets/images/gameGeneral.png',
-        '/assets/images/gameGeneral.json',
+        Constants.GAME_ASSETS_PATH + "gameGeneral.png",
+        Constants.GAME_ASSETS_PATH + "gameGeneral.json",
         Phaser.Loader.TEXTURE_ATLAS_JSON_ARRAY);
         
         //Main menu buttons
         this.game.load.atlas(Constants.MAIN_MENU_ATTLAS,
-        '/assets/images/mainMenu.png',
-        '/assets/images/mainMenu.json',
+        Constants.GAME_ASSETS_PATH + "mainMenu.png",
+        Constants.GAME_ASSETS_PATH + "mainMenu.json",
         Phaser.Loader.TEXTURE_ATLAS_JSON_ARRAY);
 
         this.game.load.atlas(Constants.BANNERS_ATTLAS,
-        '/assets/images/banners.png',
-        '/assets/images/banners.json',
+        Constants.GAME_ASSETS_PATH + "banners.png",
+        Constants.GAME_ASSETS_PATH + "banners.json",
         Phaser.Loader.TEXTURE_ATLAS_JSON_ARRAY);
 
         this.game.load.atlas(Constants.GAME_EXAM_BANNERS_ATLAS,
-        '/assets/images/examImages.png',
-        '/assets/images/examImages.json',
+        Constants.GAME_ASSETS_PATH + "examImages.png",
+        Constants.GAME_ASSETS_PATH + "examImages.json",
         Phaser.Loader.TEXTURE_ATLAS_JSON_ARRAY);
 
         this.load.onLoadComplete.add(this._onLoadComplete, this);

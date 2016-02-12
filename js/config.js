@@ -3,8 +3,8 @@ var globalConfig = {
         binarySearch: {
             practise: {
                 stageName: "binarySearchPractise",
-                stepsToPass: 15,
-                stepTime: 3000,
+                stepsToPass: 30,
+                stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://wiki.roblox.com/index.php?title=Binary_search",
@@ -13,16 +13,16 @@ var globalConfig = {
                 },
                 gamePlay: {
                     minSeqNumber: 1,
-                    maxSeqNumber: 10,
-                    minElementsInSeq: 5,
-                    maxElementsInSeq: 9,
+                    maxSeqNumber: 20,
+                    minElementsInSeq: 7,
+                    maxElementsInSeq: 10,
                     sorted: true
                 }
             },
             exam: {
                 stageName: "binarySearchExam",
-                stepsToPass: 2,
-                stepTime: 4000,
+                stepsToPass: 5,
+                stepTime: 3000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://wiki.roblox.com/index.php?title=Binary_search",
@@ -31,8 +31,8 @@ var globalConfig = {
                 gamePlay: {
                     minSeqNumber: 1,
                     maxSeqNumber: 10,
-                    minElementsInSeq: 6,
-                    maxElementsInSeq: 9,
+                    minElementsInSeq: 7,
+                    maxElementsInSeq: 10,
                     sorted: true
                 }
             }
@@ -40,7 +40,7 @@ var globalConfig = {
         insertionSort: {
             practise: {
                 stageName: "insertionSortPractise",
-                stepsToPass: 5,
+                stepsToPass: 40,
                 stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
@@ -49,8 +49,8 @@ var globalConfig = {
                     MenuButtonExam:"insertionSortExam",
                 },
                 gamePlay: {
-                    minSeqNumber: 100,
-                    maxSeqNumber: 1000,
+                    minSeqNumber: 1,
+                    maxSeqNumber: 50,
                     minElementsInSeq: 10,
                     maxElementsInSeq: 16,
                     sorted: false
@@ -58,8 +58,8 @@ var globalConfig = {
             },
             exam: {
                 stageName: "insertionSortExam",
-                stepsToPass: 2,
-                stepTime: 4000,
+                stepsToPass: 5,
+                stepTime: 3000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://jackson-.github.io/2014/10/07/Sowhatexactlyisinsertionsort.html",
@@ -69,15 +69,16 @@ var globalConfig = {
                     minSeqNumber: 100,
                     maxSeqNumber: 1000,
                     minElementsInSeq: 6,
-                    maxElementsInSeq: 16,
+                    maxElementsInSeq: 14,
                     sorted: false
                 }
             }
         },
         selectionSort: {
+            dependsOn:"insertionSort",
             practise: {
                 stageName: "selectionSortPractise",
-                stepsToPass: 50,
+                stepsToPass: 40,
                 stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
@@ -88,15 +89,15 @@ var globalConfig = {
                 gamePlay: {
                     minSeqNumber: 1,
                     maxSeqNumber: 30,
-                    minElementsInSeq: 5,
-                    maxElementsInSeq: 7,
+                    minElementsInSeq: 10,
+                    maxElementsInSeq: 16,
                     sorted: false
                 }
             },
             exam: {
                 stageName: "selectionSortExam",
-                stepsToPass: 2,
-                stepTime: 4000,
+                stepsToPass: 6,
+                stepTime: 3000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "https://matse-hamburg.wikispaces.com/Selectionsort",
@@ -105,17 +106,18 @@ var globalConfig = {
                 gamePlay: {
                     minSeqNumber: 1,
                     maxSeqNumber: 20,
-                    minElementsInSeq: 4,
-                    maxElementsInSeq: 7,
+                    minElementsInSeq: 10,
+                    maxElementsInSeq: 16,
                     sorted: false
                 }
             }
         },
         mergeSort: {
+            dependsOn:"selectionSort",
             practise: {
                 stageName: "mergeSortPractise",
                 stepsToPass: 50,
-                stepTime: 4000,
+                stepTime: 6000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://www.personal.kent.edu/~rmuhamma/Algorithms/MyAlgorithms/Sorting/mergeSort.htm",
@@ -132,8 +134,8 @@ var globalConfig = {
             },
             exam: {
                 stageName: "mergeSortExam",
-                stepsToPass: 2,
-                stepTime: 4000,
+                stepsToPass: 10,
+                stepTime: 5000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://www.personal.kent.edu/~rmuhamma/Algorithms/MyAlgorithms/Sorting/mergeSort.htm",
@@ -149,6 +151,7 @@ var globalConfig = {
             }
         },
         quickSort: {
+            dependsOn: "mergeSort",
             practise: {
                 stageName: "quickSortPractise",
                 stepsToPass: 50,
@@ -169,7 +172,7 @@ var globalConfig = {
             },
             exam: {
                 stageName: "quickSortExam",
-                stepsToPass: 2,
+                stepsToPass: 10,
                 stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
@@ -189,8 +192,8 @@ var globalConfig = {
         debthFirst: {
             practise: {
                 stageName: "debthFirstPractise",
-                stepsToPass: 5,
-                stepTime: 4000,
+                stepsToPass: 50,
+                stepTime: 3000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "https://www.cs.drexel.edu/~introcs/F2K/lectures/7.2_AI/Formal3.html",
@@ -207,8 +210,8 @@ var globalConfig = {
             },
             exam: {
                 stageName: "debthFirstExam",
-                stepsToPass: 20,
-                stepTime: 4000,
+                stepsToPass: 10,
+                stepTime: 2000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "https://www.cs.drexel.edu/~introcs/F2K/lectures/7.2_AI/Formal3.html",
@@ -224,11 +227,11 @@ var globalConfig = {
             }
         },
         djikstra: {
-//            dependsOn: "debthFirst",
+            dependsOn: "debthFirst",
             practise: {
                 stageName: "djikstraPractise",
-                stepsToPass: 5,
-                stepTime: 10000,
+                stepsToPass: 50,
+                stepTime: 5000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm",
@@ -245,7 +248,7 @@ var globalConfig = {
             },
             exam: {
                 stageName: "djikstraExam",
-                stepsToPass: 20,
+                stepsToPass: 10,
                 stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
