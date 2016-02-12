@@ -30,13 +30,17 @@ class Preload extends Phaser.State {
         '/assets/images/banners.json',
         Phaser.Loader.TEXTURE_ATLAS_JSON_ARRAY);
 
+        this.game.load.atlas(Constants.GAME_EXAM_BANNERS_ATLAS,
+        '/assets/images/examImages.png',
+        '/assets/images/examImages.json',
+        Phaser.Loader.TEXTURE_ATLAS_JSON_ARRAY);
+
         this.load.onLoadComplete.add(this._onLoadComplete, this);
     }
 
     private _onLoadComplete() {
         console.log("Preload complete");
         this.game.state.start("menu");
-//        this.game.state.start("binarySearchPractise");
     }
     
     public shutdown(): void {
@@ -44,35 +48,10 @@ class Preload extends Phaser.State {
     }
 }
 
-class BackgroundGraphics {
-    
-    private _graphics: Phaser.Graphics;
-    
-    constructor(game: Phaser.Game) {
-        this._graphics = game.add.graphics(0,0);
-    }
-    
-    public drawLine(xFrom: number, yFrom: number, xTo: number, yTo: number): void {
-        this._graphics.moveTo(xFrom, yFrom);
-        this._graphics.lineStyle(4, Constants.GAME_BACKGROUND_SEPARATOR);
-        this._graphics.lineTo(xTo, yTo);                    
-    }
-    
-    public drawRect(xFrom: number, yFrom: number, xTo: number, yTo: number): void {
-        this._graphics.beginFill(Constants.GAME_BACKGROUND_SEPARATOR, 1);
-        this._graphics.drawRect(xFrom, yFrom, xTo, yTo);
-        this._graphics.endFill();
-    }
-    
-    public destroy() {
-        this._graphics.destroy();
-    }
-}
-
 class LevelMenuState extends Common.State {
 
     private _levelButtonsPanel: Common.LevelButtonsPanel;
-    private _background: BackgroundGraphics;
+    private _background: Common.BackgroundGraphics;
 
     public shutdown(): void {
         super.shutdown();
@@ -81,7 +60,7 @@ class LevelMenuState extends Common.State {
     }
 
     create(): void {
-        this._background = new BackgroundGraphics(this.algoGame);
+        this._background = new Common.BackgroundGraphics(this.algoGame);
         this.drawBackground();
         this._levelButtonsPanel = new Common.LevelButtonsPanel(this.algoGame);
         super.onCreate();

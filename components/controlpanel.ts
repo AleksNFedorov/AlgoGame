@@ -67,6 +67,16 @@ module Common {
             this._panelGroup.x = Constants.CONTROL_PANEL_POSITION_X;
             this._panelGroup.y = Constants.CONTROL_PANEL_POSITION_Y;
             this.createElements();
+            
+            var infoPosition = new Common.GroupWrapper(
+                game,
+                Constants.CONTROL_PANEL_MESSAGE_X,
+                0
+                )
+                
+            this._panelGroup.add(infoPosition)                
+            
+            this.addGameElement(Common.GameElements.ControlPanelText, infoPosition);
         }
         
         protected createElements(): void {
@@ -78,7 +88,6 @@ module Common {
                 this._messages.push(text);
             }
             
-            this.addGameElement(Common.GameElements.ControlPanelText, this._messages[0]);
         }
         
         dispatchEvent(event: any, param1: any) {

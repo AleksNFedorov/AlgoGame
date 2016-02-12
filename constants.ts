@@ -40,11 +40,12 @@ class Constants {
     //Assets
     static MAIN_MENU_ATTLAS = "mainMenu";
     static GAME_GENERAL_ATTLAS = "gameGeneral";
+    static GAME_EXAM_BANNERS_ATLAS = "examBanners";
     
     static GAME_ASSETS_PATH = "/assets/images/";
     static MENU_BUTTON_ATTLAS = "menuButtons";
     static BANNERS_ATTLAS = "banners";
-    static BANNERS_AMOUNT = 4;
+    static BANNERS_AMOUNT = 1;
     static LEVEL_ASSETS_AMOUNT = 2;
     
     

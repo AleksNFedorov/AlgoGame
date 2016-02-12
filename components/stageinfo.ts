@@ -49,7 +49,9 @@ module StageInfo {
             
             var textBackground: Phaser.Sprite =  game.add.sprite(45 ,0, Constants.GAME_GENERAL_ATTLAS, "info_bg_rectangle.png", this);
             this._infoIcon = game.add.sprite(0, 0, Constants.GAME_GENERAL_ATTLAS, "info_3.png", this);
-            var boxIndexText: Phaser.Text = game.add.text(textBackground.x + 10,  textBackground.y + 10 , "Some text" , Constants.GAME_AREA_INDEX_TEXT, this);
+            var boxIndexText: Phaser.Text = game.add.text(textBackground.x + 10,  0, message , Constants.GAME_AREA_INDEX_TEXT, this);
+            boxIndexText.x = textBackground.x + textBackground.width/2 - boxIndexText.width/2;            
+            boxIndexText.y = this._infoIcon.height/2 - boxIndexText.height/2;            
 
             if (this._infoToShow.eventToHide == null) {
                 //Close by click
@@ -235,12 +237,15 @@ module StageInfo {
         constructor(game: Common.AlgoGame) {
             super(game, LevelStageType.PRACTISE,
                 [
-                    new ShowInfo(Common.GameElements.MenuButtonMenu),
-                    new ShowInfo(Common.GameElements.MenuButtonPractise),
+                    new ShowInfo(Common.GameElements.MenuButtonDescription),
+                    new ShowInfo(Common.GameElements.MenuButtonObjectives),
+                    new ShowInfo(Common.GameElements.ControlPanelText),
                     new ShowInfo(Common.GameElements.ControlPanelButtonPlay,
                         Events.CONTROL_PANEL_EVENT_PLAY
                         ),
-                    new ShowInfo(Common.GameElements.ProgressBarStep)
+                    new ShowInfo(Common.GameElements.ProgressBarStep),
+                    new ShowInfo(Common.GameElements.ProgressBarComplete),
+                    new ShowInfo(Common.GameElements.MenuButtonExam),
                 ]
             );
         }

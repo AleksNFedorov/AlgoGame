@@ -258,7 +258,7 @@ module Common {
         }
         
         private createLevelButton(levelInfo: LevelInfo, x:number, y:number): void {
-            var levelName = Dictionary[levelInfo.levelName];
+            var levelName = Dictionary[levelInfo.levelName].short;
             var levelStats = levelInfo.practiseDone;
             var buttonSettings = this.getButtonSettings(levelInfo);
             

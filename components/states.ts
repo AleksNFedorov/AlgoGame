@@ -5,6 +5,33 @@ declare var store: Store;
 
 module Common {
     
+    
+    export class BackgroundGraphics {
+        
+        private _graphics: Phaser.Graphics;
+        
+        constructor(game: Phaser.Game) {
+            this._graphics = game.add.graphics(0,0);
+        }
+        
+        public drawLine(xFrom: number, yFrom: number, xTo: number, yTo: number): void {
+            this._graphics.moveTo(xFrom, yFrom);
+            this._graphics.lineStyle(4, Constants.GAME_BACKGROUND_SEPARATOR);
+            this._graphics.lineTo(xTo, yTo);                    
+        }
+        
+        public drawRect(xFrom: number, yFrom: number, xTo: number, yTo: number): void {
+            this._graphics.beginFill(Constants.GAME_BACKGROUND_SEPARATOR, 1);
+            this._graphics.drawRect(xFrom, yFrom, xTo, yTo);
+            this._graphics.endFill();
+        }
+        
+        public destroy() {
+            this._graphics.destroy();
+        }
+    }
+    
+    
     /*
         State to preload level assets and show banner with garantee display time
     */
@@ -12,6 +39,7 @@ module Common {
         
         private _loadProgress: ProgressBar; 
         private _banner: Phaser.Sprite;
+        private _background: BackgroundGraphics;
         
         private _maxProgressValue: number;
         private _progressValue: number = 0;
@@ -24,6 +52,8 @@ module Common {
         }
         
         public create(): void {
+            this._background = new Common.BackgroundGraphics(this.game);
+            
             this.initScreen();
             this.initLoadCallbacks();
             this.loadLevelAssets();
@@ -32,11 +62,15 @@ module Common {
         private initScreen(): void {
             var bannerIndex = this.game.rnd.integerInRange(0, Constants.BANNERS_AMOUNT - 1);
             this._banner = this.game.add.sprite(
-                    this.game.width/2, this.game.height/2,
+                    0, 0,
                     Constants.BANNERS_ATTLAS,
                     bannerIndex
                 );
-            this._banner.anchor.setTo(0.5);
+                
+            this._banner.x = this.game.width/2 - this._banner.width/2;
+            this._banner.y = 50;
+            
+            this._background.drawRect(0, 600, this.game.width, this.game.height);
             
             this._loadProgress = new ProgressBar(this.game, "progressBarBig", "", true);
 
@@ -44,8 +78,8 @@ module Common {
             this._loadProgress.setMaxValue(this._maxProgressValue);
             this._loadProgress.setValue(this._progressValue, "");
                 
-            this._loadProgress.x = 0;
-            this._loadProgress.y = this._banner.y + this._banner.height + 10;
+            this._loadProgress.x = this.game.width/2 - this._loadProgress.width/2;
+            this._loadProgress.y = 620;
         }
         
         private initLoadCallbacks(): void {
@@ -78,6 +112,7 @@ module Common {
         }
         
         public shutdown(): void {
+            this._background.destroy();
             this.removeLoadCallbacks();
             this._loadProgress.destroy();
             this._banner.destroy();
@@ -340,8 +375,8 @@ module Common {
             this._modalWindow.registerWindow(
                 new GameModal.ModalConfig(
                     Events.GAME_PRACTISE_DONE, 
-                    "separator_arrow.png", 
-                    Constants.GAME_GENERAL_ATTLAS));
+                    "examOpen.png", 
+                    Constants.GAME_EXAM_BANNERS_ATLAS));
         }
     }
     
@@ -400,13 +435,18 @@ module Common {
         }
         
         private initModalWindows(): void {
-            /*
-            var configs: GameModal.ModalConfig[] = [
-                    new GameModal.ModalConfig(Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES, "cursor"),
-                    new GameModal.ModalConfig(Events.GAME_EXAM_DONE, "cursor")
-                ];
-            this._modalWindow.createWindows(configs);
-              */  
+        
+            this._modalWindow.registerWindow(
+                new GameModal.ModalConfig(
+                    Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES, 
+                    "objective.png", 
+                    this.stateConfig.level));
+                    
+            this._modalWindow.registerWindow(
+                new GameModal.ModalConfig(
+                    Events.GAME_EXAM_DONE, 
+                    "examPassed.png", 
+                    Constants.GAME_EXAM_BANNERS_ATLAS));
         }
     
     }    

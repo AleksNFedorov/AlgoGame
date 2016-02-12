@@ -60,7 +60,7 @@ module Common {
         }
         
         private addLevelName(): void {
-            var text = Dictionary[this.stateConfig.level];
+            var text = Dictionary[this.stateConfig.level].full;
             var levelNameText = this._game.add.text(
                 this._game.width/2, 
                 15, 

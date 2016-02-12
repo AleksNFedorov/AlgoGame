@@ -127,6 +127,17 @@ module Common {
         restoreState(): void;
         destroy(): void;
     }
+    
+    export class GroupWrapper extends Phaser.Group implements GameUIObjectWithState {
+        constructor(game: Phaser.Game, x: number, y:number) {
+            super(game);
+            this.x = x;
+            this.y = y;
+        }
+        
+        saveStateAndDisable(): void {};
+        restoreState(): void {};
+    }
 
     
     export class AlgoGame extends Phaser.Game {
