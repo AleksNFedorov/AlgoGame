@@ -12,7 +12,15 @@ rm -rf $DEV_ENV_FOLDER/*
 
 # Compile source
 echo "Compilling sources..."
-$PATH_TO_TYPESCRIPT_COMPILER --outDir $DEV_ENV_FOLDER/js -p $PATH_TO_SOURCE --removeComments
+if [ $1 = "dev" ];then
+    $PATH_TO_TYPESCRIPT_COMPILER --outDir $DEV_ENV_FOLDER/js -p $PATH_TO_SOURCE --removeComments
+    echo "Dev build finished"
+elif [ $1 = "prod" ]; then
+    $PATH_TO_TYPESCRIPT_COMPILER --outFile $DEV_ENV_FOLDER/js/game.js -p $PATH_TO_SOURCE --removeComments
+    echo "Prod build finished"
+fi
+
+
 
 #Move Libs
 echo "Moving config and libs..."
