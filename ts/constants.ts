@@ -42,7 +42,7 @@ class Constants {
     static GAME_GENERAL_ATTLAS = "gameGeneral";
     static GAME_EXAM_BANNERS_ATLAS = "examBanners";
     
-    static GAME_ASSETS_PATH = "assets/images/";
+    static GAME_ASSETS_PATH = "{CDN}assets/images/";
     static MENU_BUTTON_ATTLAS = "menuButtons";
     static BANNERS_ATTLAS = "banners";
     static BANNERS_AMOUNT = 1;
