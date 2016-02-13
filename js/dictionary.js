@@ -86,8 +86,8 @@ var Dictionary = {
         full: "Quick sort"
     },
     debthFirst: {
-        short: "Debth-first",
-        full: "Debth-frist search"
+        short: "Depth-first",
+        full: "Depth-frist search"
     },
     djikstra: {
         short: "Djikstra",

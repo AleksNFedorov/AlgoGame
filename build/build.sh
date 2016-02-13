@@ -10,6 +10,12 @@ echo "Source path $PATH_TO_SOURCE"
 #Clean up folder
 rm -rf $DEV_ENV_FOLDER/*
 
+#Move Libs
+echo "Moving config and libs..."
+mkdir $DEV_ENV_FOLDER/js
+cp -R -u $PATH_TO_SOURCE/../js/* $DEV_ENV_FOLDER/js
+cp -R -u $PATH_TO_SOURCE/../build/$1/index.html $DEV_ENV_FOLDER/
+
 # Compile source
 echo "Compilling sources..."
 if [ $1 = "dev" ];then
@@ -17,15 +23,13 @@ if [ $1 = "dev" ];then
     echo "Dev build finished"
 elif [ $1 = "prod" ]; then
     $PATH_TO_TYPESCRIPT_COMPILER --outFile $DEV_ENV_FOLDER/js/game.js -p $PATH_TO_SOURCE --removeComments
+    uglifyjs --compress --mangle --output $DEV_ENV_FOLDER/js/game.min.js -- $DEV_ENV_FOLDER/js/game.js $DEV_ENV_FOLDER/js/config.js $DEV_ENV_FOLDER/js/dictionary.js
+    rm $DEV_ENV_FOLDER/js/game.js         
+    rm $DEV_ENV_FOLDER/js/config.js         
+    rm $DEV_ENV_FOLDER/js/dictionary.js         
+    rm $DEV_ENV_FOLDER/js/lib/phaser.js         
     echo "Prod build finished"
 fi
-
-
-
-#Move Libs
-echo "Moving config and libs..."
-cp -R -u $PATH_TO_SOURCE/../js/* $DEV_ENV_FOLDER/js
-cp -R -u $PATH_TO_SOURCE/../build/$1/index.html $DEV_ENV_FOLDER/
 
 #Move assets
 echo "Moving assets..."
