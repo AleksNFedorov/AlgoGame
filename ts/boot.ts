@@ -1,5 +1,10 @@
 class Boot extends Phaser.State {
     
+    init(): void {
+        this.game.forceSingleUpdate = true;
+        this.game.renderer.renderSession.roundPixels = true;
+    }
+
     preload() {
         
         this.load.image('preloadbar', '/assets/images/preloader-bar.png');

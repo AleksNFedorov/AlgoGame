@@ -4,8 +4,8 @@
 declare var store: Store;
 declare var CryptoJS: any;
 declare var globalConfig: GameConfig.Config;
-declare var _LTracker:any;
-declare var log:any;
+// declare var _LTracker:any;
+declare var log: any;
 
 module Common {
     
@@ -147,9 +147,8 @@ module Common {
         private _config: GameConfig.Config = globalConfig;
 
         constructor(gameWidth: number, gameHeight: number, mode: number, tag: string) {
-            super(gameWidth, gameHeight, mode, tag);
+            super(gameWidth, gameHeight, mode, tag, null, false, true);
             this._eventBus = new EventBusClass();
-            
         }
         
         public dispatch(eventId: string, caller: any, param?: any): void {

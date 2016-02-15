@@ -13,22 +13,35 @@
   <meta property="og:image"              content="http://s3.amazonaws.com/www.linnareacu.org/blog/wp-content/uploads/2011/07/Ninja.jpg" />  
   
   
+  <!--Google analytics-->
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-64283408-2', 'auto');
+    ga('send', 'pageview');
+
+  </script>
+  
+  <!-- Google web fonts  -->
   <script type="text/javascript">
-  WebFontConfig = {
-    google: { families: [ 'Open+Sans::latin' ] }
-  };
-  (function() {
-    var wf = document.createElement('script');
-    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-    wf.type = 'text/javascript';
-    wf.async = 'true';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(wf, s);
-  })(); 
+    WebFontConfig = {
+      google: { families: [ 'Open+Sans::latin' ] }
+    };
+    (function() {
+      var wf = document.createElement('script');
+      wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+        '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+      wf.type = 'text/javascript';
+      wf.async = 'true';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(wf, s);
+    })(); 
   </script>
     
-  
+  <!--Local store helper-->
   <script src="http://uswest-23f4.kxcdn.com/js/lib/store.min.js"></script>
   <script>
       init()
@@ -73,9 +86,25 @@
   </style>
 </head>
 <body bgcolor='#3e3c4d'>
+  
+  <!--Facebook integration-->
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=1761518007411941";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+  </script>
+  <!--Facebook integration-->
+
+  <!--Facebook button-->
+  <div style="position: absolute; left: 50px; top: 30px" class="fb-like" data-href="https://www.facebook.com/algo.ninja/" data-layout="box_count" data-action="like" data-show-faces="true" data-share="true"></div>  
 
   <div id="game"></div>
   <div style="font-family:'Luckiest Guy',cursive;visibility:hidden;opacity:0;position:fixed;">&nbsp;</div>
   <!-- include the main game file -->
   <script src="http://uswest-23f4.kxcdn.com/js/game.min.js"></script>
+
 </body>
