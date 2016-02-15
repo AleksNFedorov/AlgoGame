@@ -45,16 +45,19 @@
   <script type="text/javascript" src="https://cloudfront.loggly.com/js/loggly.tracker-2.1.min.js" async></script>
   <script>
     var _LTracker = _LTracker || [];
-    _LTracker.push({'logglyKey': 'd61f5aac-8289-4d2d-9ba9-fbab76ba7af5',
-    'sendConsoleErrors' : true,
-    'tag' : 'loggly-jslogger'  });
+    _LTracker.push(
+      {
+        'logglyKey': 'd61f5aac-8289-4d2d-9ba9-fbab76ba7af5',
+        'sendConsoleErrors' : true,
+        'tag' : 'loggly-jslogger'  
+      });
   </script>
   <script type="text/javascript" src="js/lib/log4j.js"></script>
   <script type="text/javascript">
 	  var log = log4javascript.getDefaultLogger();
 	  log.removeAllAppenders();
 	  log.addAppender(new log4javascript.BrowserConsoleAppender());
-//	  log.addAppender(new log4javascript.LoggyAppender());
+	//  log.addAppender(new log4javascript.LoggyAppender());
   </script>
   
   <!-- include crypto library -->

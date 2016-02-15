@@ -2,6 +2,7 @@
 /// <reference path="./progresspanel.ts" />
 
 declare var store: Store;
+declare var log: any;
 
 module Common {
     
@@ -153,7 +154,7 @@ module Common {
         private _levelSave: LevelSave;
 
         public dispatch(eventId: string, caller: any, param?: any) {
-            log.info(`New event received by state [${eventId}][${this.key}]`);
+            log.info(`State event |${eventId}|${this.key}`);
             
             var newEvent: GameEvent = new GameEvent(eventId, caller, param);
             this._eventsToProcess.add(newEvent);
