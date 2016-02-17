@@ -49,7 +49,7 @@
       {
         'logglyKey': 'd61f5aac-8289-4d2d-9ba9-fbab76ba7af5',
         'sendConsoleErrors' : true,
-        'tag' : 'loggly-jslogger'  
+        'tag' : 'dev'  
       });
   </script>
   <script type="text/javascript" src="js/lib/log4j.js"></script>
@@ -57,7 +57,7 @@
 	  var log = log4javascript.getDefaultLogger();
 	  log.removeAllAppenders();
 	  log.addAppender(new log4javascript.BrowserConsoleAppender());
-	//  log.addAppender(new log4javascript.LoggyAppender());
+	  log.addAppender(new log4javascript.LoggyAppender());
   </script>
   
   <!-- include crypto library -->

@@ -13,6 +13,20 @@ var Dictionary = {
             "Game started",
             "Run run run",
             "Fight!",
+            "Just do it!",
+        ],
+    },
+    GameEndByUser: {
+        type: "info",
+        messages: [
+            "Wow, counting is a piece of cake to you ... great job!",
+            "Algorithms is definitely your thing: keep going!",
+            "You're gonna go far kid! Keep playing & learning!",
+            "You truly have the ninja way with algorithms: well done!",
+            "Algorithms have very little secrets for you ... you're on a roll!",
+            "Impressive: keep challenging yourself!",
+            "Show us some more of those algo-ninja chops!",
+            "Keep using that brain power! You're on the right track."
         ],
     },
     GameCorrectStepDone: {
@@ -93,4 +107,15 @@ var Dictionary = {
         short: "Djikstra",
         full: "Dijkstra's algorithm"
     },
+    
+    GeneralMessages : [
+        "No algorithms? No open doors!",
+        "Top IT companies are looking for you...but you have to know algorithms!",
+        "Join the pro crowd, learn algorithms and unlock future opportunities.",
+        "The most successful professionals already know this. Don't be left behind!",
+        "Wanna be a successful developer? Algorithms are the way!",
+        "What do the best software engineers have in common? they know algorithms.",
+        "Algorithms are the stepping stone to your success!",
+        "Master the algorithm and become a developing master!"
+    ],
 };

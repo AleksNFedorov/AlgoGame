@@ -130,4 +130,13 @@ class Constants {
     static CONTROL_PANEL_MESSAGES_HISTORY_SIZE = 3;
     
     static STEP_TIME = 4000;
+    
+    //UI Stuff
+    static PLAY_BUTTON_FRAMES = [
+        "Play-button_Mouse-over.png", 
+        "Play-button_Enabled.png", 
+        "Play-button_clicked.png", 
+        "Play-button_Enabled.png", 
+        "Play-button_Disabled.png"
+    ];
 }

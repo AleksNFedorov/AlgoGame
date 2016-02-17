@@ -204,7 +204,7 @@ module Common {
                     break;
                 case Events.GAME_END:
                     this._timer.removeAll();
-                    var stepsDone: number = <number>param1;
+                    var stepsDone: number = <number>param1[0];
                     this._bottomProgressBar.setValue(stepsDone, stepsDone + "");
                     this._topProgressBar.setValue(0, "");
                     break;

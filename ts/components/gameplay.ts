@@ -414,7 +414,7 @@ module Common {
                         //mid-game pause
                         this._gameStepTimer.resume();
                     }                    
-                    this.onLastStep();
+                    this.onLastStep(false);
                     this._game.dispatch(
                         Events.CONTROL_PANEL_EVENT_PLAY, 
                         this,
@@ -479,7 +479,7 @@ module Common {
                     [this.levelSave.practiseDone, isUser]);
                 
                 if (step.isLast) {
-                    this.onLastStep();
+                    this.onLastStep(isUser);
                 } else {
                     this.onNewStep();
                 }
@@ -527,9 +527,9 @@ module Common {
             this.saveState();
         }
         
-        protected onLastStep(): void {
+        protected onLastStep(isUser: boolean): void {
             this._gameStepTimer.removeAll();
-            this._game.dispatch(Events.GAME_END, this, this.levelSave.practiseDone);
+            this._game.dispatch(Events.GAME_END, this, [this.levelSave.practiseDone, isUser]);
             console.log("Game finished");
         }
         
@@ -609,7 +609,7 @@ module Common {
                     [this.levelSave.examDone, isUser]);
 
                 if (step.isLast) {
-                    this.onLastStep(1);
+                    this.onLastStep(isUser, 1);
                 } else {
                     this.onNewStep();
                 }
@@ -630,12 +630,12 @@ module Common {
             }
         }
 
-        protected onLastStep(points: number = 0): void {
+        protected onLastStep(isUser: boolean = false, points: number = 0): void {
             this.levelSave.examDone += points;
             this._gameStepTimer.removeAll();
-            this._game.dispatch(Events.GAME_END, this, this.levelSave.examDone);
+            this._game.dispatch(Events.GAME_END, this, [this.levelSave.examDone, isUser]);
             console.log("Game finished");
-
+            
             if (!this.levelSave.examPassed && this.stateConfig.stepsToPass == this.levelSave.examDone) {
                 this.levelSave.examPassed = true;
                 this._game.dispatch(Events.GAME_EXAM_DONE, this);

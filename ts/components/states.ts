@@ -1,12 +1,12 @@
 /// <reference path="./common.ts" />
 /// <reference path="./progresspanel.ts" />
+/// <reference path="../lib/gameconfig.d.ts" />
 
 declare var store: Store;
 declare var log: any;
 
 module Common {
-    
-    
+
     export class BackgroundGraphics {
         
         private _graphics: Phaser.Graphics;
@@ -140,6 +140,34 @@ module Common {
         }
     }
     
+    class EventLogger {
+        
+        private _state: State;
+        
+        constructor(state: State) {
+            this._state = state;
+        }
+        
+        public logEvent(event: GameEvent): void {
+            var level = this._state._stateConfig.level;
+            var stageName = this._state.key;
+            var eventId = event.eventId;
+            switch(eventId) {
+                case Events.GAME_CORRECT_STEP_DONE:
+                    if (event.param[1]) {
+                        eventId = Events.GAME_CORRECT_STEP_DONE_BY_USER;
+                    }
+                    break;
+                case Events.GAME_END:
+                    if (event.param[1]) {
+                        eventId = Events.GAME_END_BY_USER;
+                    }
+                    break;
+            }
+            log.info(`level=${level}|stageName=${stageName}|event=${eventId}`);
+        }
+    }
+    
     /*
         General state for all game states. Contains all core stuff and keeps game state updated.
     */
@@ -149,22 +177,22 @@ module Common {
         private _levelStageState: LevelStageState = LevelStageState.UNKNOWN;
         private _eventsToProcess: Phaser.LinkedList = new Phaser.LinkedList();
         private _pausedByModalWindow: boolean = false;
-        protected _stateConfig: GameConfig.StageConfig;
+        private _eventLogger: EventLogger = new EventLogger(this);
+        
+        public _stateConfig: GameConfig.StageConfig;
         
         private _levelSave: LevelSave;
 
         public dispatch(eventId: string, caller: any, param?: any) {
-            log.info(`State event |${eventId}|${this.key}`);
-            
             var newEvent: GameEvent = new GameEvent(eventId, caller, param);
             this._eventsToProcess.add(newEvent);
+            this._eventLogger.logEvent(newEvent);
         }
         
         public init(): void {
             this._game = <AlgoGame> this.game;
             this._stateConfig = this.getStateConfig(this.getStageType());
             this._levelSave = this.loadLevelSave();
-            
         }
         
         protected loadLevelSave(): LevelSave {
@@ -377,7 +405,8 @@ module Common {
                 new GameModal.ModalConfig(
                     Events.GAME_PRACTISE_DONE, 
                     "examOpen.png", 
-                    Constants.GAME_EXAM_BANNERS_ATLAS));
+                    Constants.GAME_EXAM_BANNERS_ATLAS, 
+                    4000));
         }
     }
     
@@ -447,7 +476,7 @@ module Common {
                 new GameModal.ModalConfig(
                     Events.GAME_EXAM_DONE, 
                     "examPassed.png", 
-                    Constants.GAME_EXAM_BANNERS_ATLAS));
+                    Constants.GAME_EXAM_BANNERS_ATLAS, 4000));
         }
     
     }    

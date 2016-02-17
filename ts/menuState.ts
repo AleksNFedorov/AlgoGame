@@ -95,7 +95,9 @@ class LevelMenuState extends Common.State {
     }
     
     protected getStateConfig(stage: string): GameConfig.StageConfig {
-        return null;
+        return <GameConfig.StageConfig> {
+            level: "mainMenu"
+        }
     }
     
     protected loadLevelSave(): Common.LevelSave {

@@ -4,7 +4,6 @@ declare module GameConfig {
     export class StageConfig {
         level: string;
         stageName: string;
-        stateType: string;
         stepTime: number; //milliseconds
         menu: any;
         stepsToPass: number;

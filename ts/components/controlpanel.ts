@@ -175,13 +175,7 @@ module Common {
             this._playButton = this.createButton(
                 Common.GameElements.ControlPanelButtonPlay, 
                 Events.CONTROL_PANEL_EVENT_PLAY, 
-                [
-                    "Play-button_Mouse-over.png", 
-                    "Play-button_Enabled.png", 
-                    "Play-button_clicked.png", 
-                    "Play-button_Enabled.png", 
-                    "Play-button_Disabled.png"
-                ]
+                Constants.PLAY_BUTTON_FRAMES
             );
             
             this.initButton(this._playButton, Constants.CONTROL_PANEL_SECOND_BUTTON_X,  0);

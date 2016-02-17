@@ -4,8 +4,6 @@
 declare var store: Store;
 declare var CryptoJS: any;
 declare var globalConfig: GameConfig.Config;
-// declare var _LTracker:any;
-declare var log: any;
 
 module Common {
     
@@ -297,45 +295,7 @@ module Common {
             }
         }
     }
-    
-/*
-  //Extend this class if component need 
-    //an access to stage config and stage client save
-    export class GameComponentContainer extends GameComponentContainer {
-    
-        private _levelSave: LevelSave;
-        protected stateConfig: GameConfig.StageConfig;
-
-        constructor(game: AlgoGame) {
-            super(game);
-        }
-        
-        protected initEventListners(): void {
-            super.initEventListners();
-            this.addEventListener(Events.STAGE_INITIALIZED);
-        }
-        
-        dispatchEvent(event: any, param1: any) {
-            super.dispatchEvent(event, param1);
-            switch(event.type) {
-                case Events.STAGE_INITIALIZED:
-  //                  this.stateConfig = <GameConfig.StageConfig>param1;
-                    this._levelSave = this._game.store.get(this.stateConfig.level)
-                            || new LevelSave();
-                    break;
-            }
-        }
-
-        protected get levelSave(): LevelSave {
-            return this._levelSave;
-        }
-        
-        protected saveState(): void  {
-          this._game.store.set(this.stateConfig.level, this._levelSave);
-        }
-
-    }
-*/    
+   
     export class Text extends Phaser.Text implements GameUIObjectWithState {
         constructor(game: AlgoGame, x: number, y: number, text: string, fontSettings: any) {
             super(game, x, y, text, fontSettings);
