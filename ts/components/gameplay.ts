@@ -535,9 +535,11 @@ module Common {
         
         // True when practise done because of user actions during this game
         protected checkPractiseDone() {
-            if (this.stateConfig.stepsToPass <= this.levelSave.practiseDone) {
-                this._game.dispatch(Events.GAME_PRACTISE_DONE, this, !this.levelSave.practisePassed);
-                this.levelSave.practisePassed = true;
+            if (this.stateConfig.stepsToPass <= this.levelSave.practiseDone ) {
+                if (!this.levelSave.practisePassed) {
+                    this._game.dispatch(Events.GAME_PRACTISE_DONE, this, !this.levelSave.practisePassed);
+                    this.levelSave.practisePassed = true;
+                }
                 this.saveState();
             }
         }
