@@ -12,7 +12,7 @@ module Graph {
         
         protected runAlgorithm(): Common.AlgorithmStep[] {
             var algoSteps = [];
-            this._nodeToFind = this._sequence[Common.Algorithm.getRandomInteger(1, this._sequence.length-1)];
+            this._nodeToFind = this.sequence[Common.Algorithm.getRandomInteger(1, this.sequence.length-1)];
             
             var nodes: GraphJS.Node[] = this._graph.getDFSTravaersal();
             for(var node of nodes) {
@@ -58,7 +58,8 @@ module Graph {
             return step.stepNumber === action.index; 
         }
         
-        protected onCorrectAction(): void {
+        protected onCorrectAction(isUser:boolean): void {
+            super.onCorrectAction(isUser);
             var step: Common.AlgorithmStep = this.getCurrentStep();
             this._graphUI.onNodeClicked(step.stepNumber);
         }
@@ -102,7 +103,8 @@ module Graph {
             return step.stepNumber === action.index; 
         }
         
-        protected onCorrectAction(): void {
+        protected onCorrectAction(isUser:boolean): void {
+            super.onCorrectAction(isUser);
             var step: Common.AlgorithmStep = this.getCurrentStep();
             this._graphUI.onNodeClicked(step.stepNumber);
         }

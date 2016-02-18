@@ -10,49 +10,98 @@ module Common {
     
     // Abstract algorithm step, represents single step of given algorithm.
     // Particular algorithm should use it of extend.
-    export class AlgorithmStep {
-        private _isLast: boolean = false;
-        private _stepNumber: number = -1;
+    
+    
+    export interface IAlgorithmStep {
         
+        isLast: boolean;
+        stepNumber: number;
+        
+        setIsLast(): void;
+    }
+    
+    export class AlgorithmStep implements IAlgorithmStep {
+        
+        isLast: boolean;
+        stepNumber: number;
+
         constructor(isLast: boolean, stepNumber: number) {
-            this._isLast = isLast;
-            this._stepNumber = stepNumber;
+            this.isLast = isLast;
+            this.stepNumber = stepNumber;
         }
         
         public setIsLast(): void {
-            this._isLast = true;
+            this.isLast = true;
+        }
+        
+    }
+    
+    export class ScenarioStep implements IAlgorithmStep {
+        
+        private _actualStep: IAlgorithmStep;
+        private _messageKeys: string[];
+        
+        public setIsLast(): void {
+            this._actualStep.isLast = true;
         }
         
         public get isLast(): boolean {
-            return this._isLast;
+            return this._actualStep.isLast;
         }
         
         public get stepNumber(): number {
-            return this._stepNumber;
+            return this._actualStep.stepNumber;
+        }
+        
+        public get messageKeys(): string[] {
+            return this._messageKeys;
         }
     }
     
-    export class Algorithm {
+    export class AbstractAlgorithm {
         
-        private _steps: AlgorithmStep[] = [];
-        private _lastRequestedStepNumber: number = -1;
         protected _sequence: any[];
+        protected _steps: IAlgorithmStep[] = [];
+        private _lastRequestedStepNumber: number = -1;
+        
+        protected init(steps: IAlgorithmStep[], sequence: any[]) {
+            this._steps = steps;
+            this._sequence = sequence;
+        }
+        
+        public getNextStep(): IAlgorithmStep {
+            this._lastRequestedStepNumber = Math.min(this._lastRequestedStepNumber + 1, this._steps.length - 1);
+            return this._steps[this._lastRequestedStepNumber];
+        }
+        
+        public get sequence(): any[] {
+            return this._sequence;
+        }
+    }
+    
+    export class ScenarioAlgorithm extends AbstractAlgorithm {
+        
+        constructor(steps: ScenarioStep[], sequence: any[]) {
+            super();
+            this._steps = steps;
+            this._sequence = sequence;
+        }
+    }
+    
+    export class Algorithm extends AbstractAlgorithm {
+        
         protected config: any;
         
         constructor(config: any) {
+            super();
             this.config = config;
             this._sequence = this.generateSeqeunce(config);
             this._steps = this.runAlgorithm();
             this.updateLastStep();
         }
         
-        protected runAlgorithm(): AlgorithmStep[] {
+        protected runAlgorithm(): IAlgorithmStep[] {
             return [];   
-        }
-        
-        public getNextStep(): AlgorithmStep {
-            this._lastRequestedStepNumber = Math.min(this._lastRequestedStepNumber + 1, this._steps.length - 1);
-            return this._steps[this._lastRequestedStepNumber];
         }
         
         private updateLastStep(): void {
@@ -78,10 +127,6 @@ module Common {
             }
             
             return newGeneratedArray;
-        }
-        
-        public get sequence(): any[] {
-            return this._sequence;
         }
         
         protected getRandomSeqNumber(): number {
@@ -363,26 +408,19 @@ module Common {
         
     }
     
-    export class PractiseGamePlay<T extends GamePlayAction, A extends Algorithm> extends Common.GameComponentContainer {
+    export class TutorialGamePlay<T extends GamePlayAction, A extends AbstractAlgorithm> extends Common.GameComponentContainer {
 
         protected _algorithm: A;
-        protected _algorithmStep: Common.AlgorithmStep;
-        
-        protected _gameStepTimer: Phaser.Timer;
-        protected _stepPerformed: boolean = false;
+        protected _algorithmStep: IAlgorithmStep;
         
         constructor(game: Common.AlgoGame) {
             super(game);
-            
-            this._gameStepTimer = this._game.time.create(false);
-            this._gameStepTimer.start();
         }
         
         protected initEventListners(): void {
             super.initEventListners();
             this.addEventListener(Events.STAGE_INITIALIZED);
             this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
-            this.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
             this.addEventListener(Events.CONTROL_PANEL_EVENT_REPLAY);
         }
 
@@ -394,26 +432,13 @@ module Common {
                     this.checkPractiseDone();
                     break;
                 case Events.CONTROL_PANEL_EVENT_PLAY:
-                    console.log("Play event received");
-                    if (this.isCurrentState(Common.LevelStageState.PAUSED)) {
-                        //mid-game pause
-                        this._gameStepTimer.resume();
-                    } else {
-                        if (this.isNotCurrentState(Common.LevelStageState.CREATED)) {
+                    if (this.isNotCurrentState(Common.LevelStageState.CREATED)) {
                             //non-first iteration
                             this.initGame(false);
-                        }
-                        this.startGame();
                     }
-                    break;
-                case Events.CONTROL_PANEL_EVENT_PAUSE:
-                    this._gameStepTimer.pause();
+                    this.startGame();
                     break;
                 case Events.CONTROL_PANEL_EVENT_REPLAY:
-                    if (this.isCurrentState(Common.LevelStageState.PAUSED)) {
-                        //mid-game pause
-                        this._gameStepTimer.resume();
-                    }                    
                     this.onLastStep(false);
                     this._game.dispatch(
                         Events.CONTROL_PANEL_EVENT_PLAY, 
@@ -449,17 +474,13 @@ module Common {
             return  new Common.GamePlayInfo(
                 this.stateConfig.stepTime,
                 this.stateConfig.stepsToPass,
-                this.levelSave.practiseDone);
+                this.getStageDone());
         }
         
-        private startGame(): void {
+        protected startGame(): void {
             this.onNewStep();
             this._game.dispatch(Events.GAME_STARTED, this, 
-                this.levelSave.practiseDone);
-
-        }
-        
-        protected clickBox() {
+                this.getStageDone());
         }
         
         protected boxClicked(action: T, isUser:boolean = true) {
@@ -471,12 +492,8 @@ module Common {
             var step: Common.AlgorithmStep = this._algorithmStep;
             
             if (this.isCorrectStep(action)) {
-                this.onCorrectAction();
                 this.updateGameStatistics(isUser);
-                this._game.dispatch(
-                    Events.GAME_CORRECT_STEP_DONE, 
-                    this, 
-                    [this.levelSave.practiseDone, isUser]);
+                this.onCorrectAction(isUser);
                 
                 if (step.isLast) {
                     this.onLastStep(isUser);
@@ -484,11 +501,130 @@ module Common {
                     this.onNewStep();
                 }
                 this.checkPractiseDone();
-                this._stepPerformed = false;
 
             } else {
-                this._game.dispatch(Events.GAME_WRONG_STEP_DONE, this);
+                this.onWrongStep(isUser);
             }
+        }
+        
+        protected onWrongStep(isUser: boolean = true): void {
+            this._game.dispatch(Events.GAME_WRONG_STEP_DONE, this, isUser);
+        }
+        
+        protected checkStepAllowed(isUser: boolean): boolean {
+            return true;
+        }
+        
+        protected onNewStep(): void {
+            this._algorithmStep = this._algorithm.getNextStep();
+        };
+        
+        protected onCorrectAction(isUser: boolean): void {
+            this._game.dispatch(
+                Events.GAME_CORRECT_STEP_DONE, 
+                this, 
+                [this.getStageDone(), isUser]);
+        }
+        
+        protected isCorrectStep(action: T): boolean {
+            throw "Method is not implemented yet [isCorrectStep]";
+        }
+        
+        protected updateGameStatistics(isUser: boolean): void {
+            this.setStageDone(this.getStageDone() + 1);
+            this.saveState();
+        }
+        
+        protected onLastStep(isUser: boolean): void {
+            this._game.dispatch(Events.GAME_END, this, [this.getStageDone(), isUser]);
+            console.log("Game finished");
+        }
+        
+        // True when practise done because of user actions during this game
+        protected checkPractiseDone() {
+            if (this.stateConfig.stepsToPass <= this.getStageDone() ) {
+                if (!this.getStagePassed()) {
+                    this.setStagePassed(true)
+                    this._game.dispatch(this.getStagePassEvent(), this, this.getStagePassed());
+                }
+                this.saveState();
+            }
+        }
+        
+        destroy(): void {
+            super.destroy();
+            this.destroyTempObjects();
+        }
+        
+        protected destroyTempObjects():void {
+          this._algorithm = null;
+        }
+        
+        protected getStagePassEvent(): string {
+            return Events.GAME_TUTORIAL_DONE;
+        }
+        
+        protected getStageDone(): number {
+            return this.levelSave.tutorialDone;
+        }
+        
+        protected setStageDone(val: number): void {
+            this.levelSave.tutorialDone = val;
+        }
+        
+        protected getStagePassed(): boolean {
+            return this.levelSave.tutorialPassed;
+        }
+        
+        protected setStagePassed(passed: boolean): void {
+            this.levelSave.tutorialPassed = passed;
+        }
+        
+    }
+    
+    
+    export class PractiseGamePlay<T extends GamePlayAction, A extends AbstractAlgorithm> extends TutorialGamePlay<T, A> {
+
+        protected _gameStepTimer: Phaser.Timer;
+        protected _stepPerformed: boolean = false;
+        
+        constructor(game: Common.AlgoGame) {
+            super(game);
+            
+            this._gameStepTimer = this._game.time.create(false);
+            this._gameStepTimer.start();
+        }
+        
+        protected initEventListners(): void {
+            super.initEventListners();
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_REPLAY);
+        }
+
+        dispatchEvent(event: any, param1: any) {
+            super.dispatchEvent(event, param1);
+            switch(event.type) {
+                case Events.CONTROL_PANEL_EVENT_PLAY:
+                    console.log("Play event received");
+                    if (this.isCurrentState(Common.LevelStageState.PAUSED)) {
+                        //mid-game pause
+                        this._gameStepTimer.resume();
+                    } 
+                    break;
+                case Events.CONTROL_PANEL_EVENT_PAUSE:
+                    this._gameStepTimer.pause();
+                    break;
+                case Events.CONTROL_PANEL_EVENT_REPLAY:
+                    if (this.isCurrentState(Common.LevelStageState.PAUSED)) {
+                        //mid-game pause
+                        this._gameStepTimer.resume();
+                    }                    
+                    break;
+            }
+        }
+        
+        protected clickBox() {
         }
         
         protected checkStepAllowed(isUser: boolean): boolean {
@@ -509,39 +645,24 @@ module Common {
         }
         
         protected onNewStep(): void {
-            this._algorithmStep = this._algorithm.getNextStep();
+            super.onNewStep();
             this.addTimerEvents();
         };
         
-        protected onCorrectAction(): void {}
-        
-        protected isCorrectStep(action: T): boolean {
-            return false;
-        }
-        
-        
         protected updateGameStatistics(isUser: boolean): void {
             if (!isUser) return;
-            
-            this.levelSave.practiseDone += 1;
-            this.saveState();
+            super.updateGameStatistics(isUser);
         }
         
         protected onLastStep(isUser: boolean): void {
             this._gameStepTimer.removeAll();
-            this._game.dispatch(Events.GAME_END, this, [this.levelSave.practiseDone, isUser]);
-            console.log("Game finished");
+            super.onLastStep(isUser);
         }
         
         // True when practise done because of user actions during this game
         protected checkPractiseDone() {
-            if (this.stateConfig.stepsToPass <= this.levelSave.practiseDone ) {
-                if (!this.levelSave.practisePassed) {
-                    this._game.dispatch(Events.GAME_PRACTISE_DONE, this, !this.levelSave.practisePassed);
-                    this.levelSave.practisePassed = true;
-                }
-                this.saveState();
-            }
+            super.checkPractiseDone();
+            this._stepPerformed = false;
         }
         
         protected addTimerEvents(): void {
@@ -551,16 +672,35 @@ module Common {
         
         destroy(): void {
             super.destroy();
-            this.destroyTempObjects();
             this._gameStepTimer.destroy();
         }
         
         protected destroyTempObjects():void {
           this._algorithm = null;
         }
+
+        protected getStagePassEvent(): string {
+            return Events.GAME_PRACTISE_DONE;
+        }
+
+        protected getStageDone(): number {
+            return this.levelSave.practiseDone;
+        }
+        
+        protected setStageDone(val: number): void {
+            this.levelSave.practiseDone = val;
+        }
+        
+        protected getStagePassed(): boolean {
+            return this.levelSave.practisePassed;
+        }
+        
+        protected setStagePassed(passed: boolean): void {
+            this.levelSave.practisePassed = passed;
+        }
     }
     
-    export class ExamGamePlay<T extends GamePlayAction, A extends Algorithm>  extends PractiseGamePlay<T, A> {
+    export class ExamGamePlay<T extends GamePlayAction, A extends AbstractAlgorithm>  extends PractiseGamePlay<T, A> {
         
         constructor(game: Common.AlgoGame) {
             super(game);
@@ -568,21 +708,17 @@ module Common {
 
         protected initEventListners(): void {
             super.initEventListners();
+            this.addEventListener(Events.STAGE_INITIALIZED);
             this.addEventListener(Events.CONTROL_PANEL_EVENT_STOP);
-        }
-
-        protected createGamePlayInfo(): Common.GamePlayInfo {
-            return  new Common.GamePlayInfo(
-                this.stateConfig.stepTime,
-                this.stateConfig.stepsToPass, 
-                this.levelSave.examDone);
         }
 
         dispatchEvent(event: any, param1: any) {
             super.dispatchEvent(event, param1);
             switch(event.type) {
+                case Events.STAGE_INITIALIZED:
+                    this.flushProgress();                    
+                    break;
                 case Events.CONTROL_PANEL_EVENT_STOP:
-                    /// put game fail here;
                     this.clickBox();
                     break;
             }
@@ -592,60 +728,64 @@ module Common {
             throw "No implementation for method [clickBox]";
         }
 
-        protected boxClicked(action: T, isUser:boolean = true) {
-
+        protected checkStepAllowed(isUser: boolean): boolean {
             if (this.isNotCurrentState(Common.LevelStageState.RUNNING)) {
                 this._game.dispatch(Events.GAME_STEP_ON_PAUSE, this);
-                return;
+                return false;
             }
-
-            console.log("Box clicked [" + action + "]");
-
-            var step: Common.AlgorithmStep = this._algorithmStep;
-
-            if (this.isCorrectStep(action)) {
-                this.onCorrectAction();
-                this._game.dispatch(
-                    Events.GAME_CORRECT_STEP_DONE,
-                    this,
-                    [this.levelSave.examDone, isUser]);
-
-                if (step.isLast) {
-                    this.onLastStep(isUser, 1);
-                } else {
-                    this.onNewStep();
-                }
-            } else {
-                this._game.dispatch(Events.GAME_EXAM_FAILED, this, isUser);
-                this.flushProgress();
-                this.onLastStep();
-            }
+            
+            return true;
         }
         
-        protected onCorrectAction(): void {
-            throw "No implementation for method [onCorrectAction]";
+        protected updateGameStatistics(isUser: boolean): void {
+            //In exam mode updates per iteration, not player action
         }
-
+        
+        protected onWrongStep(isUser: boolean): void {
+            super.onWrongStep(isUser);
+            this._game.dispatch(Events.GAME_EXAM_FAILED, this);
+            this.flushProgress();
+            super.onLastStep(isUser);
+        }
+        
         protected flushProgress(): void {
             if (!this.levelSave.examPassed) {
                 this.levelSave.examDone = 0;
+                this.saveState();
             }
         }
+        
+        protected onLastStep(isUser: boolean): void {
 
-        protected onLastStep(isUser: boolean = false, points: number = 0): void {
-            this.levelSave.examDone += points;
-            this._gameStepTimer.removeAll();
-            this._game.dispatch(Events.GAME_END, this, [this.levelSave.examDone, isUser]);
-            console.log("Game finished");
-            
-            if (!this.levelSave.examPassed && this.stateConfig.stepsToPass == this.levelSave.examDone) {
-                this.levelSave.examPassed = true;
-                this._game.dispatch(Events.GAME_EXAM_DONE, this);
+            if (isUser) {
+                this.levelSave.examDone += 1;
             }
+
+            super.onLastStep(isUser);
             
             if (this.levelSave.examPassed) {
                 this.saveState();
             }
+        }
+
+        protected getStagePassEvent(): string {
+            return Events.GAME_EXAM_DONE;
+        }
+
+        protected getStageDone(): number {
+            return this.levelSave.examDone;
+        }
+        
+        protected setStageDone(val: number): void {
+            this.levelSave.examDone = val;
+        }
+        
+        protected getStagePassed(): boolean {
+            return this.levelSave.examPassed;
+        }
+        
+        protected setStagePassed(passed: boolean): void {
+            this.levelSave.examPassed = passed;
         }
 
     }

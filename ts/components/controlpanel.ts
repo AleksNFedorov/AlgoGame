@@ -99,6 +99,9 @@ module Common {
                     if (paramArray[1] === false) {
                         break;
                     }
+                case Events.GAME_SHOW_MESSAGE:
+                    this.setDirectMessage(param1);
+                    break;
                 default:
                     this.setInfoMessageFromDictionary(event.type);
             }
@@ -112,6 +115,15 @@ module Common {
 
                 var messageType: Common.MessageType = Common.MessageType[messageTypeString];
                 var message: string = Phaser.ArrayUtils.getRandomItem(messagesArray, 0, messagesArray.length);
+                this.updateMessages(message, messageType);
+                this.displayNewMessage();
+            } 
+        }
+        
+        private setDirectMessage(key: string): void {
+            var message: string = Dictionary[key];
+            if (message != null) {
+                var messageType: Common.MessageType = Common.MessageType.INFO;
                 this.updateMessages(message, messageType);
                 this.displayNewMessage();
             } 

@@ -164,7 +164,7 @@ module Common {
                     }
                     break;
             }
-            log.info(`level=${level}|stageName=${stageName}|event=${eventId}`);
+            log.info(`${level}|${stageName}|${eventId}`);
         }
     }
     

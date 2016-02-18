@@ -74,7 +74,7 @@ var Dictionary = {
     MenuButtonObjectives: "What you need\nto do this level",
     ControlPanelText: "Important game\n messages",
     ControlPanelButtonPlay: "Press to see \nalgorithm in action\nPress it now!!",
-    ProgressBarStep: "Time till next step\nDo next step faster\nthen computer",
+    ProgressBarStep: "Time till next step\nDo next step faster\nthan computer",
     ProgressBarComplete: "Your rigth steps\nFill it to open exam",
     MenuButtonExam: "Test your skills\nin Exam mode",
     

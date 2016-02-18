@@ -66,7 +66,7 @@ module Graph {
 
         protected runAlgorithm(): DjikstraStep[] {
             var algoSteps:DjikstraStep[] = [];
-            this._sourceNode = this._sequence[0];
+            this._sourceNode = this.sequence[0];
             this._destinationNode = this.defineDestinationNode();
             
             var djikstraResult: GraphJS.DjikstraResult = this._graph.dijkstra(this._sourceNode, this._destinationNode);

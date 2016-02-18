@@ -36,6 +36,7 @@ class Events {
     static GAME_MULTI_STEP_DONE = Events.createEvent("GameMultiStepDone");
     //on attempt of making step during pause
     static GAME_STEP_ON_PAUSE = Events.createEvent("GameStepOnPause");
+    static GAME_TUTORIAL_DONE = Events.createEvent("GameTutorialDone");
     static GAME_PRACTISE_DONE = Events.createEvent("GamePractiseDone");
 
     static GAME_EXAM_FAILED = Events.createEvent("GameExamFailed");
@@ -43,6 +44,8 @@ class Events {
     
     static GAME_DISABLE_ALL = Events.createEvent("DisableAll");
     static GAME_ENABLE_ALL = Events.createEvent("EnableAll");
+    
+    static GAME_SHOW_MESSAGE = Events.createEvent("ShowMessage");
     
     //Stage info manager events
     static STAGE_INFO_SHOW = Events.createEvent("ShowStageInfo");

@@ -33,6 +33,8 @@ module Common {
         
     //Key info stored on borwser local store
     export class LevelSave {
+        public tutorialDone: number = 0;
+        public tutorialPassed: boolean = false;
         public practiseDone: number = 0;
         public practisePassed: boolean = false;
         public examDone: number = 0;
@@ -235,14 +237,12 @@ module Common {
             this.addEventListener(Events.GAME_DISABLE_ALL);
             this.addEventListener(Events.GAME_ENABLE_ALL);
             this.addEventListener(Events.STAGE_INITIALIZED);
-
         }
         
         protected addGameElement(elementId: GameElements, element: GameUIObjectWithState): void {
             this._componentElements[elementId] = element;
         } 
         
-    
         protected isCurrentState(state: LevelStageState): boolean {
             return this._game.levelStageState === state;
         }

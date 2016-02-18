@@ -306,7 +306,8 @@ module Sort {
                 && step.newPosition === action.position;
         }
         
-        protected onCorrectAction(): void {
+        protected onCorrectAction(isUser:boolean): void {
+            super.onCorrectAction(isUser);
             var step: Step = this.getCurrentStep();
             this._boxLine.applyAction(new SortAction(step.stepNumber, step.newPosition));
         }
@@ -354,7 +355,8 @@ module Sort {
                 && step.newPosition === action.position;
         }
         
-        protected onCorrectAction(): void {
+        protected onCorrectAction(isUser:boolean): void {
+            super.onCorrectAction(isUser);
             var step: Step = this.getCurrentStep();
             this._boxLine.applyAction(new SortAction(step.stepNumber, step.newPosition));
         }

@@ -1857,7 +1857,16 @@
 				(concatenate ? formattedMessage.join(" ") : formattedMessage);
 		};
 		
-       _LTracker.push(getFormattedMessage(true));
+		var formattedMessage = getFormattedMessage(true);
+		
+		var logFields = formattedMessage.split("|");
+		var logMessage = {
+			level: logFields[0],
+			stageName: logFields[1],
+			eventId: logFields[2]
+		}
+		
+       _LTracker.push(logMessage);
 	};
 
 	LoggyAppender.prototype.group = function(name) {

@@ -3,7 +3,8 @@ var globalConfig = {
         binarySearch: {
             practise: {
                 stageName: "binarySearchPractise",
-                stepsToPass: 30,
+                // stepsToPass: 30,
+                stepsToPass: 1,
                 stepTime: 5000,
                 menu: {
                     MenuButtonMenu: "menu",
@@ -21,7 +22,7 @@ var globalConfig = {
             },
             exam: {
                 stageName: "binarySearchExam",
-                stepsToPass: 5,
+                stepsToPass: 2,
                 stepTime: 3000,
                 menu: {
                     MenuButtonMenu: "menu",
@@ -97,7 +98,7 @@ var globalConfig = {
             exam: {
                 stageName: "selectionSortExam",
                 stepsToPass: 6,
-                stepTime: 3000,
+                stepTime: 5000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "https://matse-hamburg.wikispaces.com/Selectionsort",

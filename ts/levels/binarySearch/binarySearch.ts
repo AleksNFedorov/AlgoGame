@@ -180,7 +180,8 @@ module BinarySearch {
             return action.index === step.elementIndex;
         }
         
-        protected onCorrectAction(): void {
+        protected onCorrectAction(isUser:boolean): void {
+            super.onCorrectAction(isUser);
             var step: BinarySearchStep = this.getCurrentStep();
             this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
             this._boxLine.selectBox(step.elementIndex, Common.BoxState.SELECTED_GREEN);
@@ -224,7 +225,8 @@ module BinarySearch {
             return action.index === step.elementIndex;
         }
         
-        protected onCorrectAction(): void {
+        protected onCorrectAction(isUser:boolean): void {
+            super.onCorrectAction(isUser);
             var step: BinarySearchStep = this.getCurrentStep();
             this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
             this._boxLine.selectBox(step.elementIndex, Common.BoxState.SELECTED_GREEN);
