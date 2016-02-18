@@ -36,11 +36,44 @@ module Sort {
         protected createAlgorithm(config: any): InsertionSortAlgorithm {
             return new InsertionSortAlgorithm(config);
         }
+        
+        protected onNewStep(): void {
+            super.onNewStep();
+            var step: Step = <Step>this._algorithmStep;
+            
+            this._boxLine.clearFlags();
+            
+            var flags: Common.FlagLocationInfo[] = [];
+            flags.push(new Common.FlagLocationInfo(
+                step.stepNumber, 
+                Common.FlagPosition.CENTER,
+                Common.FlagLevel.BOTTOM
+                ));
+               
+            this._boxLine.showFlags(flags);
+        }         
     }
     
     export class InsertionSortExamGamePlay extends ShiftSortExamGamePlay<InsertionSortAlgorithm> {
         protected createAlgorithm(config: any): InsertionSortAlgorithm {
             return new InsertionSortAlgorithm(config);
         }
+
+        protected onNewStep(): void {
+            super.onNewStep();
+            var step: Step = <Step>this._algorithmStep;
+            
+            this._boxLine.clearFlags();
+            
+            var flags: Common.FlagLocationInfo[] = [];
+            flags.push(new Common.FlagLocationInfo(
+                step.stepNumber, 
+                Common.FlagPosition.CENTER,
+                Common.FlagLevel.BOTTOM
+                ));
+               
+            this._boxLine.showFlags(flags);
+        }         
+
     }
 }

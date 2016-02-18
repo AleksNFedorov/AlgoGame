@@ -145,10 +145,12 @@ module Common {
         constructor(game: AlgoGame) {
             super(game);
             var goPractiseButton = this._menuButtons[GameElements.MenuButtonPractise];
-            goPractiseButton.deactivate();
-
             var goExamButton = this._menuButtons[GameElements.MenuButtonExam];
-            goExamButton.deactivate();
+            
+            goPractiseButton.deactivate();
+            if (!game.currentState.levelSave.practisePassed) {
+                goExamButton.deactivate();
+            }
         }
         
         protected initEventListners(): void {

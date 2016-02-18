@@ -101,7 +101,7 @@ var Dictionary = {
     },
     debthFirst: {
         short: "Depth-first",
-        full: "Depth-frist search"
+        full: "Depth-first search"
     },
     djikstra: {
         short: "Djikstra",

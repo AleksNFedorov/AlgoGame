@@ -38,6 +38,23 @@ module Sort {
         protected createAlgorithm(config: any): SelectionSortAlgorithm {
             return new SelectionSortAlgorithm(config);
         }
+        
+        protected onNewStep(): void {
+            super.onNewStep();
+            var step: Step = <Step>this._algorithmStep;
+            
+            this._boxLine.clearFlags();
+            
+            var flags: Common.FlagLocationInfo[] = [];
+            flags.push(new Common.FlagLocationInfo(
+                step.stepNumber, 
+                Common.FlagPosition.CENTER,
+                Common.FlagLevel.BOTTOM
+                ));
+               
+            this._boxLine.showFlags(flags);
+        }         
+        
     }
     
     export class SelectionSortExamGamePlay extends SwapSortExamGamePlay<SelectionSortAlgorithm> {

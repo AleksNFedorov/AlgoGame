@@ -110,12 +110,12 @@ module Sort {
             this.swapBoxes(fromBoxIndex, toBoxIndex);
 
             var fromBoxMoveUp: Phaser.Tween = this._game.add.tween(fromBox).to({y: fromBox.y - 60}, 300, "Quart.easeOut");
-            var fromBoxMoveTo: Phaser.Tween = this._game.add.tween(fromBox).to({y: toBox.y, x: toBox.x}, 300, "Quart.easeOut");
+            var fromBoxMoveTo: Phaser.Tween = this._game.add.tween(fromBox).to({y: toBox.y, x: toBox.x}, 500, "Quart.easeOut");
             
             fromBoxMoveUp.chain(fromBoxMoveTo);
 
             var toBoxMoveUp: Phaser.Tween = this._game.add.tween(toBox).to({y: toBox.y - 60}, 300, "Quart.easeOut");
-            var toBoxMoveFrom: Phaser.Tween = this._game.add.tween(toBox).to({y: fromBox.y, x: fromBox.x}, 300, "Quart.easeOut");
+            var toBoxMoveFrom: Phaser.Tween = this._game.add.tween(toBox).to({y: fromBox.y, x: fromBox.x}, 500, "Quart.easeOut");
             
             toBoxMoveUp.chain(toBoxMoveFrom);
             
@@ -192,8 +192,8 @@ module Sort {
             var newPosition: number = action.position;
             
             var targetBox: Common.BoxContainer = this._boxes[targetElementIndex];
-            var moveUp: Phaser.Tween = this._game.add.tween(targetBox).to({y: targetBox.y - 60}, 70, "Quart.easeOut");
-            var moveDown: Phaser.Tween = this._game.add.tween(targetBox).to({y: targetBox.y}, 70, "Quart.easeOut");
+            var moveUp: Phaser.Tween = this._game.add.tween(targetBox).to({y: targetBox.y - 60}, 90, "Quart.easeOut");
+            var moveDown: Phaser.Tween = this._game.add.tween(targetBox).to({y: targetBox.y}, 90, "Quart.easeOut");
             
             var headTween: Phaser.Tween = moveUp;
             var shiftedBox: Common.BoxContainer = targetBox;
@@ -205,7 +205,7 @@ module Sort {
                     
                     this.moveBox(shiftingBox, i-1);
                     
-                    this._game.add.tween(shiftingBox).to({x: shiftedBox.x}, 100, "Quart.easeOut").start();
+                    this._game.add.tween(shiftingBox).to({x: shiftedBox.x}, 120, "Quart.easeOut").start();
                     shiftedBox = shiftingBox;
                     
                 }
@@ -219,14 +219,14 @@ module Sort {
                     
                     this.moveBox(shiftingBox, i+1);
                     
-                    this._game.add.tween(shiftingBox).to({x: shiftedBox.x}, 100, "Quart.easeOut").start();
+                    this._game.add.tween(shiftingBox).to({x: shiftedBox.x}, 120, "Quart.easeOut").start();
                     shiftedBox = shiftingBox;
                     
                 }
                 this.moveBox(targetBox, newPosition);
             }
             
-           var moveHorizontal: Phaser.Tween = this._game.add.tween(targetBox).to({x: shiftedBox.x}, 300, "Quart.easeOut");
+           var moveHorizontal: Phaser.Tween = this._game.add.tween(targetBox).to({x: shiftedBox.x}, 500, "Quart.easeOut");
            headTween.chain(moveHorizontal);
            moveHorizontal.chain(moveDown);
             

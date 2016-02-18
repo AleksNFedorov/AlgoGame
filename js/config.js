@@ -4,7 +4,7 @@ var globalConfig = {
             practise: {
                 stageName: "binarySearchPractise",
                 stepsToPass: 30,
-                stepTime: 4000,
+                stepTime: 5000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://wiki.roblox.com/index.php?title=Binary_search",
@@ -41,7 +41,7 @@ var globalConfig = {
             practise: {
                 stageName: "insertionSortPractise",
                 stepsToPass: 40,
-                stepTime: 4000,
+                stepTime: 6000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://jackson-.github.io/2014/10/07/Sowhatexactlyisinsertionsort.html",
@@ -51,25 +51,25 @@ var globalConfig = {
                 gamePlay: {
                     minSeqNumber: 1,
                     maxSeqNumber: 50,
-                    minElementsInSeq: 10,
-                    maxElementsInSeq: 16,
+                    minElementsInSeq: 7,
+                    maxElementsInSeq: 12,
                     sorted: false
                 }
             },
             exam: {
                 stageName: "insertionSortExam",
                 stepsToPass: 5,
-                stepTime: 3000,
+                stepTime: 4000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://jackson-.github.io/2014/10/07/Sowhatexactlyisinsertionsort.html",
                     MenuButtonPractise: "insertionSortPractise",
                 },
                 gamePlay: {
-                    minSeqNumber: 100,
-                    maxSeqNumber: 1000,
+                    minSeqNumber: 1,
+                    maxSeqNumber: 30,
                     minElementsInSeq: 6,
-                    maxElementsInSeq: 14,
+                    maxElementsInSeq: 12,
                     sorted: false
                 }
             }
@@ -79,7 +79,7 @@ var globalConfig = {
             practise: {
                 stageName: "selectionSortPractise",
                 stepsToPass: 40,
-                stepTime: 4000,
+                stepTime: 6000,
                 menu: {
                     MenuButtonMenu: "menu",
                     MenuButtonDescription: "https://matse-hamburg.wikispaces.com/Selectionsort",
@@ -88,9 +88,9 @@ var globalConfig = {
                 },
                 gamePlay: {
                     minSeqNumber: 1,
-                    maxSeqNumber: 30,
-                    minElementsInSeq: 10,
-                    maxElementsInSeq: 16,
+                    maxSeqNumber: 10,
+                    minElementsInSeq: 7,
+                    maxElementsInSeq: 12,
                     sorted: false
                 }
             },
@@ -105,9 +105,9 @@ var globalConfig = {
                 },
                 gamePlay: {
                     minSeqNumber: 1,
-                    maxSeqNumber: 20,
-                    minElementsInSeq: 10,
-                    maxElementsInSeq: 16,
+                    maxSeqNumber: 10,
+                    minElementsInSeq: 6,
+                    maxElementsInSeq: 14,
                     sorted: false
                 }
             }
