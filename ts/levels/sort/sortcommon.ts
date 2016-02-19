@@ -278,6 +278,7 @@ module Sort {
         protected _boxLine: AbstractSortingBoxLine;
         
         protected onInit(): void {
+            super.onInit();
             this._boxLine = this.createBoxLine();
         }
         
@@ -329,6 +330,7 @@ module Sort {
         protected _boxLine: AbstractSortingBoxLine;
         
         protected onInit(): void {
+            super.onInit();
             this._boxLine = this.createBoxLine();
         }
         

@@ -327,7 +327,7 @@ module Common {
         protected _menu: Menu;
         protected _controlPanel: GameComponentContainer;
         protected _progressPanel: GameComponentContainer;
-        protected _gamePlay: CoreGamePlay<GamePlayAction, AbstractAlgorithm>;
+        protected _gamePlay: CoreGamePlay<GamePlayAction, Algorithm>;
 
         public shutdown(): void {
             super.shutdown();
@@ -380,7 +380,7 @@ module Common {
             this._background.drawLine(350, 600, 350, this.algoGame.height);
         }
         
-        protected buildGamePlay(): CoreGamePlay<Common.GamePlayAction, Common.AbstractAlgorithm> {
+        protected buildGamePlay(): CoreGamePlay<Common.GamePlayAction, Common.Algorithm> {
             throw "Game play not initizliaed";
         }
         

@@ -51,6 +51,16 @@ module BinarySearch {
         }
         
     }
+    
+    export class BinarySearchAlgorithmSettings extends Common.AlgorithmSettings {
+        constructor(
+            public sequence: any[],
+            public steps: Common.AlgorithmStep[],
+            public elementToFindIndex: number
+            ) {
+                super(sequence, steps);
+            };
+    }
 
     class BinarySearchAlgorithm extends Common.Algorithm {
         
@@ -59,6 +69,11 @@ module BinarySearch {
         
         constructor(config: any) {
             super(config);
+        }
+        
+        public restore(settings: BinarySearchAlgorithmSettings): void {
+            super.restore(settings);
+            this._elementToFindIndex = settings.elementToFindIndex;
         }
         
         protected runAlgorithm(): BinarySearchStep[] {
@@ -157,30 +172,35 @@ module BinarySearch {
         }
     }
     
-    export class BinarySearchTutorialGamePlay extends Common.TutorialGamePlay<BinarySearchAction> {
+    export class BinarySearchTutorialGamePlay extends Common.TutorialGamePlay<BinarySearchAction, BinarySearchAlgorithm> {
         
         protected _boxLine: BoxLine;
-        private _currentScenario: any;
+        
+        private _tutorialIteration: number;
+        
+        constructor(game: Common.AlgoGame) {
+            this._tutorialIteration = 0;
+            super(game);
+        }
         
         protected onInit(): void {
+            // no need to call 
+            // super.onInit();
             this._boxLine = new BoxLine(this._game,     
                 this.boxClicked.bind(this), 
                 this._algorithm.sequence, 
-                this._currentScenario.elementToFindIndex);
+                this._algorithm.elementToFindIndex);
         }
         
-        protected createAlgorithm(config: any): Common.ScenarioAlgorithm {
-            this._currentScenario = binarySearchScenarios.scenarios[0];
-            return new Common.ScenarioAlgorithm (
-                this._currentScenario.sequence,
-                this._currentScenario.steps
-                );
+        protected createAlgorithm(config: any): BinarySearchAlgorithm {
+            this._tutorialIteration += 1;
+            var scenarioIndex = this._tutorialIteration % binarySearchScenarios.scenarios.length;
+            var settings: BinarySearchAlgorithmSettings = <BinarySearchAlgorithmSettings> binarySearchScenarios.scenarios[scenarioIndex];
+            var algorithm: BinarySearchAlgorithm = new BinarySearchAlgorithm(config);
+            algorithm.restore(settings);
+            return algorithm;
         }
         
-        protected clickBox() {
-            this.boxClicked(new BinarySearchAction(this.getCurrentStep().elementIndex), false);
-        }
-
         protected isCorrectStep(action: BinarySearchAction): boolean {
             var step: BinarySearchStep = this.getCurrentStep();
             return action.index === step.elementIndex;
@@ -189,9 +209,14 @@ module BinarySearch {
         protected onCorrectAction(isUser:boolean): void {
             super.onCorrectAction(isUser);
             var step: BinarySearchStep = this.getCurrentStep();
-            this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
             this._boxLine.selectBox(step.elementIndex, Common.BoxState.SELECTED_GREEN);
         }
+        
+        protected onNewStep(): void {
+            super.onNewStep();
+            var step: BinarySearchStep = this.getCurrentStep();
+            this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
+        };
         
         protected destroyTempObjects():void {
             super.destroyTempObjects();
@@ -210,6 +235,7 @@ module BinarySearch {
         protected _boxLine: BoxLine;
         
         protected onInit(): void {
+            super.onInit();
             this._boxLine = new BoxLine(this._game,     
                 this.boxClicked.bind(this), 
                 this._algorithm.sequence, 
@@ -232,9 +258,14 @@ module BinarySearch {
         protected onCorrectAction(isUser:boolean): void {
             super.onCorrectAction(isUser);
             var step: BinarySearchStep = this.getCurrentStep();
-            this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
             this._boxLine.selectBox(step.elementIndex, Common.BoxState.SELECTED_GREEN);
         }
+        
+        protected onNewStep(): void {
+            super.onNewStep();
+            var step: BinarySearchStep = this.getCurrentStep();
+            this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
+        };
         
         protected destroyTempObjects():void {
             super.destroyTempObjects();
@@ -253,6 +284,7 @@ module BinarySearch {
         protected _boxLine: BoxLine;
         
         protected onInit(): void {
+            super.onInit();
             this._boxLine = new BoxLine(this._game,     
                 this.boxClicked.bind(this), 
                 this._algorithm.sequence, 
@@ -276,9 +308,14 @@ module BinarySearch {
         protected onCorrectAction(isUser:boolean): void {
             super.onCorrectAction(isUser);
             var step: BinarySearchStep = this.getCurrentStep();
-            this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
             this._boxLine.selectBox(step.elementIndex, Common.BoxState.SELECTED_GREEN);
         }
+        
+        protected onNewStep(): void {
+            super.onNewStep();
+            var step: BinarySearchStep = this.getCurrentStep();
+            this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
+        };
         
         protected destroyTempObjects():void {
             super.destroyTempObjects();

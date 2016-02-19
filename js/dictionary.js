@@ -118,4 +118,12 @@ var Dictionary = {
         "Algorithms are the stepping stone to your success!",
         "Master the algorithm and become a developing master!"
     ],
+    
+    //Scenario messages (Direct)
+      message1: "Message 1",
+      message2: "Message 2",
+      message3: "Message 3",
+      message4: "Message 4",
+      message5: "Message 5",
+      message6: "Message 6",
 };

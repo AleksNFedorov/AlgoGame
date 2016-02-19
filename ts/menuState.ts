@@ -110,7 +110,7 @@ class LevelMenuState extends Common.State {
 //
 class BinarySearchTutorial extends Common.TutorialState {
     
-    protected buildGamePlay(): Common.TutorialGamePlay<Common.GamePlayAction> {
+    protected buildGamePlay(): Common.TutorialGamePlay<Common.GamePlayAction, Common.Algorithm> {
         return new BinarySearch.BinarySearchTutorialGamePlay(this.algoGame);
     }
 }

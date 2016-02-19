@@ -10,18 +10,9 @@ module Common {
     
     // Abstract algorithm step, represents single step of given algorithm.
     // Particular algorithm should use it of extend.
-    
-    
-    export interface IAlgorithmStep {
+    export class AlgorithmStep {
         
-        isLast: boolean;
-        stepNumber: number;
-        
-        setIsLast(): void;
-    }
-    
-    export class AlgorithmStep implements IAlgorithmStep {
-        
+        messageKeys: string[] = [];
         isLast: boolean;
         stepNumber: number;
 
@@ -36,68 +27,44 @@ module Common {
         
     }
     
-    export class ScenarioStep implements IAlgorithmStep {
-        
-        public realStep: IAlgorithmStep;
-        public messageKeys: string[];
-        
-        public setIsLast(): void {
-            this.realStep.isLast = true;
-        }
-        
-        public get isLast(): boolean {
-            return this.realStep.isLast;
-        }
-        
-        public get stepNumber(): number {
-            return this.realStep.stepNumber;
-        }
+    export class AlgorithmSettings {
+        constructor(
+            public sequence: any[],
+            public steps: AlgorithmStep[]
+            ) {};
     }
-    
-    export class AbstractAlgorithm {
-        
-        protected _sequence: any[];
-        protected _steps: IAlgorithmStep[] = [];
-        private _lastRequestedStepNumber: number = -1;
-        
-        protected init(steps: IAlgorithmStep[], sequence: any[]) {
-            this._steps = steps;
-            this._sequence = sequence;
-        }
-        
-        public getNextStep(): IAlgorithmStep {
-            this._lastRequestedStepNumber = Math.min(this._lastRequestedStepNumber + 1, this._steps.length - 1);
-            return this._steps[this._lastRequestedStepNumber];
-        }
-        
-        public get sequence(): any[] {
-            return this._sequence;
-        }
-    }
-    
-    export class ScenarioAlgorithm extends AbstractAlgorithm {
-        
-        constructor(steps: ScenarioStep[], sequence: any[]) {
-            super();
-            this._steps = steps;
-            this._sequence = sequence;
-        }
-    }
-    
-    export class Algorithm extends AbstractAlgorithm {
+
+    export class Algorithm {
         
         protected config: any;
+
+        protected _sequence: any[];
+        protected _steps: AlgorithmStep[] = [];
+        
+        private _lastRequestedStepNumber: number = -1;
         
         constructor(config: any) {
-            super();
             this.config = config;
-            this._sequence = this.generateSeqeunce(config);
+        }
+        
+        public init(): void {
+            this._sequence = this.generateSeqeunce(this.config);
             this._steps = this.runAlgorithm();
             this.updateLastStep();
         }
         
-        protected runAlgorithm(): IAlgorithmStep[] {
+        public restore(settings: AlgorithmSettings): void {
+            this._sequence = settings.sequence;
+            this._steps = settings.steps;
+        }
+        
+        protected runAlgorithm(): AlgorithmStep[] {
             return [];   
+        }
+        
+        public getNextStep(): AlgorithmStep {
+            this._lastRequestedStepNumber = Math.min(this._lastRequestedStepNumber + 1, this._steps.length - 1);
+            return this._steps[this._lastRequestedStepNumber];
         }
         
         private updateLastStep(): void {
@@ -133,6 +100,10 @@ module Common {
             return Math.floor(Math.random() * (to - from) + from);
         }
         
+        public get sequence(): any[] {
+            return this._sequence;
+        }
+
     }   
     
     // contains location info for given flag, used to show on game arena as helpers
@@ -404,10 +375,10 @@ module Common {
         
     }
     
-    export class CoreGamePlay<T extends GamePlayAction, A extends AbstractAlgorithm> extends Common.GameComponentContainer {
+    export class CoreGamePlay<T extends GamePlayAction, A extends Algorithm> extends Common.GameComponentContainer {
 
         protected _algorithm: A;
-        protected _algorithmStep: IAlgorithmStep;
+        protected _algorithmStep: AlgorithmStep;
         
         constructor(game: Common.AlgoGame) {
             super(game);
@@ -515,6 +486,13 @@ module Common {
         
         protected onNewStep(): void {
             this._algorithmStep = this._algorithm.getNextStep();
+            for(var messageKey of this._algorithmStep.messageKeys) {
+                this._game.dispatch(
+                    Events.GAME_SHOW_MESSAGE,
+                    this,
+                    messageKey
+                );
+            }
         };
         
         protected onCorrectAction(isUser: boolean): void {
@@ -579,21 +557,16 @@ module Common {
         }
     }
     
-    export class TutorialGamePlay<T extends GamePlayAction> extends CoreGamePlay<T, ScenarioAlgorithm> {
+    export class TutorialGamePlay<T extends GamePlayAction, A extends Algorithm> extends CoreGamePlay<T, A> {
         
-        protected onNewStep(): void {
-            super.onNewStep();
-            var scenarioStep: ScenarioStep = <ScenarioStep>this._algorithmStep;
-            for(var messageKey of scenarioStep.messageKeys) {
-                this._game.dispatch(
-                    Events.GAME_SHOW_MESSAGE,
-                    messageKey,
-                    this
-                );
-            }
-            this._algorithmStep = scenarioStep.realStep;
-        };
+        constructor(game: Common.AlgoGame) {
+            super(game);
+        }
         
+        protected onWrongStep(isUser: boolean = true): void {
+            this._game.dispatch(Events.GAME_BLINK_MESSAGE, this);
+        }
+
         protected getStagePassEvent(): string {
             return Events.GAME_TUTORIAL_DONE;
         }
@@ -615,7 +588,7 @@ module Common {
         }
     }
     
-    export class PractiseGamePlay<T extends GamePlayAction, A extends AbstractAlgorithm> extends CoreGamePlay<T, A> {
+    export class PractiseGamePlay<T extends GamePlayAction, A extends Algorithm> extends CoreGamePlay<T, A> {
 
         protected _gameStepTimer: Phaser.Timer;
         protected _stepPerformed: boolean = false;
@@ -676,6 +649,11 @@ module Common {
             return true;
         }
         
+        protected onInit(): void {
+            this._algorithm.init();
+        }
+
+        
         protected onNewStep(): void {
             super.onNewStep();
             this.addTimerEvents();
@@ -732,7 +710,7 @@ module Common {
         }
     }
     
-    export class ExamGamePlay<T extends GamePlayAction, A extends AbstractAlgorithm> extends PractiseGamePlay<T, A> {
+    export class ExamGamePlay<T extends GamePlayAction, A extends Algorithm> extends PractiseGamePlay<T, A> {
         
         constructor(game: Common.AlgoGame) {
             super(game);

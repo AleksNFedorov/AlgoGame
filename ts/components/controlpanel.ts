@@ -48,6 +48,10 @@ module Common {
             return messageText;
         }
         
+        public blinkMessage(): void {
+            this.game.add.tween(this._icon).to({alpha: 0.3}, 100, "Quart.easeOut", true, 0, 7, true);
+        }
+        
         public displayMessage(): void {
             this.game.add.tween(this).to({alpha: 1}, 200, "Quart.easeOut").start();
         }
@@ -60,6 +64,7 @@ module Common {
         
         protected _panelGroup: Phaser.Group;
         protected _messages: GameMessage[] = [];
+        private _eventsToIgnore: Phaser.ArraySet = new Phaser.ArraySet([]);
 
         constructor(game: AlgoGame) {
             super(game);
@@ -77,6 +82,14 @@ module Common {
             this._panelGroup.add(infoPosition)                
             
             this.addGameElement(Common.GameElements.ControlPanelText, infoPosition);
+            
+            for(var ignoreEvent of this.getEventsToIgnore()) {
+                this._eventsToIgnore.add(ignoreEvent);
+            }
+        }
+        
+        protected getEventsToIgnore(): string[] {
+            return [];
         }
         
         protected createElements(): void {
@@ -92,7 +105,14 @@ module Common {
         
         dispatchEvent(event: any, param1: any) {
             super.dispatchEvent(event, param1);
+            if (this._eventsToIgnore.exists(event.type)) {
+                console.log(`Skipping message diplaying [${event.type}]`);
+                return;
+            }
             switch(event.type) {
+                case Events.GAME_BLINK_MESSAGE:
+                    this._messages[0].blinkMessage();
+                    break;
                 case Events.GAME_SHOW_MESSAGE:
                     this.setDirectMessage(param1);
                     break;
@@ -255,6 +275,10 @@ module Common {
             super(game);  
         }
         
+        protected getEventsToIgnore(): string[] {
+            return [Events.GAME_STARTED];
+        }
+        
        createElements():void {
             super.createElements();
             
@@ -277,11 +301,9 @@ module Common {
             super.dispatchEvent(event, param1);
             switch(event.type) {
                 case Events.CONTROL_PANEL_EVENT_PLAY:
-                    this._playButton.alpha = 0;
                     this._playButton.deactivate();
                     break;
                 case Events.GAME_END:
-                    this._playButton.alpha = 1;
                     this._playButton.activate();
                     break;
             }
@@ -296,6 +318,10 @@ module Common {
         
         constructor(game: AlgoGame) {
             super(game);  
+        }
+        
+        protected getEventsToIgnore(): string[] {
+            return [];
         }
         
        createElements():void {
@@ -360,6 +386,7 @@ module Common {
             super.dispatchEvent(event, param1);
             switch(event.type) {
                 case Events.CONTROL_PANEL_EVENT_PLAY:
+                    this._playButton.alpha = 0;
                     this._pauseButton.alpha = 1;
                     this._pauseButton.activate();
                     break;

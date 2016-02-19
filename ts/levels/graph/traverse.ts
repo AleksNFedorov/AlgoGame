@@ -35,6 +35,7 @@ module Graph {
         protected _graphUI: GraphUI;
         
         protected onInit(): void {
+            super.onInit();
             this._graphUI = new GraphUI(this._game,     
                 this._algorithm.sequence,
                 this.boxClicked.bind(this),
@@ -81,6 +82,7 @@ module Graph {
          protected _graphUI: GraphUI;
         
         protected onInit(): void {
+            super.onInit();
             this._graphUI = new GraphUI(this._game,     
                 this._algorithm.sequence,
                 this.boxClicked.bind(this),

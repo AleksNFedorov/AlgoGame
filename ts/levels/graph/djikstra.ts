@@ -242,6 +242,7 @@ module Graph {
         protected _graphUI: DjikstraGraphUI;
         
         protected onInit(): void {
+            super.onInit();
             this._graphUI = new DjikstraGraphUI(this._game,     
                 this._algorithm.sequence,
                 this.clickNode.bind(this),
@@ -326,6 +327,7 @@ module Graph {
        protected _graphUI: DjikstraGraphUI;
         
         protected onInit(): void {
+            super.onInit();
             this._graphUI = new DjikstraGraphUI(this._game,     
                 this._algorithm.sequence,
                 this.clickNode.bind(this),
