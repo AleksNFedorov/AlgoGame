@@ -75,7 +75,7 @@ var globalConfig = {
             }
         },
         selectionSort: {
-            dependsOn:"insertionSort",
+            // dependsOn:"insertionSort",
             practise: {
                 stageName: "selectionSortPractise",
                 stepsToPass: 40,
@@ -113,7 +113,7 @@ var globalConfig = {
             }
         },
         mergeSort: {
-            dependsOn:"selectionSort",
+            // dependsOn:"selectionSort",
             practise: {
                 stageName: "mergeSortPractise",
                 stepsToPass: 50,
@@ -151,7 +151,7 @@ var globalConfig = {
             }
         },
         quickSort: {
-            dependsOn: "mergeSort",
+            // dependsOn: "mergeSort",
             practise: {
                 stageName: "quickSortPractise",
                 stepsToPass: 50,
@@ -227,7 +227,7 @@ var globalConfig = {
             }
         },
         djikstra: {
-            dependsOn: "debthFirst",
+            // dependsOn: "debthFirst",
             practise: {
                 stageName: "djikstraPractise",
                 stepsToPass: 50,

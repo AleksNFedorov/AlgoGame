@@ -110,7 +110,6 @@ module Graph {
         public get destinationNode(): GraphJS.Node {
             return this._destinationNode;
         }
-
     }
     
     class DjikstraGraphUI extends Graph.GraphUI {
@@ -304,7 +303,8 @@ module Graph {
                 && step.weight === action.weight;
         }
         
-        protected onCorrectAction(): void {
+        protected onCorrectAction(isUser:boolean): void {
+            super.onCorrectAction(isUser);
             var step: DjikstraStep = this.getCurrentStep();
             this._graphUI.updateNodeWeight(step);
         }
