@@ -5,43 +5,22 @@ declare var Dictionary: any;
 module StageInfo {
     
     enum Quarter {TOPLEFT = 0, TOPRIGHT = 1, BOTTOMLEFT = 2, BOTTOMRIGHT = 3}
-    enum LevelStageType {MENU = 0, PRACTISE = 1, EXAM = 2, UNKNOWN = 3}
+    enum LevelStageType {MENU, PRACTISE, EXAM, TUTORIAL, UNKNOWN}
     
     class Save {
         gameInfoSaves: {[stage: string]: number} = {}
-    }
-    
-    class ShowInfo {
-        
-        private _elementId: Common.GameElements;
-        private _eventToHide: string;
-
-        constructor(elementId: Common.GameElements, 
-            eventToHide?: string
-        ) {
-            this._elementId = elementId;
-            this._eventToHide = eventToHide;
-        }
-        
-        public get elementId(): Common.GameElements {
-            return this._elementId;
-        }
-        
-        public get eventToHide(): string {
-            return this._eventToHide;
-        }
     }
     
     export class InfoWidget extends Phaser.Group implements Common.InfoWidget {
         
         private _infoIcon: Phaser.Sprite;
         
-        private _infoToShow: ShowInfo;
+        private _infoToShow: Common.ShowInfo;
         
-        constructor(game: Common.AlgoGame, infoToShow: ShowInfo, closeCallback?: Function) {
+        constructor(game: Common.AlgoGame, infoToShow: Common.ShowInfo, closeCallback?: Function) {
             super(game);
             this._infoToShow = infoToShow;
-            var message = Dictionary[Common.GameElements[infoToShow.elementId]];
+            var message = Dictionary[infoToShow.messageKey];
             this.createWidgetUI(game, message, closeCallback);
         }
         
@@ -71,7 +50,7 @@ module StageInfo {
             game.world.bringToTop(this);
         }
         
-        public get showInfo(): ShowInfo {
+        public get showInfo(): Common.ShowInfo {
             return this._infoToShow;
         }
         
@@ -151,13 +130,13 @@ module StageInfo {
     
     export class Manager extends Common.GameEventComponent {
         
-        private _infoToShow: ShowInfo[];
+        private _infoToShow: Common.ShowInfo[];
         private _infoSave: Save;
         private _levelStageType: LevelStageType = LevelStageType.UNKNOWN;
         private _requestedShowWidget: InfoWidget;
         private _infoToShowIndex: number;
         
-        constructor(game: Common.AlgoGame, stageType: LevelStageType, infoToShow: ShowInfo[]) {
+        constructor(game: Common.AlgoGame, stageType: LevelStageType, infoToShow: Common.ShowInfo[]) {
             super(game);
             this._infoToShow = infoToShow;
             this._levelStageType = stageType;
@@ -171,7 +150,8 @@ module StageInfo {
         }
         
         initEventListners(): void {
-            super.addEventListener(Events.STAGE_INITIALIZED);
+            this.addEventListener(Events.STAGE_INITIALIZED);
+            this.addEventListener(Events.STAGE_CUSTOM_INFO_SHOW);
         }
         
         onInfoShowed(): void {
@@ -182,12 +162,13 @@ module StageInfo {
             this._infoSave.gameInfoSaves[this._levelStageType] = this._infoToShowIndex;
             this._game.store.set(Constants.GAME_SHOW_INFO_SAVE_ID, this._infoSave);
             this._requestedShowWidget.destroy();
-            this.sendShowInfoRequest();
+            infoToShow.hideCallback();
+            this.createAndSendShowInfoRequest();
         }
         
-        private sendShowInfoRequest(): void {
+        private createAndSendShowInfoRequest(): void {
             
-            var lastShowedElementId = this._infoSave.gameInfoSaves[this._levelStageType];
+            var lastShowedElementId = this._infoSave.gameInfoSaves[this._levelStageType] || 0;
             var elementToShow = lastShowedElementId + 1;
             if (elementToShow >= this._infoToShow.length) {
                 console.log("Last show info has been displayed");
@@ -197,23 +178,28 @@ module StageInfo {
             
             this._infoToShowIndex = elementToShow;
             
-            var newShowInfo: ShowInfo = this._infoToShow[elementToShow];
-            this._requestedShowWidget = new InfoWidget(this._game, newShowInfo, this.onInfoShowed.bind(this));
+            this.sendShowInfoRequest(this._infoToShow[elementToShow]);
+        }
+        
+        private sendShowInfoRequest(infoToShow: Common.ShowInfo): void {
+            this._requestedShowWidget = new InfoWidget(this._game, infoToShow, this.onInfoShowed.bind(this));
             
-            if (newShowInfo.eventToHide != null) {
-                super.addEventListener(newShowInfo.eventToHide);
+            if (infoToShow.eventToHide != null) {
+                super.addEventListener(infoToShow.eventToHide);
             }
             
             this._game.dispatch(Events.STAGE_INFO_SHOW, this, 
                 this._requestedShowWidget);
         }
         
-        
         dispatchEvent(event: any, param: any) {
             
             switch(event.type) {
+                case Events.STAGE_CUSTOM_INFO_SHOW:
+                    this.sendShowInfoRequest(param);
+                    break;
                 case Events.STAGE_INITIALIZED:
-                    this.sendShowInfoRequest();
+                    this.createAndSendShowInfoRequest();
                     break;
                 default:
                     if (this._requestedShowWidget != null 
@@ -232,24 +218,37 @@ module StageInfo {
         }
     }
     
+    export class TutorialManager extends Manager {
+        
+        constructor(game: Common.AlgoGame) {
+            super(game, LevelStageType.TUTORIAL,[]);
+        }
+    }
+
     export class PractiseManager extends Manager {
         
         constructor(game: Common.AlgoGame) {
             super(game, LevelStageType.PRACTISE,
                 [
-                    new ShowInfo(Common.GameElements.MenuButtonDescription),
-                    new ShowInfo(Common.GameElements.MenuButtonObjectives),
-                    new ShowInfo(Common.GameElements.ControlPanelText),
-                    new ShowInfo(Common.GameElements.ControlPanelButtonPlay,
+                    new Common.ShowInfo(Common.GameElements.MenuButtonDescription),
+                    new Common.ShowInfo(Common.GameElements.MenuButtonObjectives),
+                    new Common.ShowInfo(Common.GameElements.ControlPanelText),
+                    new Common.ShowInfo(Common.GameElements.ControlPanelButtonPlay,
                         Events.CONTROL_PANEL_EVENT_PLAY
                         ),
-                    new ShowInfo(Common.GameElements.ProgressBarStep),
-                    new ShowInfo(Common.GameElements.ProgressBarComplete),
-                    new ShowInfo(Common.GameElements.MenuButtonExam),
+                    new Common.ShowInfo(Common.GameElements.ProgressBarStep),
+                    new Common.ShowInfo(Common.GameElements.ProgressBarComplete),
+                    new Common.ShowInfo(Common.GameElements.MenuButtonExam),
                 ]
             );
         }
+    }
+    
+    export class ExamManager extends Manager {
         
+        constructor(game: Common.AlgoGame) {
+            super(game, LevelStageType.EXAM,[]);
+        }
     }
     
 }

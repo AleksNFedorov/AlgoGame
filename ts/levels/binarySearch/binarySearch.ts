@@ -176,10 +176,9 @@ module BinarySearch {
         
         protected _boxLine: BoxLine;
         
-        private _tutorialIteration: number;
+        private _tutorialIteration: number = -1;
         
         constructor(game: Common.AlgoGame) {
-            this._tutorialIteration = 0;
             super(game);
         }
         
@@ -259,13 +258,8 @@ module BinarySearch {
             super.onCorrectAction(isUser);
             var step: BinarySearchStep = this.getCurrentStep();
             this._boxLine.selectBox(step.elementIndex, Common.BoxState.SELECTED_GREEN);
-        }
-        
-        protected onNewStep(): void {
-            super.onNewStep();
-            var step: BinarySearchStep = this.getCurrentStep();
             this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
-        };
+        }
         
         protected destroyTempObjects():void {
             super.destroyTempObjects();
@@ -309,13 +303,8 @@ module BinarySearch {
             super.onCorrectAction(isUser);
             var step: BinarySearchStep = this.getCurrentStep();
             this._boxLine.selectBox(step.elementIndex, Common.BoxState.SELECTED_GREEN);
-        }
-        
-        protected onNewStep(): void {
-            super.onNewStep();
-            var step: BinarySearchStep = this.getCurrentStep();
             this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
-        };
+        }
         
         protected destroyTempObjects():void {
             super.destroyTempObjects();

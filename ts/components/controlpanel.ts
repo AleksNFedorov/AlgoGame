@@ -10,6 +10,8 @@ module Common {
         private _icon: Phaser.Sprite;
         private _game: AlgoGame;
         
+        private _currentTween: Phaser.Tween;
+        
         constructor(game: AlgoGame, text: string, messageType: MessageType) {
             super(game);
             this._game = game;
@@ -49,7 +51,13 @@ module Common {
         }
         
         public blinkMessage(): void {
-            this.game.add.tween(this._icon).to({alpha: 0.3}, 100, "Quart.easeOut", true, 0, 7, true);
+            if (this._currentTween != null) {
+                this._currentTween.stop();
+            }
+            
+            this._icon.alpha = 1;
+            this._currentTween = this.game.add.tween(this._icon).to({alpha: 0.3}, 100, "Quart.easeOut", false, 0, 7, true);
+            this._currentTween.start();
         }
         
         public displayMessage(): void {
@@ -58,6 +66,7 @@ module Common {
         
         saveStateAndDisable(): void {};
         restoreState(): void {};
+        
     }
    
     class InfoTextPanel extends GameComponentContainer {
@@ -238,7 +247,8 @@ module Common {
                     console.log("Game END event received");
                     if (this._autoStartEnabled) {
                         this._autoStartTimer.repeat(
-                            Constants.GAME_AUTOSTART_INTERVAL, 0, 
+                            this.getAutostartInterval(), 
+                            0, 
                             this.getCallbackForEventId(Events.CONTROL_PANEL_EVENT_PLAY), 
                             this);
                     }
@@ -250,6 +260,10 @@ module Common {
                     this._autoStartTimer.resume();
                     break;
             }
+        }
+        
+        protected getAutostartInterval(): number {
+            return Constants.GAME_AUTOSTART_INTERVAL;
         }
         
         initEventListners(): void {
@@ -308,6 +322,11 @@ module Common {
                     break;
             }
         }
+        
+        protected getAutostartInterval(): number {
+            return 2000;
+        }
+        
     }
     
     export class PractisePanel extends TutorialPanel {
@@ -404,6 +423,11 @@ module Common {
                     break;
             }
         }
+        
+        protected getAutostartInterval(): number {
+            return Constants.GAME_AUTOSTART_INTERVAL;
+        }
+        
     }
 
     export class ExamPanel extends ControlPanel {

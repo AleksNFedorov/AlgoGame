@@ -328,7 +328,8 @@ module Common {
         protected _controlPanel: GameComponentContainer;
         protected _progressPanel: GameComponentContainer;
         protected _gamePlay: CoreGamePlay<GamePlayAction, Algorithm>;
-
+        protected _showHelperInfoManager: StageInfo.Manager;
+        
         public shutdown(): void {
             super.shutdown();
             this._background.destroy();
@@ -337,6 +338,7 @@ module Common {
             this._controlPanel.destroy();
             this._progressPanel.destroy();
             this._gamePlay.destroy();
+            this._showHelperInfoManager.destroy();
             this._menu = null;
             this.removeEventListener(Events.STAGE_INFO_ALL_INFO_SHOWED);
         }
@@ -353,28 +355,8 @@ module Common {
             this.onCreate();
         }
         
-        protected onCreate() {
-            super.onCreate();        
-        }
-        
-        protected initEventListners(): void {
-            super.initEventListners();
-            this.addEventListener(Events.STAGE_INFO_ALL_INFO_SHOWED);
-        }
-        
-        dispatchEvent(event: any, param1: any) {
-            super.dispatchEvent(event, param1);
-            switch(event.type) {
-                case Events.STAGE_INFO_ALL_INFO_SHOWED:
-                    if (this.levelSave.practiseDone == 0) {
-                        this._game.dispatch(Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES, this);
-                    }
-                    break;
-            }
-        }
-        
         private drawBackground(): void {
-            this._background.drawLine(0, 80, this.algoGame.width, 80);
+            this._background.drawLine(0, 90, this.algoGame.width, 90);
             this._background.drawLine(0, 600, this.algoGame.width, 600);
             
             this._background.drawLine(350, 600, 350, this.algoGame.height);
@@ -388,18 +370,19 @@ module Common {
             throw "Method not defined [getStageType]";
         }
 
-        protected initModalWindows(): void {
-        }
+        protected initModalWindows(): void {}
     }
     
     //State for Tutorial stages only
     export class TutorialState extends CorePlayState {
         
+        
         protected onCreate(): void {
-            this._menu = new Common.PractiseMenu(this.algoGame);
+            this._menu = new Common.TutorialMenu(this.algoGame);
             this._controlPanel = new Common.TutorialPanel(this.algoGame);
             this._progressPanel = new Common.TutorialProgressPanel(this.algoGame);
-            
+            this._showHelperInfoManager = new StageInfo.TutorialManager(this.algoGame);
+
             super.onCreate();        
         }
         
@@ -407,23 +390,24 @@ module Common {
             return "Tutorial";
         }
         
+        protected initModalWindows(): void {
+            this._modalWindow.registerWindow(
+                new GameModal.ModalConfig(
+                    Events.GAME_TUTORIAL_DONE, 
+                    "tutorialPassed.png", 
+                    Constants.GAME_EXAM_BANNERS_ATLAS, 
+                    4000));
+        }
     }
     
     //State for Practise stages only
     export class PractiseState extends CorePlayState {
         
-        private _practiseManager: StageInfo.PractiseManager;
-        
-        public shutdown(): void {
-            super.shutdown();
-            this._practiseManager.destroy();
-        }
-    
         protected onCreate(): void {
             this._menu = new Common.PractiseMenu(this.algoGame);
             this._controlPanel = new Common.PractisePanel(this.algoGame);
             this._progressPanel = new Common.ProgressPanel(this.algoGame);
-            this._practiseManager = new StageInfo.PractiseManager(this.algoGame);
+            this._showHelperInfoManager = new StageInfo.PractiseManager(this.algoGame);
             
             super.onCreate();        
         }
@@ -458,6 +442,7 @@ module Common {
             this._menu = new Common.ExamMenu(this.algoGame);
             this._controlPanel = new Common.ExamPanel(this.algoGame);
             this._progressPanel = new Common.ProgressPanel(this.algoGame);
+            this._showHelperInfoManager = new StageInfo.ExamManager(this.algoGame);
     
             super.onCreate();
         }

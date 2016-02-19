@@ -23,9 +23,21 @@ module Common {
             var text = Dictionary[this.stateConfig.level].full;
             var levelNameText = this._game.add.text(
                 this._game.width/2, 
-                15, 
+                7, 
                 text, Constants.MENU_HEADER_TEXT_STYLE, this._menuGroup);
             levelNameText.anchor.x = 0.5;            
+            
+            var stageNameTextValue = Dictionary["stageNames"][this.getStageName()]
+            var stageText = this._game.add.text(
+                this._game.width/2, 
+                levelNameText.y + levelNameText.height + 2, 
+                stageNameTextValue, 
+                Constants.GAME_AREA_INDEX_TEXT, this._menuGroup);
+            stageText.anchor.x = 0.5;            
+        }
+        
+        protected getStageName(): string {
+            throw "Method not implemented yet [getStageNameText]";
         }
         
         protected initEventListners(): void {
@@ -34,12 +46,13 @@ module Common {
             this.addEventListener(Events.MENU_EVENT_OPEN_ALGO_DESCR);
             this.addEventListener(Events.MENU_EVENT_GO_PRACTISE);
             this.addEventListener(Events.MENU_EVENT_GO_EXAM);
+            this.addEventListener(Events.MENU_EVENT_GO_TUTORIAL);
         }
         
         protected createButtons(): void {
             this.addButtonToMenu(Common.GameElements.MenuButtonMenu, Events.MENU_EVENT_GO_MENU, Constants.MENU_BUTTON_FRAMES , 50, 10);
             this.addButtonToMenu(Common.GameElements.MenuButtonDescription, Events.MENU_EVENT_OPEN_ALGO_DESCR, Constants.ALGO_DESCR_FRAMES, 110, 10);
-            this.addButtonToMenu(Common.GameElements.MenuButtonObjectives, Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES, Constants.LEVEL_OBJECTIVES_FRAMES, 170, 10);
+            this.addButtonToMenu(Common.GameElements.MenuButtonTutorial, Events.MENU_EVENT_GO_TUTORIAL, Constants.GO_TUTORIAL_FRAMES, 800, 10);
             this.addButtonToMenu(Common.GameElements.MenuButtonPractise, Events.MENU_EVENT_GO_PRACTISE, Constants.GO_PRACTISE_FRAMES, 870, 10);
             this.addButtonToMenu(Common.GameElements.MenuButtonExam, Events.MENU_EVENT_GO_EXAM, Constants.GO_EXAM_FRAMES, 940, 10);
             console.log("Button has been added");
@@ -69,28 +82,26 @@ module Common {
                     this.addLevelName();
                 break;
                 case Events.MENU_EVENT_GO_MENU:
-                    var elementIdName = GameElements[GameElements.MenuButtonMenu];
-                    this._game.state.start(this.stateConfig.menu[elementIdName]);
+                    this._game.state.start("menu");
                     break;
                 case Events.MENU_EVENT_OPEN_ALGO_DESCR:
                     var elementIdName = GameElements[GameElements.MenuButtonDescription];
                     window.open(this.stateConfig.menu[elementIdName], "_blank");
                     break;
+                case Events.MENU_EVENT_GO_TUTORIAL:
+                    this._game.state.start(this.stateConfig.level + "Tutorial");
+                    break;
                 case Events.MENU_EVENT_GO_PRACTISE:
-                    var elementIdName = GameElements[GameElements.MenuButtonPractise];
-                    this._game.state.start(this.stateConfig.menu[elementIdName]);
+                    this._game.state.start(this.stateConfig.level + "Practise");
                     break;
                 case Events.MENU_EVENT_GO_EXAM:
-                    var elementIdName = GameElements[GameElements.MenuButtonExam];
-                    this._game.state.start(this.stateConfig.menu[elementIdName]);
-                    break;
+                    this._game.state.start(this.stateConfig.level + "Exam");
                     break;
             }
         }
 
         
         destroy(): void {
-            
             console.log("Destroying buttons");
             
             super.destroy();
@@ -100,6 +111,43 @@ module Common {
         }
     }    
     
+    export class TutorialMenu extends Menu {
+        
+        constructor(game: AlgoGame) {
+            super(game);
+            var goPractiseButton = this._menuButtons[GameElements.MenuButtonPractise];
+            var goExamButton = this._menuButtons[GameElements.MenuButtonExam];
+            var goTutorialButton = this._menuButtons[GameElements.MenuButtonTutorial];
+            
+            goTutorialButton.deactivate();
+            if (!game.currentState.levelSave.tutorialPassed) {
+                goPractiseButton.deactivate();
+            }
+            if (!game.currentState.levelSave.practisePassed) {
+                goExamButton.deactivate();
+            }
+        }
+        
+        protected getStageName(): string {
+            return "tutorial";
+        }
+        
+        protected initEventListners(): void {
+            super.initEventListners();
+            this.addEventListener(Events.GAME_TUTORIAL_DONE);
+        }
+        
+        public dispatchEvent(event: any, param1: any): void {
+            super.dispatchEvent(event, param1);
+            switch(event.type) {
+                case Events.GAME_TUTORIAL_DONE:
+                    var goPractiseButton = this._menuButtons[GameElements.MenuButtonPractise];
+                    goPractiseButton.activate();
+                    break;
+            }
+        }
+    }
+
     export class PractiseMenu extends Menu {
         
         constructor(game: AlgoGame) {
@@ -111,6 +159,10 @@ module Common {
             if (!game.currentState.levelSave.practisePassed) {
                 goExamButton.deactivate();
             }
+        }
+        
+        protected getStageName(): string {
+            return "practise";
         }
         
         protected initEventListners(): void {
@@ -138,6 +190,9 @@ module Common {
             goExamButton.deactivate();
         }
         
+        protected getStageName(): string {
+            return "exam";
+        }
     }
     
 }

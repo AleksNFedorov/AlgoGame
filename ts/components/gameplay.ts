@@ -520,11 +520,15 @@ module Common {
         protected checkPractiseDone() {
             if (this.stateConfig.stepsToPass <= this.getStageDone() ) {
                 if (!this.getStagePassed()) {
-                    this.setStagePassed(true)
-                    this._game.dispatch(this.getStagePassEvent(), this, this.getStagePassed());
+                    this.onPractiseDone();
                 }
                 this.saveState();
             }
+        }
+        
+        protected onPractiseDone(): void {
+            this.setStagePassed(true)
+            this._game.dispatch(this.getStagePassEvent(), this, this.getStagePassed());
         }
         
         destroy(): void {
@@ -559,8 +563,57 @@ module Common {
     
     export class TutorialGamePlay<T extends GamePlayAction, A extends Algorithm> extends CoreGamePlay<T, A> {
         
+        protected _autoStartTimer: Phaser.Timer;
+        private _extraInfo: Common.ShowInfo;
+        
         constructor(game: Common.AlgoGame) {
             super(game);
+            this._autoStartTimer = game.time.create(false);
+            this._autoStartTimer.start();
+            
+            this._extraInfo = new ShowInfo(
+                Common.GameElements.ControlPanelText,
+                null,
+                Constants.EXTRA_HELP_MESSAGE_KEY,
+                this.addTimerEvents.bind(this)
+                );
+        }
+        
+        protected startGame(): void {
+            super.startGame();
+            this._game.dispatch(Events.GAME_BLINK_MESSAGE, this);
+            this.addTimerEvents();
+        }
+        
+        protected checkStepAllowed(isUser: boolean): boolean {
+            if (this.isNotCurrentState(Common.LevelStageState.RUNNING)) {
+                this._game.dispatch(Events.GAME_STEP_ON_PAUSE, this);
+                return false;
+            }
+            
+            return true;
+        }
+        
+        private addTimerEvents(): void {
+            this._autoStartTimer.removeAll();
+            this._autoStartTimer.repeat(
+                Constants.EXTRA_HELP_SHOW_INTERVAL,
+                0,
+                this.showExtraInfo,
+                this
+            );
+        }
+        
+        private showExtraInfo(): void {
+            this._game.dispatch(Events.STAGE_CUSTOM_INFO_SHOW, 
+            this, 
+            this._extraInfo);
+            this._game.dispatch(Events.GAME_BLINK_MESSAGE, this);
+        }
+        
+        protected onPractiseDone(): void {
+            this._autoStartTimer.stop();
+            super.onPractiseDone();
         }
         
         protected onWrongStep(isUser: boolean = true): void {
@@ -585,6 +638,11 @@ module Common {
         
         protected setStagePassed(passed: boolean): void {
             this.levelSave.tutorialPassed = passed;
+        }
+        
+        destroy(): void {
+            super.destroy();
+            this._autoStartTimer.destroy();
         }
     }
     

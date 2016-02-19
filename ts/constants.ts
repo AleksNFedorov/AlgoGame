@@ -16,7 +16,7 @@ class Constants {
     
     //Game Progress Bar
     static PROGRESS_BAR_POSITION_X = 0;
-    static PROGRESS_BAR_POSITION_Y = 100;
+    static PROGRESS_BAR_POSITION_Y = 110;
     
     //Game Progress Bar
     static CONTROL_PANEL_POSITION_X = 0;
@@ -47,6 +47,10 @@ class Constants {
     static BANNERS_ATTLAS = "banners";
     static BANNERS_AMOUNT = 1;
     static LEVEL_ASSETS_AMOUNT = 2;
+    
+    //Tutorial 
+    static EXTRA_HELP_SHOW_INTERVAL = 10000;
+    static EXTRA_HELP_MESSAGE_KEY = "tutorialExtraHelp";
     
     
     //Game area
@@ -197,6 +201,14 @@ class Constants {
     ];
 
     static LEVEL_OBJECTIVES_FRAMES = [
+        "Level-Objectives_Mouse-over.png",
+        "Level-Objectives_Enabled.png",
+        "Level-Objectives_Clicked.png",
+        "Level-Objectives_Enabled.png",
+        "Level-Objectives_disable.png"
+    ];
+
+    static GO_TUTORIAL_FRAMES = [
         "Level-Objectives_Mouse-over.png",
         "Level-Objectives_Enabled.png",
         "Level-Objectives_Clicked.png",

@@ -78,6 +78,15 @@ var Dictionary = {
     ProgressBarComplete: "Your rigth steps\nFill it to open exam",
     MenuButtonExam: "Test your skills\nin Exam mode",
     
+    //Tutorial extra help message
+    tutorialExtraHelp: "Pay attention",
+    
+    stageNames: {
+        tutorial: "(tutorial)",
+        practise: "(practise)",
+        exam: "(exam)",
+    },
+    
     //Menu buttons name
     binarySearch: {
         short: "Binary",

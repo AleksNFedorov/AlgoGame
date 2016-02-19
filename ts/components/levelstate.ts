@@ -8,6 +8,7 @@ module Common {
     class LevelButtonSettings {
         
         constructor(
+            public value: any,
             public overFrame: string,
             public outFrame: string, 
             public clickedFrame: string,
@@ -27,15 +28,13 @@ module Common {
         
         private _levelSave: LevelSave;
         private _levelName: string;
-        private _practiseToPass: number;
         
         public levelEnabled: boolean = false;
         public stateToStart: string;
         
-        constructor(levelName: string, levelSave: LevelSave, practiseToPass: number) {
+        constructor(levelName: string, levelSave: LevelSave) {
             this._levelSave = levelSave;
             this._levelName = levelName;
-            this._practiseToPass = practiseToPass;
         }
         
         public get levelName(): string {
@@ -50,12 +49,20 @@ module Common {
             return this._levelSave.practisePassed;
         }
 
+        public get examDone(): number {
+            return this._levelSave.examDone;
+        }
+
         public get examPassed(): boolean {
             return this._levelSave.examPassed;
         }
-        
-        public get practiseToPass(): number {
-            return this._practiseToPass;
+
+        public get tutorialDone(): number {
+            return this._levelSave.tutorialDone;
+        }
+
+        public get tutorialPassed(): boolean {
+            return this._levelSave.tutorialPassed;
         }
     }
     
@@ -66,7 +73,7 @@ module Common {
         private _button: Button;
         private _settings: LevelButtonSettings;
         
-        constructor(game: AlgoGame, name: string, stats: number, settings: LevelButtonSettings, clickCallback: Function) {
+        constructor(game: AlgoGame, name: string, settings: LevelButtonSettings, clickCallback: Function) {
             super(game);
 
             this._settings = settings;
@@ -88,7 +95,7 @@ module Common {
             this._statsText = this.game.add.text(
                 190,
                 32,
-                "" + stats, 
+                settings.value,
                 JSON.parse(JSON.stringify(Constants.MENU_LEVEL_STATS_TEXT_STYLE))
             );
             this._statsText.fill = this._settings.textOutColor;
@@ -155,7 +162,7 @@ module Common {
             var levelConfig: GameConfig.LevelConfig = this._game.config.levelConfigs[levelName];
             var levelPractiseConfig: GameConfig.StageConfig = levelConfig.practise;
 
-            var levelInfo: LevelInfo = new LevelInfo(levelName, levelSave, levelPractiseConfig.stepsToPass);
+            var levelInfo: LevelInfo = new LevelInfo(levelName, levelSave);
             levelInfo.stateToStart = levelName + "Preload";
             
             if (levelConfig.dependsOn != null) {
@@ -265,7 +272,6 @@ module Common {
             var levelButton = new LevelButton(
                 this._game,
                 levelName,
-                levelStats,
                 buttonSettings,
                 this.createButtonClickCallback(levelInfo)
             );
@@ -288,28 +294,45 @@ module Common {
         }
         
         private getButtonSettings(levelInfo: LevelInfo): LevelButtonSettings {
-            if (levelInfo.examPassed) {
+            
+            if (levelInfo.levelEnabled) {
+                if (!levelInfo.tutorialPassed) {
+                    return new LevelButtonSettings(
+                        levelInfo.tutorialDone,
+                        "buttonExamPassedMouseOver.png",
+                        "buttonExamPassedEnable.png",
+                        "buttonExamPassedClicked.png",
+                        "buttonLevelClosedDisable.png",
+                        Constants.MENU_LEVEL_TEXT_ENABLED,
+                        Constants.MENU_LEVEL_STATS_TEXT_EXAM_PASSED,
+                        Constants.MENU_LEVEL_STATS_TEXT_DISABLED
+                    );
+                } else if (!levelInfo.practisePassed) {
+                    return new LevelButtonSettings(
+                        levelInfo.practiseDone,
+                        "buttonPractisePassedMouseOver.png",
+                        "buttonPractisePassedEnable.png",
+                        "buttonPractisePassedClicked.png",
+                        "buttonLevelClosedDisable.png",
+                        Constants.MENU_LEVEL_TEXT_ENABLED,
+                        Constants.MENU_LEVEL_STATS_TEXT_PRACTISE_PASSED,
+                        Constants.MENU_LEVEL_STATS_TEXT_DISABLED
+                    );
+                } else if (!levelInfo.examPassed) {
+                    return new LevelButtonSettings(
+                        levelInfo.examDone,
+                        "buttonExamPassedMouseOver.png",
+                        "buttonExamPassedEnable.png",
+                        "buttonExamPassedClicked.png",
+                        "buttonLevelClosedDisable.png",
+                        Constants.MENU_LEVEL_TEXT_ENABLED,
+                        Constants.MENU_LEVEL_STATS_TEXT_EXAM_PASSED,
+                        Constants.MENU_LEVEL_STATS_TEXT_DISABLED
+                    );
+                }
+            } else { 
                 return new LevelButtonSettings(
-                    "buttonExamPassedMouseOver.png",
-                    "buttonExamPassedEnable.png",
-                    "buttonExamPassedClicked.png",
-                    "buttonLevelClosedDisable.png",
-                    Constants.MENU_LEVEL_TEXT_ENABLED,
-                    Constants.MENU_LEVEL_STATS_TEXT_EXAM_PASSED,
-                    Constants.MENU_LEVEL_STATS_TEXT_DISABLED
-                );
-            } else if (levelInfo.practisePassed) {
-                return new LevelButtonSettings(
-                    "buttonPractisePassedMouseOver.png",
-                    "buttonPractisePassedEnable.png",
-                    "buttonPractisePassedClicked.png",
-                    "buttonLevelClosedDisable.png",
-                    Constants.MENU_LEVEL_TEXT_ENABLED,
-                    Constants.MENU_LEVEL_STATS_TEXT_PRACTISE_PASSED,
-                    Constants.MENU_LEVEL_STATS_TEXT_DISABLED
-                );
-            } else {
-                return new LevelButtonSettings(
+                    "",
                     "buttonLevelOpenMouseOver.png",
                     "buttonLevelOpenEnable.png",
                     "buttonLevelOpenClicked.png",

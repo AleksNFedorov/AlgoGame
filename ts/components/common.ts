@@ -17,6 +17,7 @@ module Common {
         MenuButtonMenu,
         MenuButtonDescription,
         MenuButtonObjectives,
+        MenuButtonTutorial,
         MenuButtonPractise,
         MenuButtonExam,
         ProgressBarStep,
@@ -29,6 +30,43 @@ module Common {
         ControlPanelText,
         GameArea,
         LevelButton,
+    }
+    
+    //Info baloon information
+    export class ShowInfo {
+        
+        private _elementId: Common.GameElements;
+        private _eventToHide: string;
+        private _messageKey: string;
+        private _hideCallback: Function;
+
+        constructor(
+            elementId: Common.GameElements, 
+            eventToHide?: string,
+            messageKey?: string,
+            hideCallback: Function = function(){}
+        ) {
+            this._elementId = elementId;
+            this._eventToHide = eventToHide;
+            this._messageKey = messageKey;
+            this._hideCallback = hideCallback;
+        }
+        
+        public get hideCallback(): Function {
+            return this._hideCallback;
+        }
+        
+        public get messageKey(): string {
+            return this._messageKey != null ? this._messageKey : Common.GameElements[this._elementId];
+        }
+        
+        public get elementId(): Common.GameElements {
+            return this._elementId;
+        }
+        
+        public get eventToHide(): string {
+            return this._eventToHide;
+        }
     }
         
     //Key info stored on borwser local store

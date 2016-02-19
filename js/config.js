@@ -3,13 +3,10 @@ var globalConfig = {
         binarySearch: {
             tutorial: {
                 stageName: "binarySearchTutorial",
-                stepsToPass: 30,
+                stepsToPass: 2,
                 stepTime: 5000,
                 menu: {
-                    MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://wiki.roblox.com/index.php?title=Binary_search",
-                    MenuButtonPractise: "",
-                    MenuButtonExam:"binarySearchExam",
                 },
             },
             practise: {
@@ -17,10 +14,7 @@ var globalConfig = {
                 stepsToPass: 30,
                 stepTime: 5000,
                 menu: {
-                    MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://wiki.roblox.com/index.php?title=Binary_search",
-                    MenuButtonPractise: "",
-                    MenuButtonExam:"binarySearchExam",
                 },
                 gamePlay: {
                     minSeqNumber: 1,
@@ -35,9 +29,7 @@ var globalConfig = {
                 stepsToPass: 5,
                 stepTime: 3000,
                 menu: {
-                    MenuButtonMenu: "menu",
-                    MenuButtonDescription: "http://wiki.roblox.com/index.php?title=Binary_search",
-                    MenuButtonPractise: "binarySearchPractise",
+                    MenuButtonDescription: "http://wiki.roblox.com/index.php?title=Binary_search",        
                 },
                 gamePlay: {
                     minSeqNumber: 1,
@@ -54,10 +46,7 @@ var globalConfig = {
                 stepsToPass: 40,
                 stepTime: 6000,
                 menu: {
-                    MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://jackson-.github.io/2014/10/07/Sowhatexactlyisinsertionsort.html",
-                    MenuButtonPractise: "",
-                    MenuButtonExam:"insertionSortExam",
                 },
                 gamePlay: {
                     minSeqNumber: 1,
@@ -72,9 +61,7 @@ var globalConfig = {
                 stepsToPass: 5,
                 stepTime: 4000,
                 menu: {
-                    MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://jackson-.github.io/2014/10/07/Sowhatexactlyisinsertionsort.html",
-                    MenuButtonPractise: "insertionSortPractise",
                 },
                 gamePlay: {
                     minSeqNumber: 1,
@@ -92,10 +79,7 @@ var globalConfig = {
                 stepsToPass: 40,
                 stepTime: 6000,
                 menu: {
-                    MenuButtonMenu: "menu",
                     MenuButtonDescription: "https://matse-hamburg.wikispaces.com/Selectionsort",
-                    MenuButtonPractise: "",
-                    MenuButtonExam:"selectionSortExam",
                 },
                 gamePlay: {
                     minSeqNumber: 1,
@@ -110,9 +94,7 @@ var globalConfig = {
                 stepsToPass: 6,
                 stepTime: 5000,
                 menu: {
-                    MenuButtonMenu: "menu",
                     MenuButtonDescription: "https://matse-hamburg.wikispaces.com/Selectionsort",
-                    MenuButtonPractise: "selectionSortPractise",
                 },
                 gamePlay: {
                     minSeqNumber: 1,
@@ -130,10 +112,7 @@ var globalConfig = {
                 stepsToPass: 50,
                 stepTime: 6000,
                 menu: {
-                    MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://www.personal.kent.edu/~rmuhamma/Algorithms/MyAlgorithms/Sorting/mergeSort.htm",
-                    MenuButtonPractise: "",
-                    MenuButtonExam:"mergeSortExam",
                 },
                 gamePlay: {
                     minSeqNumber: 1,
@@ -148,9 +127,7 @@ var globalConfig = {
                 stepsToPass: 10,
                 stepTime: 5000,
                 menu: {
-                    MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://www.personal.kent.edu/~rmuhamma/Algorithms/MyAlgorithms/Sorting/mergeSort.htm",
-                    MenuButtonPractise: "mergeSortPractise",
                 },
                 gamePlay: {
                     minSeqNumber: 1,
@@ -168,10 +145,7 @@ var globalConfig = {
                 stepsToPass: 50,
                 stepTime: 8000,
                 menu: {
-                    MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://www.mayankacademy.com/cs101/quick_sort/",
-                    MenuButtonPractise: "",
-                    MenuButtonExam:"quickSortExam",
                 },
                 gamePlay: {
                     minSeqNumber: 1,
@@ -186,9 +160,7 @@ var globalConfig = {
                 stepsToPass: 10,
                 stepTime: 4000,
                 menu: {
-                    MenuButtonMenu: "menu",
                     MenuButtonDescription: "http://www.mayankacademy.com/cs101/quick_sort/",
-                    MenuButtonPractise: "quickSortPractise",
                 },
                 gamePlay: {
                     minSeqNumber: 1,
@@ -206,10 +178,7 @@ var globalConfig = {
                 stepsToPass: 50,
                 stepTime: 3000,
                 menu: {
-                    MenuButtonMenu: "menu",
                     MenuButtonDescription: "https://www.cs.drexel.edu/~introcs/F2K/lectures/7.2_AI/Formal3.html",
-                    MenuButtonPractise: "",
-                    MenuButtonExam:"debthFirstExam",
                 },
                 gamePlay: {
                     minElements: 5,
@@ -224,9 +193,7 @@ var globalConfig = {
                 stepsToPass: 10,
                 stepTime: 2000,
                 menu: {
-                    MenuButtonMenu: "menu",
                     MenuButtonDescription: "https://www.cs.drexel.edu/~introcs/F2K/lectures/7.2_AI/Formal3.html",
-                    MenuButtonPractise: "debthFirstPractise",
                 },
                 gamePlay: {
                     minElements: 5,
@@ -244,10 +211,7 @@ var globalConfig = {
                 stepsToPass: 50,
                 stepTime: 5000,
                 menu: {
-                    MenuButtonMenu: "menu",
                     MenuButtonDescription: "https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm",
-                    MenuButtonPractise: "",
-                    MenuButtonExam:"djikstraExam",
                 },
                 gamePlay: {
                     minElements: 5,
@@ -262,9 +226,7 @@ var globalConfig = {
                 stepsToPass: 10,
                 stepTime: 4000,
                 menu: {
-                    MenuButtonMenu: "menu",
                     MenuButtonDescription: "https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm",
-                    MenuButtonPractise: "djikstraPractise",
                 },
                 gamePlay: {
                     minElements: 5,

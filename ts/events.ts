@@ -11,6 +11,7 @@ class Events {
     static MENU_EVENT_GO_MENU = Events.createEvent("MenuGoMenu");
     static MENU_EVENT_OPEN_ALGO_DESCR = Events.createEvent("MenuOpenAlgorithm");
     static MENU_EVENT_SHOW_LEVEL_OBJECTIVES = Events.createEvent("MenuShowLevelObjectives");
+    static MENU_EVENT_GO_TUTORIAL = Events.createEvent("MenuGoTutorial");
     static MENU_EVENT_GO_PRACTISE = Events.createEvent("MenuGoPractise");
     static MENU_EVENT_GO_EXAM = Events.createEvent("MenuGoExam");
     
@@ -49,6 +50,7 @@ class Events {
     static GAME_BLINK_MESSAGE = Events.createEvent("blinkMessage");
     
     //Stage info manager events
+    static STAGE_CUSTOM_INFO_SHOW = Events.createEvent("ShowCustomStageInfo");
     static STAGE_INFO_SHOW = Events.createEvent("ShowStageInfo");
     static STAGE_INFO_ALL_INFO_SHOWED = Events.createEvent("AllInfoShowed");
     

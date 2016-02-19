@@ -27,9 +27,9 @@ module GameModal {
         }
         
         protected initEventListners(): void {
-            this.addEventListener(Events.GAME_PRACTISE_DONE);
-            this.addEventListener(Events.GAME_EXAM_DONE);
-            this.addEventListener(Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES);
+            for (var eventId of Events.getAllEvents()) {
+               this.addEventListener(eventId);
+            }
         }
         
         public dispatchEvent(event: any, param1: any) {
@@ -40,9 +40,12 @@ module GameModal {
                     if (!isUserAction) {
                         break;
                     }
+                case Events.GAME_TUTORIAL_DONE:
                 case Events.GAME_EXAM_DONE:
                 case Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES:
                     this.show(event.type);
+                    break;
+                default:
                     break;
             }
         }
