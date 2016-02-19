@@ -180,4 +180,44 @@ class Constants {
         "Stop-button_Disabled.png"
     ];
     
+    static MENU_BUTTON_FRAMES = [
+        "Menu-button_Mouse-over.png",
+        "Menu-button_Enabled.png",
+        "Menu-button_Clicked.png",
+        "Menu-button_Enabled.png",
+        "Menu-button_disable.png"
+    ];
+    
+    static ALGO_DESCR_FRAMES = [
+        "Algorithm-description_Mouse-over.png",
+        "Algorithm-description_Enabled.png",
+        "Algorithm-description_Clicked.png",
+        "Algorithm-description_Enabled.png",
+        "Algorithm-description_disable.png"
+    ];
+
+    static LEVEL_OBJECTIVES_FRAMES = [
+        "Level-Objectives_Mouse-over.png",
+        "Level-Objectives_Enabled.png",
+        "Level-Objectives_Clicked.png",
+        "Level-Objectives_Enabled.png",
+        "Level-Objectives_disable.png"
+    ];
+
+    static GO_PRACTISE_FRAMES = [
+        "Go-Practise_Enabled_Mouse-over.png",
+        "Go-Practise_Enabled.png",
+        "Go-Practise_Enabled_Clicked.png",
+        "Go-Practise_Enabled.png",
+        "Go-Practise_disable.png"
+    ];
+
+    static GO_EXAM_FRAMES = [
+        "Go-Exam_Enabled_Mouse-over.png",
+        "Go-Exam_Enabled.png",
+        "Go-Exam_Enabled_Clicked.png",
+        "Go-Exam_Enabled.png",
+        "Go-Exam_disable.png"
+    ];
+
 }

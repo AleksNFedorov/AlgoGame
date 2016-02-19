@@ -13,6 +13,7 @@ class Game extends Common.AlgoGame {
         this.state.add("menu", LevelMenuState);
         
         this.state.add("binarySearchPreload", Common.PractisePreloadState);
+        this.state.add("binarySearchTutorial", BinarySearchTutorial);
         this.state.add("binarySearchPractise", BinarySearchPractise);
         this.state.add("binarySearchExam", BinarySearchExam);
         

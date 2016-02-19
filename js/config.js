@@ -1,6 +1,17 @@
 var globalConfig = {
     levelConfigs: {
         binarySearch: {
+            tutorial: {
+                stageName: "binarySearchTutorial",
+                stepsToPass: 30,
+                stepTime: 5000,
+                menu: {
+                    MenuButtonMenu: "menu",
+                    MenuButtonDescription: "http://wiki.roblox.com/index.php?title=Binary_search",
+                    MenuButtonPractise: "",
+                    MenuButtonExam:"binarySearchExam",
+                },
+            },
             practise: {
                 stageName: "binarySearchPractise",
                 stepsToPass: 30,

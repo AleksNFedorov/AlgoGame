@@ -109,7 +109,8 @@ module Common {
         
         private onFinish(): void {
             console.log("Level preloading [onFinish]");
-            this.game.state.start(this._level + "Practise");
+            // this.game.state.start(this._level + "Practise");
+            this.game.state.start(this._level + "Tutorial");
         }
         
         public shutdown(): void {
@@ -326,7 +327,7 @@ module Common {
         protected _menu: Menu;
         protected _controlPanel: GameComponentContainer;
         protected _progressPanel: GameComponentContainer;
-        protected _gamePlay: CoreGamePlay<GamePlayAction, Algorithm>;
+        protected _gamePlay: CoreGamePlay<GamePlayAction, AbstractAlgorithm>;
 
         public shutdown(): void {
             super.shutdown();
@@ -379,7 +380,7 @@ module Common {
             this._background.drawLine(350, 600, 350, this.algoGame.height);
         }
         
-        protected buildGamePlay(): CoreGamePlay<Common.GamePlayAction, Common.Algorithm> {
+        protected buildGamePlay(): CoreGamePlay<Common.GamePlayAction, Common.AbstractAlgorithm> {
             throw "Game play not initizliaed";
         }
         
@@ -389,6 +390,23 @@ module Common {
 
         protected initModalWindows(): void {
         }
+    }
+    
+    //State for Tutorial stages only
+    export class TutorialState extends CorePlayState {
+        
+        protected onCreate(): void {
+            this._menu = new Common.PractiseMenu(this.algoGame);
+            this._controlPanel = new Common.TutorialPanel(this.algoGame);
+            this._progressPanel = new Common.TutorialProgressPanel(this.algoGame);
+            
+            super.onCreate();        
+        }
+        
+        protected getStageType(): string {
+            return "Tutorial";
+        }
+        
     }
     
     //State for Practise stages only

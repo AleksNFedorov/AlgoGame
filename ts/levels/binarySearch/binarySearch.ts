@@ -1,5 +1,7 @@
 /// <reference path="../../components/common.ts" />
 
+declare var binarySearchScenarios: any;
+
 module BinarySearch {
     
     export enum Operation {Less = 1, Greater = 2, Equals = 3, NotEquals = 4, Unknown = 5}
@@ -136,7 +138,6 @@ module BinarySearch {
         public get elementToFindIndex(): number {
           return this._elementToFindIndex;  
         }
-        
     }
     
     class BoxLine extends Common.LineGameArena <BinarySearchAction>{
@@ -155,6 +156,54 @@ module BinarySearch {
             this.onAction(new BinarySearchAction(index));
         }
     }
+    
+    export class BinarySearchTutorialGamePlay extends Common.TutorialGamePlay<BinarySearchAction> {
+        
+        protected _boxLine: BoxLine;
+        private _currentScenario: any;
+        
+        protected onInit(): void {
+            this._boxLine = new BoxLine(this._game,     
+                this.boxClicked.bind(this), 
+                this._algorithm.sequence, 
+                this._currentScenario.elementToFindIndex);
+        }
+        
+        protected createAlgorithm(config: any): Common.ScenarioAlgorithm {
+            this._currentScenario = binarySearchScenarios.scenarios[0];
+            return new Common.ScenarioAlgorithm (
+                this._currentScenario.sequence,
+                this._currentScenario.steps
+                );
+        }
+        
+        protected clickBox() {
+            this.boxClicked(new BinarySearchAction(this.getCurrentStep().elementIndex), false);
+        }
+
+        protected isCorrectStep(action: BinarySearchAction): boolean {
+            var step: BinarySearchStep = this.getCurrentStep();
+            return action.index === step.elementIndex;
+        }
+        
+        protected onCorrectAction(isUser:boolean): void {
+            super.onCorrectAction(isUser);
+            var step: BinarySearchStep = this.getCurrentStep();
+            this._boxLine.hideBoxesOutOf(step.startIndex, step.endIndex);
+            this._boxLine.selectBox(step.elementIndex, Common.BoxState.SELECTED_GREEN);
+        }
+        
+        protected destroyTempObjects():void {
+            super.destroyTempObjects();
+            if (this._boxLine != null) {
+                this._boxLine.destroy();            
+            }
+        }
+        
+        protected getCurrentStep(): BinarySearchStep {
+            return <BinarySearchStep>this._algorithmStep;
+        }
+    }    
 
     export class BinarySearchPractiseGamePlay extends Common.PractiseGamePlay<BinarySearchAction, BinarySearchAlgorithm> {
         
@@ -199,7 +248,6 @@ module BinarySearch {
         }
     }
 
-    
     export class BinarySearchExamGamePlay extends Common.ExamGamePlay<BinarySearchAction, BinarySearchAlgorithm> {
     
         protected _boxLine: BoxLine;

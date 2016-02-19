@@ -6,46 +6,6 @@ module Common {
     
     export class Menu extends GameComponentContainer {
         
-        private static MENU_BUTTON_FRAMES = [
-                "Menu-button_Mouse-over.png",
-                "Menu-button_Enabled.png",
-                "Menu-button_Clicked.png",
-                "Menu-button_Enabled.png",
-                "Menu-button_disable.png"
-        ];
-        
-        private static ALGO_DESCR_FRAMES = [
-                "Algorithm-description_Mouse-over.png",
-                "Algorithm-description_Enabled.png",
-                "Algorithm-description_Clicked.png",
-                "Algorithm-description_Enabled.png",
-                "Algorithm-description_disable.png"
-        ];
-
-        private static LEVEL_OBJECTIVES_FRAMES = [
-                "Level-Objectives_Mouse-over.png",
-                "Level-Objectives_Enabled.png",
-                "Level-Objectives_Clicked.png",
-                "Level-Objectives_Enabled.png",
-                "Level-Objectives_disable.png"
-        ];
-
-        private static GO_PRACTISE_FRAMES = [
-                "Go-Practise_Enabled_Mouse-over.png",
-                "Go-Practise_Enabled.png",
-                "Go-Practise_Enabled_Clicked.png",
-                "Go-Practise_Enabled.png",
-                "Go-Practise_disable.png"
-        ];
-
-        private static GO_EXAM_FRAMES = [
-                "Go-Exam_Enabled_Mouse-over.png",
-                "Go-Exam_Enabled.png",
-                "Go-Exam_Enabled_Clicked.png",
-                "Go-Exam_Enabled.png",
-                "Go-Exam_disable.png"
-        ];
-
         protected _menuButtons: Common.Button[] = [];
         private _menuGroup: Phaser.Group;
 
@@ -77,11 +37,11 @@ module Common {
         }
         
         protected createButtons(): void {
-            this.addButtonToMenu(Common.GameElements.MenuButtonMenu, Events.MENU_EVENT_GO_MENU, Menu.MENU_BUTTON_FRAMES , 50, 10);
-            this.addButtonToMenu(Common.GameElements.MenuButtonDescription, Events.MENU_EVENT_OPEN_ALGO_DESCR, Menu.ALGO_DESCR_FRAMES, 110, 10);
-            this.addButtonToMenu(Common.GameElements.MenuButtonObjectives, Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES, Menu.LEVEL_OBJECTIVES_FRAMES, 170, 10);
-            this.addButtonToMenu(Common.GameElements.MenuButtonPractise, Events.MENU_EVENT_GO_PRACTISE, Menu.GO_PRACTISE_FRAMES, 870, 10);
-            this.addButtonToMenu(Common.GameElements.MenuButtonExam, Events.MENU_EVENT_GO_EXAM, Menu.GO_EXAM_FRAMES, 940, 10);
+            this.addButtonToMenu(Common.GameElements.MenuButtonMenu, Events.MENU_EVENT_GO_MENU, Constants.MENU_BUTTON_FRAMES , 50, 10);
+            this.addButtonToMenu(Common.GameElements.MenuButtonDescription, Events.MENU_EVENT_OPEN_ALGO_DESCR, Constants.ALGO_DESCR_FRAMES, 110, 10);
+            this.addButtonToMenu(Common.GameElements.MenuButtonObjectives, Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES, Constants.LEVEL_OBJECTIVES_FRAMES, 170, 10);
+            this.addButtonToMenu(Common.GameElements.MenuButtonPractise, Events.MENU_EVENT_GO_PRACTISE, Constants.GO_PRACTISE_FRAMES, 870, 10);
+            this.addButtonToMenu(Common.GameElements.MenuButtonExam, Events.MENU_EVENT_GO_EXAM, Constants.GO_EXAM_FRAMES, 940, 10);
             console.log("Button has been added");
         }
         

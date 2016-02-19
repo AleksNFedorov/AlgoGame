@@ -38,23 +38,19 @@ module Common {
     
     export class ScenarioStep implements IAlgorithmStep {
         
-        private _actualStep: IAlgorithmStep;
-        private _messageKeys: string[];
+        public realStep: IAlgorithmStep;
+        public messageKeys: string[];
         
         public setIsLast(): void {
-            this._actualStep.isLast = true;
+            this.realStep.isLast = true;
         }
         
         public get isLast(): boolean {
-            return this._actualStep.isLast;
+            return this.realStep.isLast;
         }
         
         public get stepNumber(): number {
-            return this._actualStep.stepNumber;
-        }
-        
-        public get messageKeys(): string[] {
-            return this._messageKeys;
+            return this.realStep.stepNumber;
         }
     }
     
@@ -595,6 +591,7 @@ module Common {
                     this
                 );
             }
+            this._algorithmStep = scenarioStep.realStep;
         };
         
         protected getStagePassEvent(): string {

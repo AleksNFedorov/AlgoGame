@@ -108,6 +108,12 @@ class LevelMenuState extends Common.State {
 //
 // Search algorithms
 //
+class BinarySearchTutorial extends Common.TutorialState {
+    
+    protected buildGamePlay(): Common.TutorialGamePlay<Common.GamePlayAction> {
+        return new BinarySearch.BinarySearchTutorialGamePlay(this.algoGame);
+    }
+}
 
 class BinarySearchPractise extends Common.PractiseState {
     
