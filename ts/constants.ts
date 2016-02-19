@@ -139,4 +139,45 @@ class Constants {
         "Play-button_Enabled.png", 
         "Play-button_Disabled.png"
     ];
+    
+    static AUTOSTART_FRAMES_OFF = [
+        "AutoStart-toggle_off.png",
+        "AutoStart-toggle_off.png",
+        "AutoStart-toggle_off.png",
+        "AutoStart-toggle_off.png",
+        "AutoStart-toggle_off.png"
+    ];
+                
+    static AUTOSTART_FRAMES_ON = [
+        "AutoStart-toggle_on.png", 
+        "AutoStart-toggle_on.png", 
+        "AutoStart-toggle_on.png", 
+        "AutoStart-toggle_on.png", 
+        "AutoStart-toggle_off.png"
+    ];
+    
+    static PAUSE_BUTTON_FRAMES = [
+        "Pause-button_Mouse-over.png", 
+        "Pause-button_Enabled.png", 
+        "Pause-button_clicked.png", 
+        "Pause-button_Enabled.png", 
+        "Pause-button_Disabled.png"
+    ];
+
+    static REPLAY_BUTTON_FRAMES = [
+        "Replay-button_Mouse-over.png", 
+        "Replay-button_Enabled.png", 
+        "Replay-button_clicked.png", 
+        "Replay-button_Enabled.png", 
+        "Replay-button_Disabled.png"
+    ];
+    
+    static STOP_BUTTON_FRAMES = [
+        "Stop-button_Mouse-over.png", 
+        "Stop-button_Enabled.png", 
+        "Stop-button_clicked.png", 
+        "Stop-button_Enabled.png", 
+        "Stop-button_Disabled.png"
+    ];
+    
 }

@@ -106,16 +106,10 @@ module Common {
         restoreState(): void {}
     }
     
-    export class ProgressPanel extends GameComponentContainer {
+    export class TutorialProgressPanel extends GameComponentContainer {
     
-        private _topProgressBar: ProgressBar;
-        private _bottomProgressBar: ProgressBar;
-        
-        private _timer: Phaser.Timer;
-        private _maxTimeValue: number;
-        private _timerStep: number;
-        
-        private _progressGroup: Phaser.Group;
+        protected _stepProgressBar: ProgressBar;
+        protected _progressGroup: Phaser.Group;
         
         constructor(game:AlgoGame) {
             super(game);
@@ -125,37 +119,22 @@ module Common {
             this._progressGroup.y = Constants.PROGRESS_BAR_POSITION_Y;
             
             this.createProgressBars();
-            
-            this._timer = this._game.time.create(false);
-            this._timer.start();
         }
         
         protected initEventListners(): void {
             super.initEventListners();
             this.addEventListener(Events.GAME_CORRECT_STEP_DONE);
-            this.addEventListener(Events.STAGE_INFO_SHOW);
-            this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
-            this.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
-            this.addEventListener(Events.CONTROL_PANEL_EVENT_REPLAY);
-            this.addEventListener(Events.GAME_STARTED);
             this.addEventListener(Events.GAME_END);
             this.addEventListener(Events.GAME_CREATED);
         }
 
         protected createProgressBars(): void {
         
-        
-            this._topProgressBar = this.createAndAddProgressBar(
-                "progressBarRed", "Step time",
-                Common.GameElements.ProgressBarStep);
-            this._topProgressBar.x = 50;
-            this._topProgressBar.y = 30;
-
-            this._bottomProgressBar = this.createAndAddProgressBar(
+            this._stepProgressBar = this.createAndAddProgressBar(
                 "progressBarGreen", "Steps done",
                 Common.GameElements.ProgressBarComplete);
-            this._bottomProgressBar.x = this._game.width - this._bottomProgressBar.width - 50;
-            this._bottomProgressBar.y = 30;
+            this._stepProgressBar.x = this._game.width - this._stepProgressBar.width - 50;
+            this._stepProgressBar.y = 30;
         }
         
         protected createAndAddProgressBar(type: string, legendText: string, elementId: Common.GameElements): ProgressBar {
@@ -165,18 +144,80 @@ module Common {
             return newProgress;            
         }
 
+        dispatchEvent(event: any, param1: any) {
+            super.dispatchEvent(event, param1);
+            switch(event.type) {
+                case Events.GAME_CORRECT_STEP_DONE:
+                    this._stepProgressBar.setValue(<number> param1[0], param1[0]);
+                    break;
+                case Events.GAME_END:
+                    var stepsDone: number = <number>param1[0];
+                    this._stepProgressBar.setValue(stepsDone, stepsDone + "");
+                    break;
+                case Events.GAME_CREATED:
+                    var playInfo: Common.GamePlayInfo = <Common.GamePlayInfo> param1;
+                    this._stepProgressBar.setMaxValue(playInfo.totalItertions);
+                    this._stepProgressBar.setValue(playInfo.doneIterations, playInfo.doneIterations + "");
+                    break;
+            }
+        }
+        
+        destroy(): void {
+          super.destroy();
+          this._stepProgressBar.destory();
+          this._progressGroup.destroy();
+        }
+    }
+
+    export class ProgressPanel extends TutorialProgressPanel {
+    
+        private _timeProgressBar: ProgressBar;
+        
+        private _timer: Phaser.Timer;
+        private _maxTimeValue: number;
+        private _timerStep: number;
+        
+        constructor(game:AlgoGame) {
+            super(game);
+            
+            this._timer = this._game.time.create(false);
+            this._timer.start();
+        }
+        
+        protected initEventListners(): void {
+            super.initEventListners();
+            this.addEventListener(Events.GAME_CORRECT_STEP_DONE);
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_REPLAY);
+            this.addEventListener(Events.GAME_STARTED);
+            this.addEventListener(Events.GAME_END);
+            this.addEventListener(Events.GAME_CREATED);
+        }
+
+        protected createProgressBars(): void {
+
+            super.createProgressBars();        
+        
+            this._timeProgressBar = this.createAndAddProgressBar(
+                "progressBarRed", "Step time",
+                Common.GameElements.ProgressBarStep);
+            this._timeProgressBar.x = 50;
+            this._timeProgressBar.y = 30;
+
+        }
+        
         private scheduleUpdates(): void {
-          
+
             var updatesCount = this._maxTimeValue/Constants.GAME_TIME_PROGRESS_UPDATE_INTERVAL;
             this._timerStep = 0;
             this._timer.repeat(Constants.GAME_TIME_PROGRESS_UPDATE_INTERVAL, updatesCount, this.updateTimerProgressBar, this);
-            
         }
         
         private updateTimerProgressBar(): void {
             this._timerStep++;
             var newValue = this._maxTimeValue - Constants.GAME_TIME_PROGRESS_UPDATE_INTERVAL * this._timerStep;
-            this._topProgressBar.setValue(newValue, "");
+            this._timeProgressBar.setValue(newValue, "");
         }
 
         dispatchEvent(event: any, param1: any) {
@@ -184,13 +225,12 @@ module Common {
             switch(event.type) {
                 case Events.GAME_CORRECT_STEP_DONE:
                     this._timer.removeAll();
-                    this._topProgressBar.setValue(this._maxTimeValue, "");
-                    this._bottomProgressBar.setValue(<number> param1[0], param1[0]);
+                    this._timeProgressBar.setValue(this._maxTimeValue, "");
                     this.scheduleUpdates();
                     break;
 
-                    case Events.CONTROL_PANEL_EVENT_PLAY:
-                    case Events.CONTROL_PANEL_EVENT_REPLAY:
+                case Events.CONTROL_PANEL_EVENT_PLAY:
+                case Events.CONTROL_PANEL_EVENT_REPLAY:
                     if (this._game.levelStageState == Common.LevelStageState.PAUSED) {
                         this._timer.resume();                        
                     }
@@ -199,20 +239,16 @@ module Common {
                     this._timer.pause();
                     break;
                 case Events.GAME_STARTED:
-                    this._topProgressBar.setValue(this._maxTimeValue, "");
+                    this._timeProgressBar.setValue(this._maxTimeValue, "");
                     this.scheduleUpdates();
                     break;
                 case Events.GAME_END:
                     this._timer.removeAll();
-                    var stepsDone: number = <number>param1[0];
-                    this._bottomProgressBar.setValue(stepsDone, stepsDone + "");
-                    this._topProgressBar.setValue(0, "");
+                    this._timeProgressBar.setValue(0, "");
                     break;
                 case Events.GAME_CREATED:
                     var playInfo: Common.GamePlayInfo = <Common.GamePlayInfo> param1;
-                    this._topProgressBar.setMaxValue(playInfo.stepWaitTime);
-                    this._bottomProgressBar.setMaxValue(playInfo.totalItertions);
-                    this._bottomProgressBar.setValue(playInfo.doneIterations, playInfo.doneIterations + "");
+                    this._timeProgressBar.setMaxValue(playInfo.stepWaitTime);
                     this._maxTimeValue = playInfo.stepWaitTime;
                     break;
             }
@@ -220,11 +256,7 @@ module Common {
         
         destroy(): void {
           super.destroy();
-          
-          this._topProgressBar.destory();
-          this._bottomProgressBar.destory();
-          
-          this._progressGroup.destroy();
+          this._timeProgressBar.destory();
           this._timer.destroy();
         }
     }

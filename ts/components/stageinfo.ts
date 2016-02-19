@@ -149,7 +149,7 @@ module StageInfo {
         }
     }
     
-    class Manager extends Common.GameEventComponent {
+    export class Manager extends Common.GameEventComponent {
         
         private _infoToShow: ShowInfo[];
         private _infoSave: Save;

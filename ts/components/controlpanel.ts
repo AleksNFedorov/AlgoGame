@@ -93,15 +93,16 @@ module Common {
         dispatchEvent(event: any, param1: any) {
             super.dispatchEvent(event, param1);
             switch(event.type) {
+                case Events.GAME_SHOW_MESSAGE:
+                    this.setDirectMessage(param1);
+                    break;
                 case Events.GAME_CORRECT_STEP_DONE:
                     var paramArray: any[] = param1;
                     //false - non user action
                     if (paramArray[1] === false) {
                         break;
                     }
-                case Events.GAME_SHOW_MESSAGE:
-                    this.setDirectMessage(param1);
-                    break;
+                    //Do not put break here!!!
                 default:
                     this.setInfoMessageFromDictionary(event.type);
             }
@@ -246,26 +247,50 @@ module Common {
         
     }
     
-    export class PractisePanel extends ControlPanel {
+    export class TutorialPanel extends ControlPanel {
         
-        private static AUTOSTART_FRAMES_OFF = [
-                    "AutoStart-toggle_off.png",
-                    "AutoStart-toggle_off.png",
-                    "AutoStart-toggle_off.png",
-                    "AutoStart-toggle_off.png",
-                    "AutoStart-toggle_off.png"
-                ];
-                
-        private static AUTOSTART_FRAMES_ON = [
-                    "AutoStart-toggle_on.png", 
-                    "AutoStart-toggle_on.png", 
-                    "AutoStart-toggle_on.png", 
-                    "AutoStart-toggle_on.png", 
-                    "AutoStart-toggle_off.png"
-                ];
+        protected _replayButton: Button;
+        
+        constructor(game: AlgoGame) {
+            super(game);  
+        }
+        
+       createElements():void {
+            super.createElements();
+            
+            this._replayButton = this.createButton(
+                Common.GameElements.ControlPanelButtonPause,
+                Events.CONTROL_PANEL_EVENT_REPLAY,
+                Constants.REPLAY_BUTTON_FRAMES
+            );
+
+            this.initButton(this._replayButton, Constants.CONTROL_PANEL_FIRST_BUTTON_X, 0);
+        }
+        
+        initEventListners(): void {
+            super.initEventListners();
+            super.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
+            super.addEventListener(Events.GAME_END);
+        }
+        
+        dispatchEvent(event: any, param1: any) {
+            super.dispatchEvent(event, param1);
+            switch(event.type) {
+                case Events.CONTROL_PANEL_EVENT_PLAY:
+                    this._playButton.alpha = 0;
+                    this._playButton.deactivate();
+                    break;
+                case Events.GAME_END:
+                    this._playButton.alpha = 1;
+                    this._playButton.activate();
+                    break;
+            }
+        }
+    }
+    
+    export class PractisePanel extends TutorialPanel {
         
         protected _pauseButton: Button;
-        protected _replayButton: Button;
         
         private _autoStart: Button;
         
@@ -279,29 +304,9 @@ module Common {
             this._pauseButton = this.createButton(
                 Common.GameElements.ControlPanelButtonPause,
                 Events.CONTROL_PANEL_EVENT_PAUSE,
-                [
-                    "Pause-button_Mouse-over.png", 
-                    "Pause-button_Enabled.png", 
-                    "Pause-button_clicked.png", 
-                    "Pause-button_Enabled.png", 
-                    "Pause-button_Disabled.png"
-                ]
+                Constants.PAUSE_BUTTON_FRAMES
             );
             
-            this._replayButton = this.createButton(
-                Common.GameElements.ControlPanelButtonPause,
-                Events.CONTROL_PANEL_EVENT_REPLAY,
-                [
-                    "Replay-button_Mouse-over.png", 
-                    "Replay-button_Enabled.png", 
-                    "Replay-button_clicked.png", 
-                    "Replay-button_Enabled.png", 
-                    "Replay-button_Disabled.png"
-                ]
-            );
-            
-
-            this.initButton(this._replayButton, Constants.CONTROL_PANEL_FIRST_BUTTON_X, 0);
             this.initButton(this._pauseButton, Constants.CONTROL_PANEL_SECOND_BUTTON_X, 0);
             
             this._pauseButton.deactivate();
@@ -320,7 +325,7 @@ module Common {
         createAutoStartButton(): void {
             this._autoStart = this.createButton(
                 Common.GameElements.ControlPanelButtonAutoStart,
-                "NONE", PractisePanel.AUTOSTART_FRAMES_ON
+                "NONE", Constants.AUTOSTART_FRAMES_ON
             );
             this.initButton(this._autoStart, 
             Constants.CONTROL_PANEL_AUTOSTART_X,
@@ -337,8 +342,8 @@ module Common {
         private onAutostartClick(): void {
             this._autoStartEnabled = !this._autoStartEnabled;
             var frames: string[] = this._autoStartEnabled ? 
-                PractisePanel.AUTOSTART_FRAMES_ON :
-                PractisePanel.AUTOSTART_FRAMES_OFF;
+                Constants.AUTOSTART_FRAMES_ON :
+                Constants.AUTOSTART_FRAMES_OFF;
 
             this._autoStart.setFrames(
                 frames[0],
@@ -355,16 +360,14 @@ module Common {
             super.dispatchEvent(event, param1);
             switch(event.type) {
                 case Events.CONTROL_PANEL_EVENT_PLAY:
-                    this._playButton.alpha = 0;
                     this._pauseButton.alpha = 1;
-                    this._playButton.deactivate();
                     this._pauseButton.activate();
                     break;
                 case Events.GAME_END:
                 case Events.CONTROL_PANEL_EVENT_PAUSE:
                     this._playButton.alpha = 1;
-                    this._pauseButton.alpha = 0;
                     this._playButton.activate();
+                    this._pauseButton.alpha = 0;
                     this._pauseButton.deactivate();
                     //Set correct info text here
                     break;
@@ -375,7 +378,7 @@ module Common {
             }
         }
     }
-    
+
     export class ExamPanel extends ControlPanel {
         
         protected _stopButton: Button;
@@ -390,13 +393,7 @@ module Common {
             this._stopButton = this.createButton(
                 Common.GameElements.ControlPanelButtonStop,
                 Events.CONTROL_PANEL_EVENT_STOP,
-                [
-                    "Stop-button_Mouse-over.png", 
-                    "Stop-button_Enabled.png", 
-                    "Stop-button_clicked.png", 
-                    "Stop-button_Enabled.png", 
-                    "Stop-button_Disabled.png"
-                ]
+                Constants.STOP_BUTTON_FRAMES
             );
             
             this.initButton(this._stopButton, Constants.CONTROL_PANEL_FIRST_BUTTON_X, -1);

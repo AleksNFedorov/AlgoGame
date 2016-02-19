@@ -317,31 +317,27 @@ module Common {
         }
     }
     
-    
     //State for Practise stages only
-    export class PractiseState extends Common.State {
+    class CorePlayState extends State {
         
         private _background: BackgroundGraphics;
-        private _menu: Common.Menu;
-        private _controlPanel: Common.PractisePanel;
-        private _progressPanel: Common.ProgressPanel;
-        private _practiseManager: StageInfo.PractiseManager;
-        private _modalWindow: GameModal.ModalWindow;
-        private _gamePlay: PractiseGamePlay<Common.GamePlayAction, Common.Algorithm>;
-        
-        
+        protected _modalWindow: GameModal.ModalWindow;
+
+        protected _menu: Menu;
+        protected _controlPanel: GameComponentContainer;
+        protected _progressPanel: GameComponentContainer;
+        protected _gamePlay: CoreGamePlay<GamePlayAction, Algorithm>;
+
         public shutdown(): void {
             super.shutdown();
+            this._background.destroy();
+            this._modalWindow.destroy();
             this._menu.destroy();  
             this._controlPanel.destroy();
-            this._practiseManager.destroy();
-            this._modalWindow.destroy();
-            this._gamePlay.destroy();
             this._progressPanel.destroy();
-            this._background.destroy();
+            this._gamePlay.destroy();
             this._menu = null;
             this.removeEventListener(Events.STAGE_INFO_ALL_INFO_SHOWED);
-
         }
     
         public create(): void {
@@ -351,14 +347,13 @@ module Common {
             this._modalWindow = new GameModal.ModalWindow(this.algoGame);
             this.initModalWindows();
             
-            this._menu = new Common.PractiseMenu(this.algoGame);
-            this._controlPanel = new Common.PractisePanel(this.algoGame);
             this._gamePlay = this.buildGamePlay();
-            this._progressPanel = new Common.ProgressPanel(this.algoGame);
-            this._practiseManager = new StageInfo.PractiseManager(this.algoGame);
-            
-            super.onCreate();        
 
+            this.onCreate();
+        }
+        
+        protected onCreate() {
+            super.onCreate();        
         }
         
         protected initEventListners(): void {
@@ -382,17 +377,39 @@ module Common {
             this._background.drawLine(0, 600, this.algoGame.width, 600);
             
             this._background.drawLine(350, 600, 350, this.algoGame.height);
-            
         }
         
-        protected buildGamePlay(): PractiseGamePlay<Common.GamePlayAction, Common.Algorithm> {
+        protected buildGamePlay(): CoreGamePlay<Common.GamePlayAction, Common.Algorithm> {
             throw "Game play not initizliaed";
         }
         
         protected getStageType(): string {
-            return "Practise";
+            throw "Method not defined [getStageType]";
         }
 
+        protected initModalWindows(): void {
+        }
+    }
+    
+    //State for Practise stages only
+    export class PractiseState extends CorePlayState {
+        
+        private _practiseManager: StageInfo.PractiseManager;
+        
+        public shutdown(): void {
+            super.shutdown();
+            this._practiseManager.destroy();
+        }
+    
+        protected onCreate(): void {
+            this._menu = new Common.PractiseMenu(this.algoGame);
+            this._controlPanel = new Common.PractisePanel(this.algoGame);
+            this._progressPanel = new Common.ProgressPanel(this.algoGame);
+            this._practiseManager = new StageInfo.PractiseManager(this.algoGame);
+            
+            super.onCreate();        
+        }
+        
         protected initModalWindows(): void {
         
             this._modalWindow.registerWindow(
@@ -408,63 +425,30 @@ module Common {
                     Constants.GAME_EXAM_BANNERS_ATLAS, 
                     4000));
         }
+        
+        protected getStageType(): string {
+            return "Practise";
+        }
+        
     }
     
     //State for Exam stages only
-    export class ExamState extends Common.State {
+    export class ExamState extends CorePlayState {
     
-        private _background: BackgroundGraphics;
-        private _menu: Common.Menu;
-        private _controlPanel: Common.ExamPanel;
-        private _progressPanel: Common.ProgressPanel;
-        private _modalWindow: GameModal.ModalWindow;
-        private _gamePlay: ExamGamePlay<Common.GamePlayAction, Common.Algorithm>;
-        
-    
-        public shutdown(): void {
-            super.shutdown();
-            this._menu.destroy();
-            this._controlPanel.destroy();
-            this._modalWindow.destroy();
-            this._gamePlay.destroy();
-            this._progressPanel.destroy();
-            this._background.destroy();
-            this._menu = null;
-        }
-    
-        create(): void {
-    
-            this._background = new BackgroundGraphics(this.algoGame);
-            this.drawBackground();
-    
-            this._modalWindow = new GameModal.ModalWindow(this.algoGame);
-            this.initModalWindows();
+        protected onCreate(): void {
     
             this._menu = new Common.ExamMenu(this.algoGame);
             this._controlPanel = new Common.ExamPanel(this.algoGame);
-            this._gamePlay = this.buildGamePlay();
             this._progressPanel = new Common.ProgressPanel(this.algoGame);
     
             super.onCreate();
-        }
-        
-        private drawBackground(): void {
-            this._background.drawLine(0, 80, this.algoGame.width, 80);
-            this._background.drawLine(0, 600, this.algoGame.width, 600);
-            
-            this._background.drawLine(350, 600, 350, this.algoGame.height);
-            
-        }
-        
-        protected buildGamePlay(): ExamGamePlay<Common.GamePlayAction, Common.Algorithm> {
-            throw "Game play not initizliaed";
         }
         
         protected getStageType(): string {
             return "Exam";
         }
         
-        private initModalWindows(): void {
+        protected initModalWindows(): void {
         
             this._modalWindow.registerWindow(
                 new GameModal.ModalConfig(

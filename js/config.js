@@ -3,8 +3,7 @@ var globalConfig = {
         binarySearch: {
             practise: {
                 stageName: "binarySearchPractise",
-                // stepsToPass: 30,
-                stepsToPass: 1,
+                stepsToPass: 30,
                 stepTime: 5000,
                 menu: {
                     MenuButtonMenu: "menu",
@@ -22,7 +21,7 @@ var globalConfig = {
             },
             exam: {
                 stageName: "binarySearchExam",
-                stepsToPass: 2,
+                stepsToPass: 5,
                 stepTime: 3000,
                 menu: {
                     MenuButtonMenu: "menu",

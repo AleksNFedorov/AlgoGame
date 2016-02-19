@@ -408,7 +408,7 @@ module Common {
         
     }
     
-    export class TutorialGamePlay<T extends GamePlayAction, A extends AbstractAlgorithm> extends Common.GameComponentContainer {
+    export class CoreGamePlay<T extends GamePlayAction, A extends AbstractAlgorithm> extends Common.GameComponentContainer {
 
         protected _algorithm: A;
         protected _algorithmStep: IAlgorithmStep;
@@ -432,11 +432,13 @@ module Common {
                     this.checkPractiseDone();
                     break;
                 case Events.CONTROL_PANEL_EVENT_PLAY:
-                    if (this.isNotCurrentState(Common.LevelStageState.CREATED)) {
+                    if (this.isNotCurrentState(Common.LevelStageState.PAUSED)) {
+                        if (this.isNotCurrentState(Common.LevelStageState.CREATED)) {
                             //non-first iteration
                             this.initGame(false);
+                        } 
+                        this.startGame();
                     }
-                    this.startGame();
                     break;
                 case Events.CONTROL_PANEL_EVENT_REPLAY:
                     this.onLastStep(false);
@@ -561,6 +563,41 @@ module Common {
         }
         
         protected getStagePassEvent(): string {
+            throw "Method not implemented [getStagePassEvent]"
+        }
+        
+        protected getStageDone(): number {
+            throw "Method not implemented [getStageDone]"
+        }
+        
+        protected setStageDone(val: number): void {
+            throw "Method not implemented [setStageDone]"
+        }
+        
+        protected getStagePassed(): boolean {
+            throw "Method not implemented [getStagePassed]"
+        }
+        
+        protected setStagePassed(passed: boolean): void {
+            throw "Method not implemented [getStagePassed]"
+        }
+    }
+    
+    export class TutorialGamePlay<T extends GamePlayAction> extends CoreGamePlay<T, ScenarioAlgorithm> {
+        
+        protected onNewStep(): void {
+            super.onNewStep();
+            var scenarioStep: ScenarioStep = <ScenarioStep>this._algorithmStep;
+            for(var messageKey of scenarioStep.messageKeys) {
+                this._game.dispatch(
+                    Events.GAME_SHOW_MESSAGE,
+                    messageKey,
+                    this
+                );
+            }
+        };
+        
+        protected getStagePassEvent(): string {
             return Events.GAME_TUTORIAL_DONE;
         }
         
@@ -579,11 +616,9 @@ module Common {
         protected setStagePassed(passed: boolean): void {
             this.levelSave.tutorialPassed = passed;
         }
-        
     }
     
-    
-    export class PractiseGamePlay<T extends GamePlayAction, A extends AbstractAlgorithm> extends TutorialGamePlay<T, A> {
+    export class PractiseGamePlay<T extends GamePlayAction, A extends AbstractAlgorithm> extends CoreGamePlay<T, A> {
 
         protected _gameStepTimer: Phaser.Timer;
         protected _stepPerformed: boolean = false;
@@ -700,7 +735,7 @@ module Common {
         }
     }
     
-    export class ExamGamePlay<T extends GamePlayAction, A extends AbstractAlgorithm>  extends PractiseGamePlay<T, A> {
+    export class ExamGamePlay<T extends GamePlayAction, A extends AbstractAlgorithm> extends PractiseGamePlay<T, A> {
         
         constructor(game: Common.AlgoGame) {
             super(game);
