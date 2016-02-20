@@ -78,6 +78,16 @@ module Common {
         public examDone: number = 0;
         public examPassed: boolean = false;
         public autoStart: boolean = true;
+        
+        public init(): void {
+            this.tutorialDone = this.tutorialDone || 0;
+            this.tutorialPassed = this.tutorialPassed || false;
+            this.practiseDone = this.practiseDone || 0;
+            this.practisePassed = this.practisePassed || false;
+            this.examDone = this.examDone || 0;
+            this.examPassed = this.examPassed || false;
+            this.autoStart = this.autoStart || true;
+        }
     }
     
     class SecureSaver {
@@ -95,7 +105,7 @@ module Common {
                 var actualHash = this.hashLevelSave(value);
                 if (JSON.stringify(saveHash) === 
                         JSON.stringify(actualHash)) {
-                    console.log(`Level hash missmach ${key}`);
+                    console.log(`Save broken ${key}`);
                     return value;
                 }
                 

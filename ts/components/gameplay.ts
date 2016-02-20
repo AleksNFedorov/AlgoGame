@@ -585,6 +585,11 @@ module Common {
             this.addTimerEvents();
         }
         
+        protected boxClicked(action: T, isUser:boolean = true) {
+            this.addTimerEvents();
+            super.boxClicked(action, isUser);
+        }
+
         protected checkStepAllowed(isUser: boolean): boolean {
             if (this.isNotCurrentState(Common.LevelStageState.RUNNING)) {
                 this._game.dispatch(Events.GAME_STEP_ON_PAUSE, this);

@@ -112,7 +112,7 @@ module Common {
             // this.game.state.start(this._level + "Practise");
             this.game.state.start(this._level + "Tutorial");
         }
-        
+
         public shutdown(): void {
             this._background.destroy();
             this.removeLoadCallbacks();
@@ -193,12 +193,15 @@ module Common {
         public init(): void {
             this._game = <AlgoGame> this.game;
             this._stateConfig = this.getStateConfig(this.getStageType());
-            this._levelSave = this.loadLevelSave();
+            this._levelSave = this.loadLevelSave(this._stateConfig.level);
         }
         
-        protected loadLevelSave(): LevelSave {
-            return this._game.store.get(this._stateConfig.level)
+        protected loadLevelSave(level: string): LevelSave {
+            var save: LevelSave = this._game.store.get(level)
                             || new LevelSave();
+            save.init = new LevelSave().init;
+            save.init();
+            return save;                            
         }
         
         protected getStageType(): string {

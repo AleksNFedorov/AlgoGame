@@ -318,7 +318,7 @@ module Common {
                         Constants.MENU_LEVEL_STATS_TEXT_PRACTISE_PASSED,
                         Constants.MENU_LEVEL_STATS_TEXT_DISABLED
                     );
-                } else if (!levelInfo.examPassed) {
+                } else {
                     return new LevelButtonSettings(
                         levelInfo.examDone,
                         "buttonExamPassedMouseOver.png",
