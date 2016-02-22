@@ -150,11 +150,16 @@ module Common {
             } 
         }
         
-        private setDirectMessage(key: string): void {
-            var message: string = Dictionary[key];
+        private setDirectMessage(keys: string[]): void {
+            var message: any = Dictionary[keys[0]];
+            if (keys.length == 2) {
+                message = message[keys[1]];
+            } else if (keys.length == 3) {
+                message = message[keys[2]];
+            }
             if (message != null) {
                 var messageType: Common.MessageType = Common.MessageType.INFO;
-                this.updateMessages(message, messageType);
+                this.updateMessages("" + message, messageType);
                 this.displayNewMessage();
             } 
         }

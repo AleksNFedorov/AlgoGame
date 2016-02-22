@@ -2,7 +2,7 @@
 
 module Sort {
 
-    class InsertionSortAlgorithm extends Common.Algorithm {
+    class InsertionSortAlgorithm extends Common.ConfigurableAlgorithm {
         
         constructor(config: any) {
             super(config);

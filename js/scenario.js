@@ -2,9 +2,9 @@ var binarySearchScenarios = {
     scenarios: [
         {
             //9 elements
-            sequence: [1,2,3,4,5,6,7,8,9],
-            elementToFindIndex: 0,
-            steps: [
+            _sequence: [1,2,3,4,5,6,7,8,9],
+            _elementToFindIndex: 0,
+            _steps: [
                 {
                     startIndex: 0,
                     endIndex: 8,
@@ -12,8 +12,8 @@ var binarySearchScenarios = {
                     isLast: false,
                     stepNumber: 0,
                     messageKeys: [
-                        "message1",
-                        "message2",
+                        ["message1"],
+                        ["message2"],
                     ],
                 },
                 {
@@ -23,8 +23,8 @@ var binarySearchScenarios = {
                     isLast: false,
                     stepNumber: 1,
                     messageKeys: [
-                        "message3",
-                        "message4",
+                        ["message3"],
+                        ["message4"],
                     ],
                 },
                 {
@@ -34,17 +34,17 @@ var binarySearchScenarios = {
                     isLast: true,
                     stepNumber: 2,
                     messageKeys: [
-                        "message5",
-                        "message6",
+                        ["message5"],
+                        ["message6"],
                     ],
                 },
             ],
         },
         {
             //12 elements
-            sequence: [1,2,2,4,15,16,27,28,31,89,99,102],
-            elementToFindIndex: 7, //27
-            steps: [
+            _sequence: [1,2,2,4,15,16,27,28,31,89,99,102],
+            _elementToFindIndex: 7, //27
+            _steps: [
                 {
                     startIndex: 0,
                     endIndex: 11,
@@ -52,8 +52,8 @@ var binarySearchScenarios = {
                     isLast: false,
                     stepNumber: 0,
                     messageKeys: [
-                        "message1",
-                        "message2",
+                        ["message1"],
+                        ["message2"],
                     ],
                 },
                 {
@@ -63,8 +63,8 @@ var binarySearchScenarios = {
                     isLast: false,
                     stepNumber: 1,
                     messageKeys: [
-                        "message3",
-                        "message4",
+                        ["message3"],
+                        ["message4"],
                     ],
                 },
                 {
@@ -74,8 +74,8 @@ var binarySearchScenarios = {
                     isLast: false,
                     stepNumber: 2,
                     messageKeys: [
-                        "message5",
-                        "message6",
+                        ["message5"],
+                        ["message6"],
                     ],
                 },
                 {
@@ -85,8 +85,8 @@ var binarySearchScenarios = {
                     isLast: true,
                     stepNumber: 3,
                     messageKeys: [
-                        "message5",
-                        "message6",
+                        ["message5"],
+                        ["message6"],
                     ],
                 },
             ],

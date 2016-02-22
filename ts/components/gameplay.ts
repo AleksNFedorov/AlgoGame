@@ -31,19 +31,43 @@ module Common {
         constructor(
             public sequence: any[],
             public steps: AlgorithmStep[]
-            ) {};
+        ) {};
     }
-
+    
     export class Algorithm {
-        
-        protected config: any;
 
         protected _sequence: any[];
         protected _steps: AlgorithmStep[] = [];
         
         private _lastRequestedStepNumber: number = -1;
         
+        public restore(settings: AlgorithmSettings): void {
+            this._sequence = settings.sequence;
+            this._steps = settings.steps;
+        }
+        
+        public getNextStep(): AlgorithmStep {
+            this._lastRequestedStepNumber = Math.min(this._lastRequestedStepNumber + 1, this._steps.length - 1);
+            return this._steps[this._lastRequestedStepNumber];
+        }
+
+        public get sequence(): any[] {
+            return this._sequence;
+        }
+        
+        public init(): void {}
+
+        public static getRandomInteger(from: number, to: number): number {
+            return Math.floor(Math.random() * (to - from) + from);
+        }
+    }
+
+    export class ConfigurableAlgorithm extends Algorithm {
+        
+        protected config: any;
+
         constructor(config: any) {
+            super();
             this.config = config;
         }
         
@@ -53,18 +77,8 @@ module Common {
             this.updateLastStep();
         }
         
-        public restore(settings: AlgorithmSettings): void {
-            this._sequence = settings.sequence;
-            this._steps = settings.steps;
-        }
-        
         protected runAlgorithm(): AlgorithmStep[] {
             return [];   
-        }
-        
-        public getNextStep(): AlgorithmStep {
-            this._lastRequestedStepNumber = Math.min(this._lastRequestedStepNumber + 1, this._steps.length - 1);
-            return this._steps[this._lastRequestedStepNumber];
         }
         
         private updateLastStep(): void {
@@ -94,14 +108,6 @@ module Common {
         
         protected getRandomSeqNumber(): number {
             return Algorithm.getRandomInteger(this.config.minSeqNumber, this.config.maxSeqNumber);
-        }
-        
-        public static getRandomInteger(from: number, to: number): number {
-            return Math.floor(Math.random() * (to - from) + from);
-        }
-        
-        public get sequence(): any[] {
-            return this._sequence;
         }
 
     }   
@@ -436,7 +442,7 @@ module Common {
         }
         
         protected onInit(): void {
-            
+            this._algorithm.init();    
         }
         
         protected createGamePlayInfo(): Common.GamePlayInfo {
@@ -579,6 +585,16 @@ module Common {
                 );
         }
         
+        protected onInit(): void {
+            var settings: AlgorithmSettings = this.getSettings();
+            for(var k in settings) this._algorithm[k] = settings[k];
+            
+        }
+        
+        protected getSettings(): AlgorithmSettings {
+            throw "Method not implemented [getSettings]";
+        }
+
         protected startGame(): void {
             super.startGame();
             this._game.dispatch(Events.GAME_BLINK_MESSAGE, this);
@@ -711,12 +727,7 @@ module Common {
             
             return true;
         }
-        
-        protected onInit(): void {
-            this._algorithm.init();
-        }
 
-        
         protected onNewStep(): void {
             super.onNewStep();
             this.addTimerEvents();

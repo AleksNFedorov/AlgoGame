@@ -109,8 +109,19 @@ module Common {
         
         private onFinish(): void {
             console.log("Level preloading [onFinish]");
-            // this.game.state.start(this._level + "Practise");
-            this.game.state.start(this._level + "Tutorial");
+            this.game.state.start(this.getLevelStageToStart(this._level));
+        }
+        
+        private getLevelStageToStart(level: string): string {
+            var levelSave = (<AlgoGame>this.game).loadLevelSave(level);
+            if (!levelSave.tutorialPassed) {
+                return level + "Tutorial";
+            } else if (!levelSave.examPassed || !levelSave.practisePassed) {
+                return level + "Practise";
+            } else if (levelSave.examPassed) {
+                return level + "Exam";
+            } 
+            throw `Unable to identify stage to ${level}`;
         }
 
         public shutdown(): void {
@@ -193,15 +204,7 @@ module Common {
         public init(): void {
             this._game = <AlgoGame> this.game;
             this._stateConfig = this.getStateConfig(this.getStageType());
-            this._levelSave = this.loadLevelSave(this._stateConfig.level);
-        }
-        
-        protected loadLevelSave(level: string): LevelSave {
-            var save: LevelSave = this._game.store.get(level)
-                            || new LevelSave();
-            save.init = new LevelSave().init;
-            save.init();
-            return save;                            
+            this._levelSave = this._game.loadLevelSave(this._stateConfig.level);
         }
         
         protected getStageType(): string {
@@ -217,7 +220,6 @@ module Common {
             
             return stateConfig;
         }
-        
         
         protected onCreate(): void {
             this.initEventListners();

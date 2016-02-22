@@ -2,7 +2,7 @@
 
 module Sort {
 
-    class QuickSortAlgorithm extends Common.Algorithm {
+    class QuickSortAlgorithm extends Common.ConfigurableAlgorithm {
         
         private _mergeSteps: Step[];
         

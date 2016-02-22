@@ -216,6 +216,14 @@ module Common {
             return this._config;
         }
         
+        public loadLevelSave(level: string): LevelSave {
+            var save: LevelSave = this.store.get(level)
+                            || new LevelSave();
+            save.init = new LevelSave().init;
+            save.init();
+            return save;                            
+        }
+        
         public get levelStageState(): LevelStageState {
             var state: State = this.currentState;
             return state.levelStageState;

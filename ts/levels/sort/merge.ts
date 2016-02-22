@@ -2,7 +2,7 @@
 
 module Sort {
 
-    class MergeSortAlgorithm extends Common.Algorithm {
+    class MergeSortAlgorithm extends Common.ConfigurableAlgorithm {
         
         private mergeSteps: Step[];
         

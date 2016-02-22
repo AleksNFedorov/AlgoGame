@@ -2,7 +2,7 @@
 
 module Sort {
 
-    class SelectionSortAlgorithm extends Common.Algorithm {
+    class SelectionSortAlgorithm extends Common.ConfigurableAlgorithm {
         
         constructor(config: any) {
             super(config);

@@ -8,7 +8,7 @@ module Graph {
         constructor(public index: number){};
     }
     
-    export class AbstractTraverseAlgorithm extends Common.Algorithm {
+    export class AbstractTraverseAlgorithm extends Common.ConfigurableAlgorithm {
        
         private _workSeqeunce: GraphJS.Node[];
 

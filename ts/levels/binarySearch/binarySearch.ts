@@ -52,28 +52,13 @@ module BinarySearch {
         
     }
     
-    export class BinarySearchAlgorithmSettings extends Common.AlgorithmSettings {
-        constructor(
-            public sequence: any[],
-            public steps: Common.AlgorithmStep[],
-            public elementToFindIndex: number
-            ) {
-                super(sequence, steps);
-            };
-    }
-
-    class BinarySearchAlgorithm extends Common.Algorithm {
+    class BinarySearchAlgorithm extends Common.ConfigurableAlgorithm {
         
         private _stepIndex: number = 0;
         private _elementToFindIndex: number;
         
         constructor(config: any) {
             super(config);
-        }
-        
-        public restore(settings: BinarySearchAlgorithmSettings): void {
-            super.restore(settings);
-            this._elementToFindIndex = settings.elementToFindIndex;
         }
         
         protected runAlgorithm(): BinarySearchStep[] {
@@ -183,21 +168,21 @@ module BinarySearch {
         }
         
         protected onInit(): void {
-            // no need to call 
-            // super.onInit();
+            super.onInit();
             this._boxLine = new BoxLine(this._game,     
                 this.boxClicked.bind(this), 
                 this._algorithm.sequence, 
                 this._algorithm.elementToFindIndex);
         }
         
-        protected createAlgorithm(config: any): BinarySearchAlgorithm {
+        protected getSettings(): Common.AlgorithmSettings {
             this._tutorialIteration += 1;
             var scenarioIndex = this._tutorialIteration % binarySearchScenarios.scenarios.length;
-            var settings: BinarySearchAlgorithmSettings = <BinarySearchAlgorithmSettings> binarySearchScenarios.scenarios[scenarioIndex];
-            var algorithm: BinarySearchAlgorithm = new BinarySearchAlgorithm(config);
-            algorithm.restore(settings);
-            return algorithm;
+            return binarySearchScenarios.scenarios[scenarioIndex];
+        }
+        
+        protected createAlgorithm(config: any): BinarySearchAlgorithm {
+            return new BinarySearchAlgorithm(config);
         }
         
         protected isCorrectStep(action: BinarySearchAction): boolean {
@@ -228,7 +213,7 @@ module BinarySearch {
             return <BinarySearchStep>this._algorithmStep;
         }
     }    
-
+    
     export class BinarySearchPractiseGamePlay extends Common.PractiseGamePlay<BinarySearchAction, BinarySearchAlgorithm> {
         
         protected _boxLine: BoxLine;
@@ -285,7 +270,6 @@ module BinarySearch {
                 this._algorithm.elementToFindIndex);
         }
 
-        
         protected createAlgorithm(config: any): BinarySearchAlgorithm {
             return new BinarySearchAlgorithm(config);
         }
