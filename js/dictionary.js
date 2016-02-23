@@ -129,6 +129,24 @@ var Dictionary = {
     ],
     
     //Scenario messages (Direct)
+    scenarios: {
+        general: {
+        },
+        binarySearch: [
+          {
+              message1: "1. Target value: X = 1",
+              message2: "2. Click middle element: Y = 5",
+              message3: "3. Y > X. Repeat with right side [1,2,3,4]",
+              message4: "4. Click middle element: Y = 2",
+              message5: "5. Y > X. Repeat with right side [1]",
+              message6: "6. Click middle element: Y = 1",
+              message7: "7. Y = X. Element found!",
+          },
+          {
+              
+          }
+        ],
+    },
       message1: "Message 1",
       message2: "Message 2",
       message3: "Message 3",

@@ -594,25 +594,26 @@ module Common {
     
     export class TutorialGamePlay<T extends GamePlayAction, A extends Algorithm> extends CoreGamePlay<T, A> {
         
-        protected _autoStartTimer: Phaser.Timer;
+        protected _extraRemindTimer: Phaser.Timer;
         private _extraInfo: Common.ShowInfo;
+        private _settings: any
         
         constructor(game: Common.AlgoGame) {
             super(game);
-            this._autoStartTimer = game.time.create(false);
-            this._autoStartTimer.start();
+            this._extraRemindTimer = game.time.create(false);
+            this._extraRemindTimer.start();
             
             this._extraInfo = new ShowInfo(
                 Common.GameElements.ControlPanelText,
-                null,
+                Events.GAME_CORRECT_STEP_DONE,
                 Constants.EXTRA_HELP_MESSAGE_KEY,
                 this.addTimerEvents.bind(this)
                 );
         }
         
         protected onInit(): void {
-            var settings = this.getSettings();
-            this._algorithm.restore(settings);
+            this._settings = this.getSettings();
+            this._algorithm.restore(this._settings);
         }
         
         protected getSettings(): any {
@@ -640,8 +641,8 @@ module Common {
         }
         
         private addTimerEvents(): void {
-            this._autoStartTimer.removeAll();
-            this._autoStartTimer.repeat(
+            this._extraRemindTimer.removeAll();
+            this._extraRemindTimer.repeat(
                 Constants.EXTRA_HELP_SHOW_INTERVAL,
                 0,
                 this.showExtraInfo,
@@ -657,8 +658,16 @@ module Common {
         }
         
         protected onPractiseDone(): void {
-            this._autoStartTimer.stop();
+            this._extraRemindTimer.stop();
             super.onPractiseDone();
+        }
+        
+        protected onLastStep(isUser: boolean): void {
+            this._game.dispatch(Events.GAME_SHOW_MESSAGE, 
+            this, 
+            this._settings.finalMessage);
+            super.onLastStep(isUser);
+            this._extraRemindTimer.removeAll();
         }
         
         protected onWrongStep(isUser: boolean = true): void {
@@ -687,7 +696,7 @@ module Common {
         
         destroy(): void {
             super.destroy();
-            this._autoStartTimer.destroy();
+            this._extraRemindTimer.destroy();
         }
     }
     
@@ -736,6 +745,7 @@ module Common {
         }
         
         protected checkStepAllowed(isUser: boolean): boolean {
+            
             if (this.isNotCurrentState(Common.LevelStageState.RUNNING)) {
                 this._game.dispatch(Events.GAME_STEP_ON_PAUSE, this);
                 return false;

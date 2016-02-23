@@ -4,13 +4,42 @@ declare var Dictionary: any;
 
 module Common {   
     
+    class Blinker {
+        
+        private _sprite: any;
+        private _game: AlgoGame;
+        private _currentTween: Phaser.Tween;
+        
+        constructor(game: AlgoGame, sprite: any) {
+            this._sprite = sprite;
+            this._game = game;
+        }
+        
+        public blink(): void {
+            if (this._currentTween != null) {
+                this._currentTween.stop();
+            }
+            
+            this._sprite.alpha = 1;
+            this._currentTween = this._game.add.tween(this._sprite).to({alpha: 0.3}, 100, "Quart.easeOut", false, 0, 7, true);
+            this._currentTween.start();
+
+        }
+        
+        destroy(): void {
+            if (this._currentTween != null) {
+                this._currentTween.stop();
+            }
+        }
+    }
+    
     class GameMessage extends Phaser.Group implements GameUIObjectWithState {
         
         private _text: Common.Text;
         private _icon: Phaser.Sprite;
         private _game: AlgoGame;
         
-        private _currentTween: Phaser.Tween;
+        private _blinker: Blinker;
         
         constructor(game: AlgoGame, text: string, messageType: MessageType) {
             super(game);
@@ -19,6 +48,7 @@ module Common {
             
             this._icon = this.addIcon(messageType);
             this._text = this.addText(text, messageType);
+            this._blinker = new Blinker(game, this._icon);
         }
         
         private addIcon(messageType: MessageType): Phaser.Sprite {
@@ -51,17 +81,16 @@ module Common {
         }
         
         public blinkMessage(): void {
-            if (this._currentTween != null) {
-                this._currentTween.stop();
-            }
-            
-            this._icon.alpha = 1;
-            this._currentTween = this.game.add.tween(this._icon).to({alpha: 0.3}, 100, "Quart.easeOut", false, 0, 7, true);
-            this._currentTween.start();
+            this._blinker.blink();
         }
         
         public displayMessage(): void {
             this.game.add.tween(this).to({alpha: 1}, 200, "Quart.easeOut").start();
+        }
+        
+        public destroy(): void {
+            this._blinker.destroy();
+            super.destroy();
         }
         
         saveStateAndDisable(): void {};
@@ -150,13 +179,19 @@ module Common {
             } 
         }
         
-        private setDirectMessage(keys: string[]): void {
-            var message: any = Dictionary[keys[0]];
-            if (keys.length == 2) {
-                message = message[keys[1]];
-            } else if (keys.length == 3) {
-                message = message[keys[2]];
+        private setDirectMessage(path: string): void {
+            
+            var keys = path.split(".");
+            
+            var message: any = Dictionary;
+            for (var key of keys) {
+                if (!isNaN(Number(key))) {
+                    message = message[Number(key)];
+                } else {
+                    message = message[key];
+                }
             }
+
             if (message != null) {
                 var messageType: Common.MessageType = Common.MessageType.INFO;
                 this.updateMessages("" + message, messageType);
@@ -208,11 +243,13 @@ module Common {
 
         protected _autoStartTimer: Phaser.Timer;
         protected _autoStartEnabled: boolean = true; 
+        private _blinker: Blinker;
         
         constructor(game: AlgoGame) {
             super(game);
             this._autoStartTimer = game.time.create(false);
             this._autoStartTimer.start();
+            this._blinker = new Blinker(game, this._playButton);
         }
         
         protected createElements(): void {
@@ -257,6 +294,9 @@ module Common {
                             this.getCallbackForEventId(Events.CONTROL_PANEL_EVENT_PLAY), 
                             this);
                     }
+                    break;
+                case Events.GAME_STEP_ON_PAUSE:
+                    this._blinker.blink();
                     break;
                 case Events.GAME_DISABLE_ALL:
                     this._autoStartTimer.pause();
