@@ -195,7 +195,7 @@ module Common {
         private _config: GameConfig.Config = globalConfig;
 
         constructor(gameWidth: number, gameHeight: number, mode: number, tag: string) {
-            super(gameWidth, gameHeight, mode, tag, null, false, true);
+            super(gameWidth, gameHeight, mode, tag, null, false, false);
             this._eventBus = new EventBusClass();
         }
         

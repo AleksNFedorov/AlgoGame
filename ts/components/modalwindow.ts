@@ -87,10 +87,9 @@ module GameModal {
             
             var playButton = new Common.Button(
                 this._game,
-                Constants.PLAY_BUTTON_FRAMES
+                Constants.PLAY_BUTTON_MID_FRAMES
             );
             playButton.callback = this.onHide.bind(this);
-            playButton.scale.setTo(0.8);
 
             playButton.x = contentImage.x + contentImage.width - playButton.width;
             playButton.y = windowGroup.height - (windowGroup.height - (contentImage.y + contentImage.height)) / 2 - playButton.height/2;

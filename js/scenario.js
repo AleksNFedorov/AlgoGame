@@ -2,9 +2,9 @@ var binarySearchScenarios = {
     scenarios: [
         {
             //9 elements
-            _sequence: [1,2,3,4,5,6,7,8,9],
-            _elementToFindIndex: 0,
-            _steps: [
+            sequence: [1,2,3,4,5,6,7,8,9],
+            elementToFindIndex: 0,
+            steps: [
                 {
                     startIndex: 0,
                     endIndex: 8,
@@ -29,7 +29,7 @@ var binarySearchScenarios = {
                 },
                 {
                     startIndex: 0,
-                    endIndex: 1,
+                    endIndex: 0,
                     elementIndex: 0,
                     isLast: true,
                     stepNumber: 2,
@@ -42,9 +42,9 @@ var binarySearchScenarios = {
         },
         {
             //12 elements
-            _sequence: [1,2,2,4,15,16,27,28,31,89,99,102],
-            _elementToFindIndex: 7, //27
-            _steps: [
+            sequence: [1,2,2,4,15,16,27,28,31,89,91,93],
+            elementToFindIndex: 7, //27
+            steps: [
                 {
                     startIndex: 0,
                     endIndex: 11,

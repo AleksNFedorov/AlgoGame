@@ -16,7 +16,6 @@ module Common {
             
             var progressBarBackground = type + "Background" + ".png";
             var progressBarForeground = type + "Foreground" + ".png";
-            var progressBarCover = type + "Cover" + ".png";
             
             var textStyle = isBig ? Constants.PROGRESS_BAR_BIG_TEXT : Constants.PROGRESS_BAR_TEXT;
             
@@ -35,20 +34,8 @@ module Common {
             );
             progressImage.anchor.setTo(0.5);
             
-            var progressCover = game.add.sprite(
-                0, 0, 
-                Constants.GAME_GENERAL_ATTLAS,
-                progressBarCover,
-                this
-                );
-                
-            progressCover.anchor.setTo(0.5);    
-
             progressImage.x = progressBackground.width/2;                
             progressImage.y = progressBackground.height/2;
-
-            progressCover.x = progressBackground.width/2;                
-            progressCover.y = progressBackground.height/2;
 
             var progressText: Phaser.Text = this.game.add.text(
                 0,

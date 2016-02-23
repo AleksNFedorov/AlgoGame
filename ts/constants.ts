@@ -32,7 +32,7 @@ class Constants {
     static GAME_AREA_MARGIN = 40;
     static GAME_AREA_X = 0;
     static GAME_AREA_Y = 150;
-    static GAME_AREA_LINE_Y = 340;
+    static GAME_AREA_LINE_Y = 480;
 
     //Banners
     static BANNER_SHOW_TIME = 2000;
@@ -55,7 +55,7 @@ class Constants {
     
     //Game area
     static GAME_AREA_TEXT = { 
-        font: "bold 22px Open Sans", 
+        font: "bold 20px Open Sans", 
         fill: "white"
     }
 
@@ -109,6 +109,7 @@ class Constants {
     
     static MENU_LEVEL_TEXT_ENABLED = "white";
     static MENU_LEVEL_STATS_TEXT_ENABLED = "#fd783e";
+    static MENU_LEVEL_STATS_TEXT_TUTORIAL_PASSED = "#3498DB";
     static MENU_LEVEL_STATS_TEXT_PRACTISE_PASSED = "#fbb640";
     static MENU_LEVEL_STATS_TEXT_EXAM_PASSED = "#10b966";
     static MENU_LEVEL_STATS_TEXT_DISABLED = "#32303d";
@@ -144,6 +145,14 @@ class Constants {
         "Play-button_Disabled.png"
     ];
     
+    static PLAY_BUTTON_MID_FRAMES = [
+        "Play-button_Mouse-over_med.png", 
+        "Play-button_Enabled_med.png", 
+        "Play-button_clicked_med.png", 
+        "Play-button_Enabled_med.png", 
+        "Play-button_Disabled_med.png"
+    ];
+
     static AUTOSTART_FRAMES_OFF = [
         "AutoStart-toggle_off.png",
         "AutoStart-toggle_off.png",
@@ -209,11 +218,11 @@ class Constants {
     ];
 
     static GO_TUTORIAL_FRAMES = [
-        "Level-Objectives_Mouse-over.png",
-        "Level-Objectives_Enabled.png",
-        "Level-Objectives_Clicked.png",
-        "Level-Objectives_Enabled.png",
-        "Level-Objectives_disable.png"
+        "Tutorial_Mouse-over.png",
+        "Tutorial_Enabled.png",
+        "Tutorial_Clicked.png",
+        "Tutorial_Enabled.png",
+        "Tutorial_disable.png"
     ];
 
     static GO_PRACTISE_FRAMES = [
@@ -231,5 +240,20 @@ class Constants {
         "Go-Exam_Enabled.png",
         "Go-Exam_disable.png"
     ];
+    
+    static CIRCLE_BOX_FRAMES = [
+        "Active.png",
+        "Selected_blue.png",
+        "Selected_green.png",
+        "Selected_orange.png",
+        "Disabled.png"
+    ];
 
+    static SQUARE_BOX_FRAMES = [
+        "Square_yellow.png",
+        "Square_yellow.png",
+        "Square_green.png",
+        "Square_orange.png",
+        "Square_gray.png"
+    ];
 }

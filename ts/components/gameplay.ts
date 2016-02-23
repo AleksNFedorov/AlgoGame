@@ -27,13 +27,6 @@ module Common {
         
     }
     
-    export class AlgorithmSettings {
-        constructor(
-            public sequence: any[],
-            public steps: AlgorithmStep[]
-        ) {};
-    }
-    
     export class Algorithm {
 
         protected _sequence: any[];
@@ -41,7 +34,7 @@ module Common {
         
         private _lastRequestedStepNumber: number = -1;
         
-        public restore(settings: AlgorithmSettings): void {
+        public restore(settings: any): void {
             this._sequence = settings.sequence;
             this._steps = settings.steps;
         }
@@ -117,19 +110,19 @@ module Common {
         constructor(public index: number, public position: FlagPosition, public level: FlagLevel) {};
     }
     
-    export enum BoxState {ACTIVE, SELECTED_BLUE, SELECTED_GREEN, SELECTED_ORANGE, DISABLED}
+    export enum BoxState {ACTIVE , SELECTED_BLUE, SELECTED_GREEN, SELECTED_ORANGE, DISABLED}
     
     export class BoxContainer extends Phaser.Group {
 
-        private _boxIndex: number;
+        protected _boxIndex: number;
         
-        private _box: Phaser.Sprite;
-        private _boxText: Phaser.Text;
+        protected _box: Phaser.Sprite;
+        protected _boxText: Phaser.Text;
         
-        private _pressCallback: Function;
-        private _releaseCallback: Function;
+        protected _pressCallback: Function;
+        protected _releaseCallback: Function;
         
-        private _state: BoxState;
+        protected _state: BoxState;
         
         constructor(game:Common.AlgoGame, boxValue: any, pressCallback?: Function, releaseCallback?: Function) {
             super(game);
@@ -142,10 +135,15 @@ module Common {
             game.add.existing(this);
         }
         
-        private initBox(game: Common.AlgoGame, value: any): void {
+        protected initBox(game: Common.AlgoGame, value: any): void {
 
-            var box: Phaser.Sprite =  game.add.sprite(0,0, Constants.GAME_GENERAL_ATTLAS, "Active.png");
-            var boxKeyText: Phaser.Text = game.add.text(box.height/2, box.width/2 , "" + value, 
+            var box: Phaser.Sprite =  game.add.sprite(
+                0,0, Constants.GAME_GENERAL_ATTLAS, 
+                this.getBoxFrames()[BoxState.ACTIVE]);
+            var boxKeyText: Phaser.Text = game.add.text(
+                box.height/2, 
+                box.width/2 ,
+                "" + value, 
                 JSON.parse(JSON.stringify(Constants.CONTROL_PANEL_MESSAGE_STYLE)));
             boxKeyText.anchor.x = 0.6;
             boxKeyText.anchor.y = 0.5;
@@ -176,27 +174,21 @@ module Common {
                 return;
             }
             
-            this._boxText.fill = Constants.MENU_LEVEL_TEXT_ENABLED;
             this._state = newState;
+            this._box.frameName = this.getBoxFrames()[newState];
             switch(newState) {
-                case BoxState.ACTIVE:
-                    this._box.frameName = "Active.png";
-                    break;
-                case BoxState.SELECTED_BLUE:
-                    this._box.frameName = "Selected_blue.png";
-                    break;
-                case BoxState.SELECTED_ORANGE:
-                    this._box.frameName = "Selected_orange.png";
-                    break;
-                case BoxState.SELECTED_GREEN:
-                    this._box.frameName = "Selected_green.png";
-                    break;
                 case BoxState.DISABLED:
-                    this._box.frameName = "Disabled.png";
                     this._boxText.fill = Constants.MENU_LEVEL_STATS_TEXT_DISABLED;
                     break;
+                default:
+                    this._boxText.fill = Constants.MENU_LEVEL_TEXT_ENABLED;
             }
         }
+        
+        protected getBoxFrames(): string[] {
+            throw "Method not implemented [getBoxFrames]";
+        }
+
         
         public setBoxIndex(boxIndex: number): void {
             this._boxIndex = boxIndex;
@@ -208,6 +200,36 @@ module Common {
         
         private onInputUp(): void {
             this._releaseCallback(this._boxIndex);
+        }
+    }
+    
+    export class CircleBoxContainer extends BoxContainer {
+     
+        protected getBoxFrames(): string[] {
+            return Constants.CIRCLE_BOX_FRAMES;
+        }
+        
+    }
+    
+    export class SquareBoxContainer extends BoxContainer {
+
+        protected getBoxFrames(): string[] {
+            return Constants.SQUARE_BOX_FRAMES;
+        }
+    }
+    
+    export class SortingBoxContainer extends SquareBoxContainer {
+        
+        private static MAX_MULTIPLIER = 3;
+        
+        public setValueFromMax(percent: number): void {
+
+            var textOffset = this._box.height/2;
+
+            var extaTall = Math.ceil(this._box.height * SortingBoxContainer.MAX_MULTIPLIER * percent);   
+            this._box.height += extaTall;
+            
+            this._boxText.y = this._box.height - textOffset;
         }
     }
     
@@ -237,19 +259,20 @@ module Common {
             
             this._boxLine.x = Constants.GAME_AREA_X;
             this._boxLine.y = Constants.GAME_AREA_LINE_Y;
-            
         }
         
         protected createBoxes(seqeunce: number[]): BoxContainer[] {
             
             var boxes: BoxContainer[] = [];
             var boxInterval = (this._game.width - Constants.GAME_AREA_MARGIN * 2 - Constants.GAME_AREA_BOX_WIDTH)/(seqeunce.length - 1);
+            var sequenceMax = Math.max.apply(Math, seqeunce);
+            var sequenceMin = Math.min.apply(Math, seqeunce);
             
             for(var index = 0; index < seqeunce.length; ++index) {
-                var boxContainer: BoxContainer = this.createBox(index, seqeunce[index]);
+                var boxContainer: BoxContainer = this.createBox(index, seqeunce[index], sequenceMax, sequenceMin);
                 this._boxLine.add(boxContainer);
                 boxContainer.x = boxInterval * index + Constants.GAME_AREA_MARGIN;
-                boxContainer.y = 0;
+                boxContainer.y = -boxContainer.height;
                 
                 boxes.push(boxContainer);
                 
@@ -262,13 +285,15 @@ module Common {
             return boxes;
         }
         
-        private createBox(index: number, value: number): BoxContainer {
-            var boxContainer: BoxContainer = new BoxContainer(this._game,
+        private createBox(index: number, value: number, seqMax: number, seqMin: number): BoxContainer {
+            var boxContainer: SortingBoxContainer = new SortingBoxContainer(this._game,
                     value,
                     this.onBoxClickPressed.bind(this),
                     this.onBoxClickReleased.bind(this)
                 );
             boxContainer.setBoxIndex(index);
+            var relativeToMax = (value - seqMin)/(seqMax - seqMin);
+            boxContainer.setValueFromMax(relativeToMax);
             return boxContainer;
         }
         
@@ -586,12 +611,11 @@ module Common {
         }
         
         protected onInit(): void {
-            var settings: AlgorithmSettings = this.getSettings();
-            for(var k in settings) this._algorithm[k] = settings[k];
-            
+            var settings = this.getSettings();
+            this._algorithm.restore(settings);
         }
         
-        protected getSettings(): AlgorithmSettings {
+        protected getSettings(): any {
             throw "Method not implemented [getSettings]";
         }
 

@@ -308,7 +308,7 @@ module Graph {
         }
         
         protected createNode(node: GraphJS.Node): Common.BoxContainer {
-            return new Common.BoxContainer(this._game, node.id, this.createNodeClickCallback(node.id), function(){});
+            return new Common.CircleBoxContainer(this._game, node.id, this.createNodeClickCallback(node.id), function(){});
         }
         
         private drawEdges(parent: GraphJS.Node): void {

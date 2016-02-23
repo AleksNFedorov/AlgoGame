@@ -141,7 +141,11 @@ module Common {
         
         private _game: AlgoGame;
         private _levelInfo: LevelInfo[] = [];
-        private _examPassedLevels: number = 0;
+        
+        private _openLevels: number = 0;
+        private _tutorialPassed: number = 0;
+        private _practisePassed: number = 0;
+        private _examPassed: number = 0;
         
         constructor(game: AlgoGame) {
             this._game = game;
@@ -158,7 +162,7 @@ module Common {
         
         private createLevelInfo(levelName: string): LevelInfo {
             
-            var levelSave: LevelSave = this._game.store.get(levelName) || new LevelSave();
+            var levelSave: LevelSave = this._game.loadLevelSave(levelName);
             var levelConfig: GameConfig.LevelConfig = this._game.config.levelConfigs[levelName];
             var levelPractiseConfig: GameConfig.StageConfig = levelConfig.practise;
 
@@ -172,15 +176,43 @@ module Common {
                 levelInfo.levelEnabled = true;
             }
             
-            if (levelSave.examPassed) {
-                this._examPassedLevels++;
-            }
-            
+            if (levelInfo.levelEnabled) {
+                this.updateStatistics(levelInfo);
+            }                
+
             return levelInfo;
         }
         
-        get examPassedCount(): number {
-            return this._examPassedLevels;
+        private updateStatistics(info: LevelInfo) {
+            this._openLevels++;
+            
+            if (info.tutorialPassed) {
+                this._tutorialPassed++;
+                
+                if (info.practisePassed) {
+                    this._practisePassed++;
+                    
+                    if (info.examPassed) {
+                        this._examPassed++;
+                    }
+                }
+            }
+        }
+        
+        get examsPassed(): number {
+            return this._examPassed;
+        }
+        
+        get practisesPassed(): number {
+            return this._practisePassed;
+        }
+        
+        get levelsOpen(): number {
+            return this._openLevels;
+        }
+        
+        get tutorialsPassed(): number {
+            return this._tutorialPassed;
         }
         
         get levelInfos(): LevelInfo[] {
@@ -192,7 +224,11 @@ module Common {
     export class LevelButtonsPanel extends GameComponentContainer {
         
         private _levelLocker: LevelLocker;
-        private _progressBar: ProgressBar;
+        
+        private _openProgress: ProgressBar;
+        private _tutorialProgress: ProgressBar;
+        private _practiseProgress: ProgressBar;
+        private _examProgress: ProgressBar;
         
         constructor(game: AlgoGame) {
             super(game);
@@ -201,16 +237,39 @@ module Common {
             
             this.createLevelButtons();
             
-            this._progressBar = new ProgressBar(game, "progressBarBig", "", true);
-            this._progressBar.y = 650;
-            this._progressBar.x = 5;
+            this._openProgress = new ProgressBar(game, "progressOrangeMed", "Open", false);
+            this._tutorialProgress = new ProgressBar(game, "progressBlueMed", "Tutorial", false);
+            this._practiseProgress = new ProgressBar(game, "progressYellowMed", "Practise", false);
+            this._examProgress = new ProgressBar(game, "progressGreenMed", "Exam", false);
 
             var totalLevels = this._levelLocker.levelInfos.length;
-            var passed = this._levelLocker.examPassedCount;
+            var openLevels = this._levelLocker.levelsOpen;
+            var examPassed = this._levelLocker.examsPassed;
+            var practisesPassed = this._levelLocker.practisesPassed;
+            var tutorialsPassed = this._levelLocker.tutorialsPassed;
 
-            this._progressBar.setMaxValue(totalLevels);
-            this._progressBar.setValue(passed, passed + "/" + totalLevels);
+            this._openProgress.setMaxValue(totalLevels);
+            this._tutorialProgress.setMaxValue(totalLevels);
+            this._practiseProgress.setMaxValue(totalLevels);
+            this._examProgress.setMaxValue(totalLevels);
+            
+            this._openProgress.setValue(openLevels, openLevels + "/" + totalLevels);
+            this._tutorialProgress.setValue(tutorialsPassed, tutorialsPassed + "/" + totalLevels);
+            this._practiseProgress.setValue(practisesPassed, practisesPassed + "/" + totalLevels);
+            this._examProgress.setValue(examPassed, examPassed + "/" + totalLevels);
 
+
+            this._openProgress.y = 650;
+            this._openProgress.x = 5;
+
+            this._tutorialProgress.y = 650;
+            this._tutorialProgress.x = 612;
+
+            this._practiseProgress.y = 720;
+            this._practiseProgress.x = 5;
+
+            this._examProgress.y = 720;
+            this._examProgress.x = 612;
 /*
             Facebook test button
             
@@ -296,15 +355,27 @@ module Common {
         private getButtonSettings(levelInfo: LevelInfo): LevelButtonSettings {
             
             if (levelInfo.levelEnabled) {
-                if (!levelInfo.tutorialPassed) {
+                
+                if (levelInfo.tutorialDone == 0) {
                     return new LevelButtonSettings(
-                        levelInfo.tutorialDone,
-                        "buttonExamPassedMouseOver.png",
-                        "buttonExamPassedEnable.png",
-                        "buttonExamPassedClicked.png",
+                        "",
+                        "buttonLevelOpenMouseOver.png",
+                        "buttonLevelOpenEnable.png",
+                        "buttonLevelOpenClicked.png",
                         "buttonLevelClosedDisable.png",
                         Constants.MENU_LEVEL_TEXT_ENABLED,
-                        Constants.MENU_LEVEL_STATS_TEXT_EXAM_PASSED,
+                        Constants.MENU_LEVEL_STATS_TEXT_ENABLED,
+                        Constants.MENU_LEVEL_STATS_TEXT_DISABLED
+                    );
+                } else if (!levelInfo.tutorialPassed) {
+                    return new LevelButtonSettings(
+                        levelInfo.tutorialDone,
+                        "buttonTutorialMouseOver.png",
+                        "buttonTutorialEnabled.png",
+                        "buttonTutorialClicked.png",
+                        "buttonLevelClosedDisable.png",
+                        Constants.MENU_LEVEL_TEXT_ENABLED,
+                        Constants.MENU_LEVEL_STATS_TEXT_TUTORIAL_PASSED,
                         Constants.MENU_LEVEL_STATS_TEXT_DISABLED
                     );
                 } else if (!levelInfo.practisePassed || !levelInfo.examPassed) {

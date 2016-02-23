@@ -61,6 +61,11 @@ module BinarySearch {
             super(config);
         }
         
+        public restore(settings: any): void {
+            super.restore(settings);
+            this._elementToFindIndex = settings.elementToFindIndex;
+        }
+        
         protected runAlgorithm(): BinarySearchStep[] {
             var steps: BinarySearchStep[] = [];
             this._elementToFindIndex = this.defineElementToFind();
@@ -175,7 +180,7 @@ module BinarySearch {
                 this._algorithm.elementToFindIndex);
         }
         
-        protected getSettings(): Common.AlgorithmSettings {
+        protected getSettings(): any {
             this._tutorialIteration += 1;
             var scenarioIndex = this._tutorialIteration % binarySearchScenarios.scenarios.length;
             return binarySearchScenarios.scenarios[scenarioIndex];
