@@ -18,10 +18,12 @@ class Game extends Common.AlgoGame {
         this.state.add("binarySearchExam", BinarySearchExam);
         
         this.state.add("insertionSortPreload", Common.PractisePreloadState);
+        this.state.add("insertionSortTutorial", InsertionSortTutorial);
         this.state.add("insertionSortPractise", InsertionSortPractise);
         this.state.add("insertionSortExam", InsertionSortExam);
         
         this.state.add("selectionSortPreload", Common.PractisePreloadState);
+        this.state.add("selectionSortTutorial", SelectionSortTutorial);
         this.state.add("selectionSortPractise", SelectionSortPractise);
         this.state.add("selectionSortExam", SelectionSortExam);
 

@@ -133,6 +133,13 @@ class BinarySearchExam extends Common.ExamState {
 // Sort algorithms
 //
 
+class InsertionSortTutorial extends Common.TutorialState {
+    
+    protected buildGamePlay(): Common.TutorialGamePlay<Common.GamePlayAction, Common.Algorithm> {
+        return new Sort.InsertionSortTutorialGamePlay(this.algoGame);
+    }
+}
+
 class InsertionSortPractise extends Common.PractiseState {
     
     protected buildGamePlay(): Common.PractiseGamePlay<Common.GamePlayAction, Common.Algorithm> {
@@ -144,6 +151,13 @@ class InsertionSortExam extends Common.ExamState {
     
     protected buildGamePlay(): Common.ExamGamePlay<Common.GamePlayAction, Common.Algorithm> {
         return new Sort.InsertionSortExamGamePlay(this.algoGame);
+    }
+}
+
+class SelectionSortTutorial extends Common.TutorialState {
+    
+    protected buildGamePlay(): Common.TutorialGamePlay<Common.GamePlayAction, Common.Algorithm> {
+        return new Sort.SelectionSortTutorialGamePlay(this.algoGame);
     }
 }
 

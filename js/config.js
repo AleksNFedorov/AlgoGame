@@ -41,6 +41,13 @@ var globalConfig = {
             }
         },
         insertionSort: {
+            tutorial: {
+                stageName: "insertionSortTutorial",
+                stepsToPass: 20,
+                menu: {
+                    MenuButtonDescription: "http://jackson-.github.io/2014/10/07/Sowhatexactlyisinsertionsort.html",
+                },
+            },
             practise: {
                 stageName: "insertionSortPractise",
                 stepsToPass: 40,
@@ -74,6 +81,13 @@ var globalConfig = {
         },
         selectionSort: {
             dependsOn:"insertionSort",
+            tutorial: {
+                stageName: "selectionSortTutorial",
+                stepsToPass: 20,
+                menu: {
+                    MenuButtonDescription: "https://matse-hamburg.wikispaces.com/Selectionsort",
+                },
+            },
             practise: {
                 stageName: "selectionSortPractise",
                 stepsToPass: 40,

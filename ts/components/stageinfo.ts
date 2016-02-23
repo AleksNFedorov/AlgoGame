@@ -32,7 +32,7 @@ module StageInfo {
             boxIndexText.x = textBackground.x + textBackground.width/2 - boxIndexText.width/2;            
             boxIndexText.y = this._infoIcon.height/2 - boxIndexText.height/2;            
 
-            if (this._infoToShow.eventToHide == null) {
+            // if (this._infoToShow.eventToHide == null) {
                 //Close by click
                 this._infoIcon.inputEnabled = true;
                 textBackground.inputEnabled = true;
@@ -42,7 +42,7 @@ module StageInfo {
                 textBackground.events.onInputDown.add(closeCallback);
                 boxIndexText.events.onInputDown.add(closeCallback);
                 
-            } 
+            // } 
             
             this._infoIcon.animations.add("blink", ["info_1.png", "info_2.png", "info_3.png"],3, true);
             this._infoIcon.animations.play("blink");

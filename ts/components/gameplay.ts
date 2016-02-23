@@ -595,29 +595,30 @@ module Common {
     export class TutorialGamePlay<T extends GamePlayAction, A extends Algorithm> extends CoreGamePlay<T, A> {
         
         protected _extraRemindTimer: Phaser.Timer;
-        private _extraInfo: Common.ShowInfo;
         private _settings: any
+        private _tutorialIteration: number = 0;
+        private _scenarios: any[];
         
         constructor(game: Common.AlgoGame) {
             super(game);
             this._extraRemindTimer = game.time.create(false);
             this._extraRemindTimer.start();
+            this._scenarios = this.getScenarios();
             
-            this._extraInfo = new ShowInfo(
-                Common.GameElements.ControlPanelText,
-                Events.GAME_CORRECT_STEP_DONE,
-                Constants.EXTRA_HELP_MESSAGE_KEY,
-                this.addTimerEvents.bind(this)
-                );
         }
         
         protected onInit(): void {
-            this._settings = this.getSettings();
+            this._settings = this.getSettings(this._tutorialIteration++);
             this._algorithm.restore(this._settings);
         }
         
-        protected getSettings(): any {
-            throw "Method not implemented [getSettings]";
+        protected getScenarios(): any[] {
+            throw "Method not implemented [getScenarios]";
+        }
+        
+        private getSettings(iteration: number): any {
+            var scenarioIndex = iteration % this._scenarios.length;
+            return this._scenarios[scenarioIndex];
         }
 
         protected startGame(): void {
@@ -651,10 +652,8 @@ module Common {
         }
         
         private showExtraInfo(): void {
-            this._game.dispatch(Events.STAGE_CUSTOM_INFO_SHOW, 
-            this, 
-            this._extraInfo);
             this._game.dispatch(Events.GAME_BLINK_MESSAGE, this);
+            this.addTimerEvents();
         }
         
         protected onPractiseDone(): void {
@@ -663,11 +662,13 @@ module Common {
         }
         
         protected onLastStep(isUser: boolean): void {
-            this._game.dispatch(Events.GAME_SHOW_MESSAGE, 
-            this, 
-            this._settings.finalMessage);
             super.onLastStep(isUser);
             this._extraRemindTimer.removeAll();
+            if (isUser) {
+                this._game.dispatch(Events.GAME_SHOW_MESSAGE, 
+                this, 
+                this._settings.finalMessage);
+            }
         }
         
         protected onWrongStep(isUser: boolean = true): void {

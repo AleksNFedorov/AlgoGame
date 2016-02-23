@@ -49,7 +49,7 @@ class Constants {
     static LEVEL_ASSETS_AMOUNT = 2;
     
     //Tutorial 
-    static EXTRA_HELP_SHOW_INTERVAL = 10000;
+    static EXTRA_HELP_SHOW_INTERVAL = 5000;
     static EXTRA_HELP_MESSAGE_KEY = "tutorialExtraHelp";
     
     

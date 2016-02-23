@@ -166,8 +166,6 @@ module BinarySearch {
         
         protected _boxLine: BoxLine;
         
-        private _tutorialIteration: number = -1;
-        
         constructor(game: Common.AlgoGame) {
             super(game);
         }
@@ -180,12 +178,10 @@ module BinarySearch {
                 this._algorithm.elementToFindIndex);
         }
         
-        protected getSettings(): any {
-            this._tutorialIteration += 1;
-            var scenarioIndex = this._tutorialIteration % binarySearchScenarios.scenarios.length;
-            return binarySearchScenarios.scenarios[scenarioIndex];
+        protected getScenarios(): any[] {
+            return binarySearchScenarios.scenarios;
         }
-        
+
         protected createAlgorithm(config: any): BinarySearchAlgorithm {
             return new BinarySearchAlgorithm(config);
         }

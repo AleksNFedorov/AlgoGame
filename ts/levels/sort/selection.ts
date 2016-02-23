@@ -1,5 +1,7 @@
 /// <reference path="sortcommon.ts" />
 
+declare var selectionSortScenarios: any;
+
 module Sort {
 
     class SelectionSortAlgorithm extends Common.ConfigurableAlgorithm {
@@ -34,6 +36,33 @@ module Sort {
         
     }
     
+    export class SelectionSortTutorialGamePlay extends SwapSortTutorialGamePlay<SelectionSortAlgorithm> {
+        protected createAlgorithm(config: any): SelectionSortAlgorithm {
+            return new SelectionSortAlgorithm(config);
+        }
+        
+        protected getScenarios(): any[] {
+            return selectionSortScenarios.scenarios;
+        }
+        
+        protected onNewStep(): void {
+            super.onNewStep();
+            var step: Step = <Step>this._algorithmStep;
+            
+            this._boxLine.clearFlags();
+            
+            var flags: Common.FlagLocationInfo[] = [];
+            flags.push(new Common.FlagLocationInfo(
+                step.stepNumber, 
+                Common.FlagPosition.CENTER,
+                Common.FlagLevel.BOTTOM
+                ));
+               
+            this._boxLine.showFlags(flags);
+        }         
+        
+    }
+
     export class SelectionSortPractiseGamePlay extends SwapSortPractiseGamePlay<SelectionSortAlgorithm> {
         protected createAlgorithm(config: any): SelectionSortAlgorithm {
             return new SelectionSortAlgorithm(config);

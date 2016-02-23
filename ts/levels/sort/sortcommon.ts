@@ -13,16 +13,16 @@ module Sort {
 
     export class Step extends Common.AlgorithmStep {
         private _newPosition: number;
-        private _currentArray: number[];
+        private _parameters: number[];
       
         constructor(stepNumber: number, newPosition: number, array: number[] = []) {
             super(false, stepNumber);
             this._newPosition = newPosition;
-            this._currentArray = array.slice(0);
+            this._parameters = array.slice(0);
         }
         
         public get parameters(): number[] {
-            return this._currentArray.slice(0);
+            return this._parameters.slice(0);
         }
         
         public get newPosition(): number {
@@ -110,12 +110,12 @@ module Sort {
             this.swapBoxes(fromBoxIndex, toBoxIndex);
 
             var fromBoxMoveUp: Phaser.Tween = this._game.add.tween(fromBox).to({y: fromBox.y - 60}, 300, "Quart.easeOut");
-            var fromBoxMoveTo: Phaser.Tween = this._game.add.tween(fromBox).to({y: toBox.y, x: toBox.x}, 500, "Quart.easeOut");
+            var fromBoxMoveTo: Phaser.Tween = this._game.add.tween(fromBox).to({y: fromBox.y, x: toBox.x}, 500, "Quart.easeOut");
             
             fromBoxMoveUp.chain(fromBoxMoveTo);
 
             var toBoxMoveUp: Phaser.Tween = this._game.add.tween(toBox).to({y: toBox.y - 60}, 300, "Quart.easeOut");
-            var toBoxMoveFrom: Phaser.Tween = this._game.add.tween(toBox).to({y: fromBox.y, x: fromBox.x}, 500, "Quart.easeOut");
+            var toBoxMoveFrom: Phaser.Tween = this._game.add.tween(toBox).to({y: toBox.y, x: fromBox.x}, 500, "Quart.easeOut");
             
             toBoxMoveUp.chain(toBoxMoveFrom);
             
@@ -273,11 +273,57 @@ module Sort {
         }
     }
     
+    class AbstractSortTutorialGamePlay<T extends Common.Algorithm> extends Common.TutorialGamePlay<SortAction, T> {
+        
+        protected _boxLine: AbstractSortingBoxLine;
+        
+        protected onInit(): void {
+            super.onInit();
+            this._boxLine = this.createBoxLine();
+        }
+        
+        protected highlightElement(index: number) {
+            this._boxLine.selectBox(index);
+        }
+        
+        protected createBoxLine(): AbstractSortingBoxLine {
+            throw "Method is not implemented [createBoxLine]";
+        }
+        
+        protected createAlgorithm(config: any): T {
+            throw "Method not implemented [createAlgorithm()]";
+        }
+        
+        protected isCorrectStep(action: SortAction): boolean {
+            var step: Step = this.getCurrentStep();
+            return step.stepNumber === action.index 
+                && step.newPosition === action.position;
+        }
+        
+        protected onCorrectAction(isUser:boolean): void {
+            super.onCorrectAction(isUser);
+            var step: Step = this.getCurrentStep();
+            this._boxLine.applyAction(new SortAction(step.stepNumber, step.newPosition));
+        }
+        
+        protected destroyTempObjects():void {
+            super.destroyTempObjects();
+            if (this._boxLine != null) {
+                this._boxLine.destroy();            
+            }
+        }
+        
+        protected getCurrentStep(): Step {
+            return <Step>this._algorithmStep;
+        }
+    }
+
     class AbstractSortPractiseGamePlay<T extends Common.Algorithm> extends Common.PractiseGamePlay<SortAction, T> {
         
         protected _boxLine: AbstractSortingBoxLine;
         
         protected onInit(): void {
+            super.onInit();
             this._boxLine = this.createBoxLine();
         }
         
@@ -329,6 +375,7 @@ module Sort {
         protected _boxLine: AbstractSortingBoxLine;
         
         protected onInit(): void {
+            super.onInit();
             this._boxLine = this.createBoxLine();
         }
         
@@ -374,6 +421,15 @@ module Sort {
 
     }
     
+    export class ShiftSortTutorialGamePlay< T extends Common.Algorithm > extends AbstractSortTutorialGamePlay<T> {
+        
+        protected createBoxLine(): AbstractSortingBoxLine {
+            return new ShiftBoxLine(this._game,     
+                this.boxClicked.bind(this), 
+                this._algorithm.sequence);
+        }
+    }
+
     export class ShiftSortPractiseGamePlay< T extends Common.Algorithm > extends AbstractSortPractiseGamePlay<T> {
         
         protected createBoxLine(): AbstractSortingBoxLine {
@@ -392,6 +448,15 @@ module Sort {
         }
     }
     
+    export class SwapSortTutorialGamePlay< T extends Common.Algorithm > extends AbstractSortTutorialGamePlay<T> {
+        
+        protected createBoxLine(): AbstractSortingBoxLine {
+            return new SwapBoxLine(this._game,     
+                this.boxClicked.bind(this), 
+                this._algorithm.sequence);
+        }
+    }
+
     export class SwapSortPractiseGamePlay< T extends Common.Algorithm > extends AbstractSortPractiseGamePlay<T> {
         
         protected createBoxLine(): AbstractSortingBoxLine {

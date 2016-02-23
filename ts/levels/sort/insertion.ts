@@ -1,5 +1,7 @@
 /// <reference path="sortcommon.ts" />
 
+declare var insertionSortScenarios: any;
+
 module Sort {
 
     class InsertionSortAlgorithm extends Common.ConfigurableAlgorithm {
@@ -32,6 +34,32 @@ module Sort {
         
     }
     
+    export class InsertionSortTutorialGamePlay extends ShiftSortTutorialGamePlay<InsertionSortAlgorithm> {
+        protected createAlgorithm(config: any): InsertionSortAlgorithm {
+            return new InsertionSortAlgorithm(config);
+        }
+        
+        protected getScenarios(): any[] {
+            return insertionSortScenarios.scenarios;
+        }
+        
+        protected onNewStep(): void {
+            super.onNewStep();
+            var step: Step = <Step>this._algorithmStep;
+            
+            this._boxLine.clearFlags();
+            
+            var flags: Common.FlagLocationInfo[] = [];
+            flags.push(new Common.FlagLocationInfo(
+                step.stepNumber, 
+                Common.FlagPosition.CENTER,
+                Common.FlagLevel.BOTTOM
+                ));
+               
+            this._boxLine.showFlags(flags);
+        }         
+    }
+
     export class InsertionSortPractiseGamePlay extends ShiftSortPractiseGamePlay<InsertionSortAlgorithm> {
         protected createAlgorithm(config: any): InsertionSortAlgorithm {
             return new InsertionSortAlgorithm(config);
