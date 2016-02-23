@@ -120,7 +120,14 @@ var globalConfig = {
             }
         },
         mergeSort: {
-            dependsOn:"selectionSort",
+            // dependsOn:"selectionSort",
+            tutorial: {
+                stageName: "mergeSortTutorial",
+                stepsToPass: 20,
+                menu: {
+                    MenuButtonDescription: "https://matse-hamburg.wikispaces.com/Selectionsort",
+                },
+            },
             practise: {
                 stageName: "mergeSortPractise",
                 stepsToPass: 50,

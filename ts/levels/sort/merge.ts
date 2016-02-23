@@ -1,5 +1,7 @@
 /// <reference path="sortcommon.ts" />
 
+declare var mergeSortScenarios: any;
+
 module Sort {
 
     class MergeSortAlgorithm extends Common.ConfigurableAlgorithm {
@@ -86,6 +88,39 @@ module Sort {
         }        
     }
     
+    export class MergeSortTutorialGamePlay extends ShiftSortTutorialGamePlay<MergeSortAlgorithm> {
+        
+        protected createAlgorithm(config: any): MergeSortAlgorithm {
+            return new MergeSortAlgorithm(config);
+        }
+        
+        protected getScenarios(): any[] {
+            return mergeSortScenarios.scenarios;
+        }
+        
+        protected onInit(): void {
+            super.onInit();
+
+            var flags: Common.FlagLocationInfo[] = [];
+            flags.push(new Common.FlagLocationInfo(
+                this._algorithm.getPivotElement(), 
+                Common.FlagPosition.CENTER,
+                Common.FlagLevel.BOTTOM
+                ));
+                
+                
+            for(var index of this._algorithm.getSortingPairs()) {
+                flags.push(new Common.FlagLocationInfo(
+                    index,
+                    Common.FlagPosition.LEFT,
+                    Common.FlagLevel.MIDDLE
+                    ));
+            }
+            this._boxLine.showFlags(flags);
+            
+        }
+    }
+
     export class MergeSortPractiseGamePlay extends ShiftSortPractiseGamePlay<MergeSortAlgorithm> {
         
         protected createAlgorithm(config: any): MergeSortAlgorithm {

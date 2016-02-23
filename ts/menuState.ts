@@ -175,12 +175,20 @@ class SelectionSortExam extends Common.ExamState {
     }
 }
 
+class MergeSortTutorial extends Common.TutorialState {
+    
+    protected buildGamePlay(): Common.TutorialGamePlay<Common.GamePlayAction, Common.Algorithm> {
+        return new Sort.MergeSortTutorialGamePlay(this.algoGame);
+    }
+}
+
 class MergeSortPractise extends Common.PractiseState {
     
     protected buildGamePlay(): Common.PractiseGamePlay<Common.GamePlayAction, Common.Algorithm> {
         return new Sort.MergeSortPractiseGamePlay(this.algoGame);
     }
 }
+
 
 class MergeSortExam extends Common.ExamState {
     
