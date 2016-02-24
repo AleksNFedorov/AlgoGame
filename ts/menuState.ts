@@ -197,6 +197,13 @@ class MergeSortExam extends Common.ExamState {
     }
 }
 
+class QuickSortTutorial extends Common.TutorialState {
+    
+    protected buildGamePlay(): Common.TutorialGamePlay<Common.GamePlayAction, Common.Algorithm> {
+        return new Sort.QuickSortTutorialGamePlay(this.algoGame);
+    }
+}
+
 class QuickSortPractise extends Common.PractiseState {
     
     protected buildGamePlay(): Common.PractiseGamePlay<Common.GamePlayAction, Common.Algorithm> {
@@ -213,6 +220,13 @@ class QuickSortExam extends Common.ExamState {
 //
 // Graph algorithms
 //
+
+class DebthFirstSearchTutorial extends Common.TutorialState {
+    
+    protected buildGamePlay(): Common.TutorialGamePlay<Common.GamePlayAction, Common.Algorithm> {
+        return new Graph.DebthFirstSearchTutorialGamePlay(this.algoGame);
+    }
+}
 
 class DebthFirstSearchPractise extends Common.PractiseState {
     

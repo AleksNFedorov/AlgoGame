@@ -25,6 +25,12 @@ module Graph {
            super(config);
        }
        
+       public restore(settings: any) {
+           super.restore(settings);
+           this._columns = settings.columns;
+           this._rows = settings.rows;
+       }
+       
        protected generateSeqeunce(config: any): any[] {
 
             var minElementsInGraph = config.minElements;

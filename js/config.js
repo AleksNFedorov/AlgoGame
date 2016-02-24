@@ -160,7 +160,14 @@ var globalConfig = {
             }
         },
         quickSort: {
-            dependsOn: "mergeSort",
+            // dependsOn: "mergeSort",
+            tutorial: {
+                stageName: "quickSortTutorial",
+                stepsToPass: 1,
+                menu: {
+                    MenuButtonDescription: "https://matse-hamburg.wikispaces.com/Selectionsort",
+                },
+            },
             practise: {
                 stageName: "quickSortPractise",
                 stepsToPass: 50,
@@ -194,6 +201,20 @@ var globalConfig = {
         },
         // Graphs
         debthFirst: {
+            tutorial: {
+                stageName: "debthFirstTutorial",
+                stepsToPass: 50,
+                menu: {
+                    MenuButtonDescription: "https://www.cs.drexel.edu/~introcs/F2K/lectures/7.2_AI/Formal3.html",
+                },
+                gamePlay: {
+                    minElements: 5,
+                    minSeqNumber: 10,
+                    maxSeqNumber: 100,
+                    columns: 5,
+                    rows: 5,
+                }
+            },
             practise: {
                 stageName: "debthFirstPractise",
                 stepsToPass: 50,

@@ -124,8 +124,10 @@ function Edge(fromNode, toNode, weight) {
 	this.weight = weight;
 }
 
-function Node(Name){
-	
+function Node(Name, id, x, y){
+	this.id = id;
+	this.x = x;
+	this.y = y;
 	this.name = Name;
 	this.edges = [];
 

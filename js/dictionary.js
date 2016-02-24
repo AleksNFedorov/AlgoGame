@@ -229,5 +229,60 @@ var Dictionary = {
               message14: "14. Sorted!",
           },
         ],
+        quickSort: [
+          {
+              message1: "1. Pivot: 3, Move all >= Pivot to the right side",
+              message2: "2. Drag 8 on 3",
+              message3: "3. Apply quick sort to the left side: (3,2,1)",
+              message4: "4. Pivot: 2, Move all >= Pivot to the right side",
+              message5: "5. Drag 3 on 1",
+              message6: "6. Apply quick sort to the right side: (8,7,6,5)",
+              message7: "7. Pivot: 7, Move all >= Pivot to the right side",
+              message8: "8. Drag 8 on 5",
+              message9: "9. Drag 7 on 6",
+              message10: "10. Sorted!",
+          },
+          {
+              message1: "1. Pivot: 1, Move all >= Pivot to the right side",
+              message2: "2. Drag 3 on 1 at position 4",
+              message3: "3. Drag 2 on 1 at position 3",
+              message4: "4. Apply quick sort to the right side: (2,3,15,6,4)",
+              message5: "5. Pivot: 15, Move all >= Pivot to the right side",
+              message6: "6. Drag 15 on 4",
+              message7: "7. Sorted!",
+          },
+        ],
+        depthFirstSearch: [
+          {
+              message1: "1. Element to find: 3",
+              message2: "2. Click top node: 0",
+              
+              message3: "3. Recursivelly iterate over all children",
+              message4: "4. Click right child: 1",
+              
+              message5: "5. Recursivelly iterate over all children of node 1",
+              message6: "6. Click node 2",
+              
+              message7: "7. Click left node of 0",
+              message8: "8. Click node 3",
+              message9: "9. Found",
+          },
+          {
+              message1: "1. Element to find: 2",
+              message2: "2. Click top node: 0",
+              
+              message3: "3. Recursivelly iterate over all children",
+              message4: "4. Click right child: 1",
+              
+              message5: "5. Recursivelly iterate over all children of node 1",
+              message6: "6. Click node 4",
+              
+              message7: "7. Click node 3",
+              
+              message8: "8. Click node 2",
+              
+              message9: "9. Found",
+          },
+        ],
     },
 };

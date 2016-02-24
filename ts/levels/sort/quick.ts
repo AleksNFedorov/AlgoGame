@@ -1,5 +1,7 @@
 /// <reference path="sortcommon.ts" />
 
+declare var quickSortScenarios: any;
+
 module Sort {
 
     class QuickSortAlgorithm extends Common.ConfigurableAlgorithm {
@@ -110,6 +112,48 @@ module Sort {
         }
         
     }
+
+    export class QuickSortTutorialGamePlay extends SwapSortTutorialGamePlay<QuickSortAlgorithm> {
+        protected createAlgorithm(config: any): QuickSortAlgorithm {
+            return new QuickSortAlgorithm(config);
+        }
+        
+        protected getScenarios(): any[] {
+            return quickSortScenarios.scenarios;
+        }
+
+        protected onNewStep(): void {
+            super.onNewStep();
+            var step: Step = <Step>this._algorithmStep;
+            
+            this._boxLine.hideBoxesIn(step.parameters[3], step.parameters[4]);
+            this._boxLine.clearFlags();
+            
+            var flags: Common.FlagLocationInfo[] = [];
+            flags.push(new Common.FlagLocationInfo(
+                step.parameters[0], 
+                Common.FlagPosition.CENTER,
+                Common.FlagLevel.BOTTOM
+                ));
+               
+            flags.push(new Common.FlagLocationInfo(
+                step.parameters[1], 
+                Common.FlagPosition.LEFT,
+                Common.FlagLevel.MIDDLE
+                ));
+
+            flags.push(new Common.FlagLocationInfo(
+                step.parameters[2], 
+                Common.FlagPosition.RIGHT,
+                Common.FlagLevel.MIDDLE
+                ));
+
+            console.log(`Points to show ${step.parameters[0]}, ${step.parameters[1]}, ${step.parameters[2]}`);
+
+            this._boxLine.showFlags(flags);
+        }        
+    }
+
     
     export class QuickSortPractiseGamePlay extends SwapSortPractiseGamePlay<QuickSortAlgorithm> {
         protected createAlgorithm(config: any): QuickSortAlgorithm {
@@ -152,5 +196,36 @@ module Sort {
         protected createAlgorithm(config: any): QuickSortAlgorithm {
             return new QuickSortAlgorithm(config);
         }
+
+        protected onNewStep(): void {
+            super.onNewStep();
+            var step: Step = <Step>this._algorithmStep;
+            
+            this._boxLine.hideBoxesIn(step.parameters[3], step.parameters[4]);
+            this._boxLine.clearFlags();
+            
+            var flags: Common.FlagLocationInfo[] = [];
+            flags.push(new Common.FlagLocationInfo(
+                step.parameters[0], 
+                Common.FlagPosition.CENTER,
+                Common.FlagLevel.BOTTOM
+                ));
+               
+            flags.push(new Common.FlagLocationInfo(
+                step.parameters[1], 
+                Common.FlagPosition.LEFT,
+                Common.FlagLevel.MIDDLE
+                ));
+
+            flags.push(new Common.FlagLocationInfo(
+                step.parameters[2], 
+                Common.FlagPosition.RIGHT,
+                Common.FlagLevel.MIDDLE
+                ));
+
+            console.log(`Points to show ${step.parameters[0]}, ${step.parameters[1]}, ${step.parameters[2]}`);
+
+            this._boxLine.showFlags(flags);
+        }        
     }
 }
