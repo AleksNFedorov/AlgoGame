@@ -221,7 +221,15 @@ module StageInfo {
     export class TutorialManager extends Manager {
         
         constructor(game: Common.AlgoGame) {
-            super(game, LevelStageType.TUTORIAL,[]);
+            super(game, LevelStageType.TUTORIAL,[
+                    new Common.ShowInfo(Common.GameElements.MenuButtonDescription),
+                    new Common.ShowInfo(Common.GameElements.ControlPanelText),
+                    new Common.ShowInfo(Common.GameElements.ControlPanelButtonPlay,
+                        Events.CONTROL_PANEL_EVENT_PLAY
+                        ),
+                    new Common.ShowInfo(Common.GameElements.ProgressBarComplete),
+                    new Common.ShowInfo(Common.GameElements.MenuButtonPractise),
+                ]);
         }
     }
 
@@ -230,15 +238,9 @@ module StageInfo {
         constructor(game: Common.AlgoGame) {
             super(game, LevelStageType.PRACTISE,
                 [
-                    new Common.ShowInfo(Common.GameElements.MenuButtonDescription),
-                    new Common.ShowInfo(Common.GameElements.MenuButtonObjectives),
-                    new Common.ShowInfo(Common.GameElements.ControlPanelText),
-                    new Common.ShowInfo(Common.GameElements.ControlPanelButtonPlay,
-                        Events.CONTROL_PANEL_EVENT_PLAY
-                        ),
                     new Common.ShowInfo(Common.GameElements.ProgressBarStep),
-                    new Common.ShowInfo(Common.GameElements.ProgressBarComplete),
                     new Common.ShowInfo(Common.GameElements.MenuButtonExam),
+                    new Common.ShowInfo(Common.GameElements.MenuButtonTutorial),
                 ]
             );
         }

@@ -102,13 +102,7 @@ module Sort {
             super.onInit();
 
             var flags: Common.FlagLocationInfo[] = [];
-            flags.push(new Common.FlagLocationInfo(
-                this._algorithm.getPivotElement(), 
-                Common.FlagPosition.CENTER,
-                Common.FlagLevel.BOTTOM
-                ));
-                
-                
+
             for(var index of this._algorithm.getSortingPairs()) {
                 flags.push(new Common.FlagLocationInfo(
                     index,
@@ -131,13 +125,7 @@ module Sort {
             super.onInit();
 
             var flags: Common.FlagLocationInfo[] = [];
-            flags.push(new Common.FlagLocationInfo(
-                this._algorithm.getPivotElement(), 
-                Common.FlagPosition.CENTER,
-                Common.FlagLevel.BOTTOM
-                ));
-                
-                
+
             for(var index of this._algorithm.getSortingPairs()) {
                 flags.push(new Common.FlagLocationInfo(
                     index,

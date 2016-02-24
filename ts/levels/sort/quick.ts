@@ -12,9 +12,6 @@ module Sort {
         private _currentLeft: number;
         private _currentRight: number;
         
-        private _sortedFrom: number;
-        private _sortedTo: number;
-
         constructor(config: any) {
             super(config);
         }
@@ -45,14 +42,10 @@ module Sort {
         
                 if (left < index - 1) {
                     this.quickSort(items, left, index - 1);
-                    this._sortedFrom = left;
-                    this._sortedTo = index - 1;
                 }
         
                 if (index < right) {
                     this.quickSort(items, index, right);
-                    this._sortedFrom = index;
-                    this._sortedTo = right;
                 }
             }
             return items;
@@ -103,9 +96,7 @@ module Sort {
                 this._mergeSteps.push(new Step(firstIndex,secondIndex, [
                     this._currentPivotIndex,
                     this._currentLeft,
-                    this._currentRight,
-                    this._sortedFrom,
-                    this._sortedTo
+                    this._currentRight
                     ]));
             }
             
