@@ -26,6 +26,8 @@ class Constants {
     static CONTROL_PANEL_SECOND_BUTTON_X = 170;
     static CONTROL_PANEL_AUTOSTART_X = 190;
     static CONTROL_PANEL_AUTOSTART_Y = 110;
+    static CONTROL_PANEL_MESSAGES_HISTORY_SIZE = 3;
+
 
     //Game Menu
     static GAME_AREA_BOX_WIDTH = 53;
@@ -77,6 +79,20 @@ class Constants {
         boundsAlignV: "middle" 
     }
     
+    static CONTROL_PANEL_MESSAGE_STYLE_MED = { 
+        font: "bold 16px Open Sans", 
+        fill: "white",
+        boundsAlignH: "center", 
+        boundsAlignV: "middle" 
+    }
+
+    static CONTROL_PANEL_MESSAGE_STYLE_SMALL = { 
+        font: "bold 10px Open Sans", 
+        fill: "white",
+        boundsAlignH: "center", 
+        boundsAlignV: "middle" 
+    }
+
     //Control panel
     static MESSAGE_INFO_TEXT = { 
         font: "bold 20px Open Sans", 
@@ -132,7 +148,6 @@ class Constants {
     
     /// Main menu end
 
-    static CONTROL_PANEL_MESSAGES_HISTORY_SIZE = 3;
     
     static STEP_TIME = 4000;
     
@@ -247,6 +262,22 @@ class Constants {
         "Selected_green.png",
         "Selected_orange.png",
         "Disabled.png"
+    ];
+
+    static SMALL_CIRCLE_BOX_FRAMES = [
+        "Circle_yellow_small.png",
+        "Circle_yellow_small.png",
+        "Circle_yellow_small.png",
+        "Circle_yellow_small.png",
+        "Circle_yellow_small.png",
+    ];
+
+    static MEDIUM_CIRCLE_BOX_FRAMES = [
+        "Cicrle_green.png",
+        "Cicrle_green.png",
+        "Cicrle_green.png",
+        "Cicrle_green.png",
+        "Cicrle_green.png",
     ];
 
     static SQUARE_BOX_FRAMES = [

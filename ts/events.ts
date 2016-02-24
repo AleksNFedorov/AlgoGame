@@ -30,6 +30,7 @@ class Events {
     static GAME_STARTED = Events.createEvent("GameStarted");
     static GAME_END_BY_USER = Events.createEvent("GameEndByUser");
     static GAME_END = Events.createEvent("GameEnd");
+    static GAME_NEW_STEP_CREATED = Events.createEvent("GameNewStepCreated");
     static GAME_CORRECT_STEP_DONE = Events.createEvent("GameCorrectStepDone");
     static GAME_CORRECT_STEP_DONE_BY_USER = Events.createEvent("GameCorrectStepDoneByUser");
     static GAME_WRONG_STEP_DONE = Events.createEvent("GameWrongStepDone");
@@ -47,7 +48,7 @@ class Events {
     static GAME_ENABLE_ALL = Events.createEvent("EnableAll");
     
     static GAME_SHOW_MESSAGE = Events.createEvent("ShowMessage");
-    static GAME_BLINK_MESSAGE = Events.createEvent("blinkMessage");
+    static GAME_BLINK_MESSAGE = Events.createEvent("BlinkMessage");
     
     //Stage info manager events
     static STAGE_CUSTOM_INFO_SHOW = Events.createEvent("ShowCustomStageInfo");

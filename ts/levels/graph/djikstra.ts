@@ -184,13 +184,12 @@ module Graph {
         }
         
         private createNumberBox(boxValue: number): Common.BoxContainer {
-            var boxContainer: Common.BoxContainer = new Common.CircleBoxContainer(
+            var boxContainer: Common.BoxContainer = new Common.CircleBoxContainerMedium(
                 this._game,
                 boxValue, 
                 this.numberBoxPressed.bind(this)
             );
             
-            boxContainer.scale.setTo(0.6);
             boxContainer.setBoxIndex(boxValue);
             boxContainer.setState(Common.BoxState.SELECTED_BLUE);
             return boxContainer;

@@ -141,12 +141,12 @@ module Common {
                 0,0, Constants.GAME_GENERAL_ATTLAS, 
                 this.getBoxFrames()[BoxState.ACTIVE]);
             var boxKeyText: Phaser.Text = game.add.text(
-                box.height/2, 
-                box.width/2 ,
+                0, 
+                0,
                 "" + value, 
-                JSON.parse(JSON.stringify(Constants.CONTROL_PANEL_MESSAGE_STYLE)));
-            boxKeyText.anchor.x = 0.6;
-            boxKeyText.anchor.y = 0.5;
+                JSON.parse(JSON.stringify(this.getTextStyle())));
+
+            this.setBoxTextPosition(box, boxKeyText);
             
             box.inputEnabled = true;
             boxKeyText.inputEnabled = true;
@@ -166,6 +166,15 @@ module Common {
             
             this._box = box;
             this._boxText = boxKeyText;
+        }
+        
+        protected setBoxTextPosition(box: Phaser.Sprite, boxText: Phaser.Text) {
+            boxText.x = box.width/2 - boxText.width/2;
+            boxText.y = box.height/2 - boxText.height/2;
+        }
+        
+        protected getTextStyle(): any {
+            return Constants.CONTROL_PANEL_MESSAGE_STYLE;
         }
         
         public setState(newState: BoxState): void {
@@ -209,8 +218,43 @@ module Common {
             return Constants.CIRCLE_BOX_FRAMES;
         }
         
+        protected setBoxTextPosition(box: Phaser.Sprite, boxText: Phaser.Text) {
+            super.setBoxTextPosition(box, boxText);
+            boxText.x -= 2;
+            boxText.y += 2;
+        }
+
     }
     
+    export class CircleBoxContainerSmall extends BoxContainer {
+     
+        protected getBoxFrames(): string[] {
+            return Constants.SMALL_CIRCLE_BOX_FRAMES;
+        }
+        
+        protected getTextStyle(): any {
+            return Constants.CONTROL_PANEL_MESSAGE_STYLE_SMALL;
+        }
+        
+    }
+    
+    export class CircleBoxContainerMedium extends BoxContainer {
+     
+        protected getBoxFrames(): string[] {
+            return Constants.MEDIUM_CIRCLE_BOX_FRAMES;
+        }
+
+        protected getTextStyle(): any {
+            return Constants.CONTROL_PANEL_MESSAGE_STYLE_MED;
+        }
+        
+        protected setBoxTextPosition(box: Phaser.Sprite, boxText: Phaser.Text) {
+            super.setBoxTextPosition(box, boxText);
+            boxText.y += 3;
+        }
+
+    }
+
     export class SquareBoxContainer extends BoxContainer {
 
         protected getBoxFrames(): string[] {
@@ -229,7 +273,7 @@ module Common {
             var extaTall = Math.ceil(this._box.height * SortingBoxContainer.MAX_MULTIPLIER * percent);   
             this._box.height += extaTall;
             
-            this._boxText.y = this._box.height - textOffset;
+            this._boxText.y = this._box.height - textOffset - 15;
         }
     }
     
@@ -373,18 +417,17 @@ module Common {
         private createSpriteForFlag(position: FlagPosition, level: FlagLevel): Phaser.Sprite {
             var flagSprite = this.getFlagSpriteByLevel(level);
             var box: Phaser.Sprite = this._game.add.sprite(0,0, Constants.GAME_GENERAL_ATTLAS, flagSprite);
-            box.scale.setTo(0.2);
             return box;
         }
         
         private getFlagSpriteByLevel(level: FlagLevel): string {
             switch(level) {
                 case FlagLevel.TOP:
-                    return "Selected_orange.png";
+                    return "Circle_orange_small.png";
                 case FlagLevel.MIDDLE:
-                    return "Selected_green.png";
+                    return "Circle_green_small.png";
                 case FlagLevel.BOTTOM:
-                    return "Selected_blue.png";
+                    return "Circle_yellow_small.png";
             }
         }
         
@@ -517,13 +560,11 @@ module Common {
         
         protected onNewStep(): void {
             this._algorithmStep = this._algorithm.getNextStep();
-            for(var messageKey of this._algorithmStep.messageKeys) {
-                this._game.dispatch(
-                    Events.GAME_SHOW_MESSAGE,
-                    this,
-                    messageKey
-                );
-            }
+            this._game.dispatch(
+                Events.GAME_NEW_STEP_CREATED,
+                this,
+                this._algorithmStep
+            );
         };
         
         protected onCorrectAction(isUser: boolean): void {
@@ -623,7 +664,6 @@ module Common {
 
         protected startGame(): void {
             super.startGame();
-            this._game.dispatch(Events.GAME_BLINK_MESSAGE, this);
             this.addTimerEvents();
         }
         
