@@ -43,6 +43,7 @@ class Game extends Common.AlgoGame {
         this.state.add("debthFirstExam", DebthFirstSearchExam);
 
         this.state.add("djikstraPreload", Common.PractisePreloadState);
+        this.state.add("djikstraTutorial", DjikstraTutorial);
         this.state.add("djikstraPractise", DjikstraPractise);
         this.state.add("djikstraExam", DjikstraExam);
 

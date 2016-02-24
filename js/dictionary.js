@@ -284,5 +284,34 @@ var Dictionary = {
               message9: "9. Found",
           },
         ],
+        djikstraSearch: [
+          {
+              message1: "1. Find the cheapest route from green to orange node",
+              message2: "2. Click node (blinkig arrow) and set price: 10",
+              
+              message3: "3. Click next node and set price: 4",
+              
+              message4: "4. Update price for next node: 10 > 9",
+              message5: "5. Click node and set price: 9",
+              
+              message6: "5. The cheapest route cost: 9",
+          },
+          {
+              message1: "1. Find the cheapest route from green to orange node",
+              message2: "2. Click node (blinkig arrow) and set price 3",
+              
+              message3: "3. Click next node and set price: 13 (3 + 10)",
+              
+              message4: "4. Click next node and set price: 4 (3 + 1)",
+              
+              message5: "5. No need to update price: 5 > 4",
+              message6: "6. Click next node and set old price: 4",
+
+              message7: "7. Update price for the next node: 11 < 13",
+              message8: "8. Click node and set price: 11",
+
+              message9: "9. The cheapest route cost: 11",
+          },
+        ],
     },
 };

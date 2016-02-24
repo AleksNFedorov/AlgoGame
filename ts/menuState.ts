@@ -242,6 +242,13 @@ class DebthFirstSearchExam extends Common.ExamState {
     }
 }
 
+class DjikstraTutorial extends Common.TutorialState {
+    
+    protected buildGamePlay(): Common.TutorialGamePlay<Common.GamePlayAction, Common.Algorithm> {
+        return new Graph.DjikstraTutorialGamePlay(this.algoGame);
+    }
+}
+
 class DjikstraPractise extends Common.PractiseState {
     
     protected buildGamePlay(): Common.PractiseGamePlay<Common.GamePlayAction, Common.Algorithm> {

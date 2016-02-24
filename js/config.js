@@ -247,7 +247,21 @@ var globalConfig = {
             }
         },
         djikstra: {
-            dependsOn: "debthFirst",
+            // dependsOn: "debthFirst",
+            tutorial: {
+                stageName: "djikstraTutorial",
+                stepsToPass: 50,
+                menu: {
+                    MenuButtonDescription: "https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm",
+                },
+                gamePlay: {
+                    minElements: 5,
+                    minSeqNumber: 1,
+                    maxSeqNumber: 10,
+                    columns: 5,
+                    rows: 5,
+                }
+            },
             practise: {
                 stageName: "djikstraPractise",
                 stepsToPass: 50,

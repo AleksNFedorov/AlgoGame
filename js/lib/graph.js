@@ -132,7 +132,9 @@ function Node(Name, id, x, y){
 	this.edges = [];
 
 	this.addEdge = function (toNode, weight){
-		this.edges.push(new Edge(this, toNode, weight ));
+		var newEdge = new Edge(this, toNode, weight);
+		this.edges.push(newEdge);
+		return newEdge;
 	};
 	
 	this.getAdjList = function(){

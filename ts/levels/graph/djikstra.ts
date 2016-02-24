@@ -1,6 +1,8 @@
 /// <reference path="graphcommon.ts" />
 /// <reference path="../../lib/graph.d.ts" />
 
+declare var djikstraScenarios: any;
+
 module Graph {
     
     class DjikstraStep extends Common.AlgorithmStep {
@@ -28,15 +30,20 @@ module Graph {
         private _sourceNode: GraphJS.Node;
         private _destinationNode: GraphJS.Node;
         
-        private _edgeSequence: number;
+        private _edgeSequence: number = 0;
         
         constructor(config: any) {
             super(config);
         }
         
+        public restore(settings: any): void {
+            super.restore(settings);
+            this._sourceNode = this.sequence[0];
+            this._destinationNode = settings.nodeToFind;
+            this.indexEdges(this._sourceNode);
+        }
+        
         protected generateSeqeunce(config: any): any[] {
-            this._edgeSequence = 0;
-
             var sequence = super.generateSeqeunce(config);
             this.addExtraEdges();
             return sequence;
@@ -137,7 +144,7 @@ module Graph {
         }
         
         protected createNode(node: GraphJS.Node): Common.BoxContainer {
-            return new Common.BoxContainer(this._game, "", this.createNodeClickCallback(node.id), function(){});
+            return new Common.CircleBoxContainer(this._game, "", this.createNodeClickCallback(node.id), function(){});
         }
         
         public showExtraNumbers(step: DjikstraStep): void {
@@ -177,7 +184,7 @@ module Graph {
         }
         
         private createNumberBox(boxValue: number): Common.BoxContainer {
-            var boxContainer: Common.BoxContainer = new Common.BoxContainer(
+            var boxContainer: Common.BoxContainer = new Common.CircleBoxContainer(
                 this._game,
                 boxValue, 
                 this.numberBoxPressed.bind(this)
@@ -237,11 +244,90 @@ module Graph {
         }
     }
     
+    export class DjikstraTutorialGamePlay extends Common.TutorialGamePlay<DjikstraGamePlayAction, DjikstraSearchAlgorithm> {
+        
+        protected _graphUI: DjikstraGraphUI;
+        
+        protected onInit(): void {
+            super.onInit();
+            this._graphUI = new DjikstraGraphUI(this._game,     
+                this._algorithm.sequence,
+                this.clickNode.bind(this),
+                this._algorithm.sourceNode,
+                this._algorithm.destinationNode,
+                this.extraStepAction.bind(this)
+            );
+        }
+        
+        protected getScenarios(): any[] {
+            return djikstraScenarios.scenarios;
+        }
+        
+        protected createAlgorithm(config: any): DjikstraSearchAlgorithm {
+            return new DjikstraSearchAlgorithm(config);
+        }
+        
+        protected onNewStep(): void {
+            super.onNewStep();
+            var step: DjikstraStep = this.getCurrentStep();
+            
+            this._graphUI.clearState();
+            this._graphUI.higlightEdge(step);
+        };
+        
+        private clickNode(action: GraphAction): void {
+        
+            if (!this.checkStepAllowed(true)) {
+                return;
+            }
+            
+            var step: DjikstraStep = this.getCurrentStep();
+            if (step.stepNumber === action.index) {
+                //show extra step
+                this._graphUI.showExtraNumbers(step);
+            } 
+        }
+        
+        private extraStepAction(value: number) {
+            console.log(`Extra step action ${value}`);
+            var step: DjikstraStep = this.getCurrentStep();
+            if (step.weight === value) {
+                this.boxClicked(new DjikstraGamePlayAction(step.edge.toNode.id, step.weight), true);
+            } else {
+                this.boxClicked(new DjikstraGamePlayAction(step.edge.toNode.id, -1), true);
+            }
+        }
+
+        protected isCorrectStep(action: DjikstraGamePlayAction): boolean {
+            var step: DjikstraStep = this.getCurrentStep();
+            return step.stepNumber === action.index
+                && step.weight === action.weight;
+        }
+        
+        protected onCorrectAction(isUser:boolean): void {
+            super.onCorrectAction(isUser);
+            var step: DjikstraStep = this.getCurrentStep();
+            this._graphUI.updateNodeWeight(step);
+        }
+        
+        protected destroyTempObjects():void {
+            super.destroyTempObjects();
+            if (this._graphUI != null) {
+                this._graphUI.destroy();            
+            }
+        }
+        
+        protected getCurrentStep(): DjikstraStep {
+            return <DjikstraStep>this._algorithmStep;
+        }
+    }
+    
     export class DjikstraGamePlay extends Common.PractiseGamePlay<DjikstraGamePlayAction, DjikstraSearchAlgorithm> {
         
         protected _graphUI: DjikstraGraphUI;
         
         protected onInit(): void {
+            super.onInit();
             this._graphUI = new DjikstraGraphUI(this._game,     
                 this._algorithm.sequence,
                 this.clickNode.bind(this),
@@ -326,6 +412,7 @@ module Graph {
        protected _graphUI: DjikstraGraphUI;
         
         protected onInit(): void {
+            super.onInit();
             this._graphUI = new DjikstraGraphUI(this._game,     
                 this._algorithm.sequence,
                 this.clickNode.bind(this),
