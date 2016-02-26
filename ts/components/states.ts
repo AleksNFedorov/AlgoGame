@@ -346,6 +346,7 @@ module Common {
         protected _modalWindow: GameModal.ModalWindow;
 
         protected _menu: Menu;
+        protected _statusPanel: StatusPanel;
         protected _controlPanel: GameComponentContainer;
         protected _progressPanel: GameComponentContainer;
         protected _gamePlay: CoreGamePlay<GamePlayAction, Algorithm>;
@@ -353,6 +354,7 @@ module Common {
         
         public shutdown(): void {
             super.shutdown();
+            this._statusPanel.destroy();
             this._background.destroy();
             this._modalWindow.destroy();
             this._menu.destroy();  
@@ -367,8 +369,7 @@ module Common {
         public create(): void {
             this._background = new BackgroundGraphics(this.algoGame);
             this.drawBackground();
-        
-            
+
             this._gamePlay = this.buildGamePlay();
 
             this.onCreate();
@@ -404,9 +405,9 @@ module Common {
             this._controlPanel = new Common.TutorialPanel(this.algoGame);
             this._progressPanel = new Common.TutorialProgressPanel(this.algoGame);
             this._showHelperInfoManager = new StageInfo.TutorialManager(this.algoGame);
+            this._statusPanel = new StatusPanel(this.algoGame);
 
             super.onCreate();        
-            
         }
         
         protected getStageType(): string {
@@ -432,6 +433,7 @@ module Common {
             this._controlPanel = new Common.PractisePanel(this.algoGame);
             this._progressPanel = new Common.ProgressPanel(this.algoGame);
             this._showHelperInfoManager = new StageInfo.PractiseManager(this.algoGame);
+            this._statusPanel = new StatusPanel(this.algoGame);
             
             super.onCreate();        
         }
@@ -467,6 +469,7 @@ module Common {
             this._controlPanel = new Common.ExamPanel(this.algoGame);
             this._progressPanel = new Common.ProgressPanel(this.algoGame);
             this._showHelperInfoManager = new StageInfo.ExamManager(this.algoGame);
+            this._statusPanel = new ExamStatusPanel(this.algoGame);
     
             super.onCreate();
         }

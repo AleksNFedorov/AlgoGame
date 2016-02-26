@@ -1,4 +1,14 @@
 var Dictionary = {
+    
+    WinHeadLine: "Win",
+    WinSubHeadLine: "Win subheadline",
+    
+    FailHeadLine: "Fail",
+    FailSubHeadLine: "Fail subheadline",
+
+    ComputerWinHeadLine: "Computer win",
+    ComputerWinSubHeadLine: "computer win subheadline",
+
     StageInit: {
         type: "info",
         messages: ["Level ready!"]

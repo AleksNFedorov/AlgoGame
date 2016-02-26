@@ -8,7 +8,7 @@ class Constants {
     
     static GAME_TIME_PROGRESS_UPDATE_INTERVAL = 300;
     static GAME_AUTOSTART_INTERVAL = 3000;
-    static GAME_INACTIVITY_INTERVAL = 3000;
+    static GAME_INACTIVITY_INTERVAL = 4500;
     static GAME_SHOW_INFO_SAVE_ID = "showInfo";
     
     //Game Menu
@@ -55,7 +55,24 @@ class Constants {
     static EXTRA_HELP_SHOW_INTERVAL = 5000;
     static EXTRA_HELP_MESSAGE_KEY = "tutorialExtraHelp";
     
-    
+    //iterationStatus panel
+    static GAME_STATUS_Y = 210;
+
+    static STATUS_TEXT_WIN = { 
+        font: "bold 30px Open Sans", 
+        fill: "white"
+    }
+
+    static STATUS_TEXT_FAIL = { 
+        font: "bold 30px Open Sans", 
+        fill: "white"
+    }
+
+    static STATUS_TEXT_COMPUTER_WIN = { 
+        font: "bold 30px Open Sans", 
+        fill: "white"
+    }
+
     //Game area
     static GAME_AREA_TEXT = { 
         font: "bold 20px Open Sans", 
