@@ -50,7 +50,7 @@ module Common {
             }
             
             this._sprite.alpha = 1;
-            this._currentTween = this._game.add.tween(this._sprite).to({alpha: 0.3}, 100, "Quart.easeOut", false, 0, 7, true);
+            this._currentTween = this._game.add.tween(this._sprite).to({alpha: 0.3}, 200, "Quart.easeOut", false, 0, 7, true);
             this._currentTween.onComplete.add(this._callback);
             this._currentTween.start();
         }

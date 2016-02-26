@@ -11,7 +11,7 @@ var globalConfig = {
             },
             practise: {
                 stageName: "binarySearchPractise",
-                stepsToPass: 30,
+                stepsToPass: 5,
                 stepTime: 5000,
                 menu: {
                     MenuButtonDescription: "http://wiki.roblox.com/index.php?title=Binary_search",
@@ -26,7 +26,7 @@ var globalConfig = {
             },
             exam: {
                 stageName: "binarySearchExam",
-                stepsToPass: 5,
+                stepsToPass: 20,
                 stepTime: 3000,
                 menu: {
                     MenuButtonDescription: "http://wiki.roblox.com/index.php?title=Binary_search",        

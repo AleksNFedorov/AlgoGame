@@ -1013,7 +1013,15 @@ module Common {
         }
         
         protected updateGameStatistics(isUser: boolean): void {
-            //In exam mode updates per iteration, not player action
+            if (!isUser) {
+                return;
+            }
+            
+            this.setStageDone(this.getStageDone() + 1);
+            if (this.levelSave.examPassed) {
+                this.saveState();
+            }
+            
         }
         
         protected onWrongStep(isUser: boolean): void {
@@ -1024,25 +1032,12 @@ module Common {
         }
         
         protected flushProgress(): void {
-            if (!this.levelSave.examPassed) {
-                this.levelSave.examDone = 0;
+            if (!this.getStagePassed()) {
+                this.setStageDone(0);
                 this.saveState();
             }
         }
         
-        protected onLastStep(isUser: boolean): void {
-
-            if (isUser) {
-                this.levelSave.examDone += 1;
-            }
-
-            super.onLastStep(isUser);
-            
-            if (this.levelSave.examPassed) {
-                this.saveState();
-            }
-        }
-
         protected getStagePassEvent(): string {
             return Events.GAME_EXAM_DONE;
         }
