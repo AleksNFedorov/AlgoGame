@@ -159,11 +159,14 @@ module StageInfo {
             if (infoToShow.eventToHide != null) {
                 super.removeEventListener(infoToShow.eventToHide);
             }
-            this._infoSave.gameInfoSaves[this._levelStageType] = this._infoToShowIndex;
-            this._game.store.set(Constants.GAME_SHOW_INFO_SAVE_ID, this._infoSave);
             this._requestedShowWidget.destroy();
             infoToShow.hideCallback();
-            this.createAndSendShowInfoRequest();
+
+            if (this._infoToShowIndex) {
+                this._infoSave.gameInfoSaves[this._levelStageType] = this._infoToShowIndex;
+                this._game.store.set(Constants.GAME_SHOW_INFO_SAVE_ID, this._infoSave);
+                this.createAndSendShowInfoRequest();
+            }
         }
         
         private createAndSendShowInfoRequest(): void {
@@ -181,7 +184,7 @@ module StageInfo {
             this.sendShowInfoRequest(this._infoToShow[elementToShow]);
         }
         
-        private sendShowInfoRequest(infoToShow: Common.ShowInfo): void {
+        protected sendShowInfoRequest(infoToShow: Common.ShowInfo): void {
             this._requestedShowWidget = new InfoWidget(this._game, infoToShow, this.onInfoShowed.bind(this));
             
             if (infoToShow.eventToHide != null) {
@@ -220,29 +223,66 @@ module StageInfo {
     
     export class TutorialManager extends Manager {
         
+        private _practiseInfo: Common.ShowInfo;
+        
         constructor(game: Common.AlgoGame) {
+            
+            this._practiseInfo = new Common.ShowInfo(Common.GameElements.MenuButtonPractise);
+            
             super(game, LevelStageType.TUTORIAL,[
                     new Common.ShowInfo(Common.GameElements.MenuButtonDescription),
                     new Common.ShowInfo(Common.GameElements.ControlPanelText),
                     new Common.ShowInfo(Common.GameElements.ControlPanelButtonPlay,
                         Events.CONTROL_PANEL_EVENT_PLAY
                         ),
-                    new Common.ShowInfo(Common.GameElements.ProgressBarComplete),
-                    new Common.ShowInfo(Common.GameElements.MenuButtonPractise),
+                    new Common.ShowInfo(Common.GameElements.ProgressBarComplete)
                 ]);
         }
+        
+        initEventListners(): void {
+            super.initEventListners();
+            this.addEventListener(Events.GAME_TUTORIAL_DONE);
+            // this.addEventListener(Events.GAME_PRACTISE_DONE);
+            // this.addEventListener(Events.GAME_EXAM_DONE);
+        }
+
+        dispatchEvent(event: any, param: any) {
+            super.dispatchEvent(event, param);
+            switch(event.type) {
+                case Events.GAME_TUTORIAL_DONE:
+                    this.sendShowInfoRequest(this._practiseInfo);
+                    break;
+            }
+        }
+
     }
 
     export class PractiseManager extends Manager {
+
+        private _examInfo = new Common.ShowInfo(Common.GameElements.MenuButtonExam);
         
         constructor(game: Common.AlgoGame) {
+                                
             super(game, LevelStageType.PRACTISE,
                 [
                     new Common.ShowInfo(Common.GameElements.ProgressBarStep),
-                    new Common.ShowInfo(Common.GameElements.MenuButtonExam),
-                    new Common.ShowInfo(Common.GameElements.MenuButtonTutorial),
+                    new Common.ShowInfo(Common.GameElements.MenuButtonTutorial)
                 ]
             );
+        }
+        
+        initEventListners(): void {
+            super.initEventListners();
+            this.addEventListener(Events.GAME_PRACTISE_DONE);
+        }
+
+        dispatchEvent(event: any, param: any) {
+            super.dispatchEvent(event, param);
+            switch(event.type) {
+                case Events.GAME_PRACTISE_DONE:
+                    this.sendShowInfoRequest(this._examInfo);
+                    break;
+            }
         }
     }
     

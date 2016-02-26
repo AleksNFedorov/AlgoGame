@@ -368,12 +368,13 @@ module Common {
             this._background = new BackgroundGraphics(this.algoGame);
             this.drawBackground();
         
-            this._modalWindow = new GameModal.ModalWindow(this.algoGame);
-            this.initModalWindows();
             
             this._gamePlay = this.buildGamePlay();
 
             this.onCreate();
+            
+            this._modalWindow = new GameModal.ModalWindow(this.algoGame);
+            this.initModalWindows();
         }
         
         private drawBackground(): void {
