@@ -47,13 +47,12 @@ class Game extends Common.AlgoGame {
         this.state.add("djikstraPractise", DjikstraPractise);
         this.state.add("djikstraExam", DjikstraExam);
 
-
         this.state.start("boot");        
-        
     }
 }
 
 window.onload = () => {
 
     var game = new Game();
+    
 }

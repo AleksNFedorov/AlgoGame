@@ -105,6 +105,95 @@ module Common {
 
     }   
     
+    export enum ArrowDirection {UPDOWNRIGHT, UPDOWN, UPDOWNLEFT, LEFTRIGHT, RIGHTLEFT}
+    
+    export class ArrowUI extends Phaser.Group {
+        
+        private _arrow: Phaser.Sprite;
+        private _edge: Phaser.Sprite;
+        
+        constructor(game: Phaser.Game, fromPoint: Phaser.Point, toPoint: Phaser.Point, direction: ArrowDirection) {
+            super(game);
+            
+            this.drawArrow(fromPoint, toPoint, direction)
+                        
+            this._arrow.animations.add("blink", [
+                    "graph-arrow1.png",
+                    "graph-arrow2.png",
+                    "graph-arrow3.png",
+                    "graph-arrow4.png"
+                    ], 6, true);
+
+        }
+        
+        private drawArrow(fromNodePoint: Phaser.Point, toNodePoint: Phaser.Point, direction: ArrowDirection) {
+            
+            var edge = this.game.add.sprite(fromNodePoint.x, fromNodePoint.y, Constants.GAME_GENERAL_ATTLAS, "graphEdge.png", this);
+            var arrow = this.game.add.sprite(toNodePoint.x, toNodePoint.y , Constants.GAME_GENERAL_ATTLAS, "graph-arrow1.png", this);
+            
+            switch(direction) {
+                case ArrowDirection.RIGHTLEFT:
+                    edge.width = fromNodePoint.x - toNodePoint.x - arrow.width;
+                    arrow.x += arrow.width;
+                    edge.angle = -180;
+                    
+                    arrow.y += arrow.height/2 - edge.height/2;
+                    
+                    arrow.angle = -180;
+                    break;
+                case ArrowDirection.LEFTRIGHT:
+                    edge.width = toNodePoint.x - fromNodePoint.x - arrow.width;
+                    arrow.x -= arrow.width;
+                    arrow.y -= arrow.height/2 - edge.height/2;
+                    
+                    break;
+                case ArrowDirection.UPDOWN:
+                    edge.width -= 60;
+                    edge.x += 29;
+                    edge.y += 27;
+                    edge.angle = 90;
+                    
+                    arrow.x += 36;
+                    arrow.y += -11;
+                    arrow.angle = 90;
+
+                    break;
+                case ArrowDirection.UPDOWNLEFT:
+                    edge.width -= 13;
+                    edge.x += 27;
+                    edge.y += 27;
+                    edge.angle = -215;
+                    
+                    arrow.x += 60;
+                    arrow.y += 9;
+                    arrow.angle = -215;
+
+                    break;
+                case ArrowDirection.UPDOWNRIGHT:
+                    edge.width -= 15;
+                    edge.x += 27;
+                    edge.y += 27;
+                    edge.angle = 35;
+                    
+                    arrow.y -= 3;
+                    arrow.angle = 35;
+                    
+                    break;
+            }
+            this._arrow = arrow;
+            this._edge = edge;
+        }
+        
+        public highlightArrow(): void {
+            this._arrow.animations.play("blink");
+        }
+        
+        public stopHiglightingArrow(): void {
+            this._arrow.animations.stop("blink");
+            this._arrow.frameName = "graph-arrow1.png";
+        }
+    }
+    
     // contains location info for given flag, used to show on game arena as helpers
     export class FlagLocationInfo {
         constructor(public index: number, public position: FlagPosition, public level: FlagLevel) {};
@@ -123,6 +212,9 @@ module Common {
         protected _releaseCallback: Function;
         
         protected _state: BoxState;
+        protected _notifierSprite: Phaser.Sprite;
+        
+        private _blinker: Blinker;
         
         constructor(game:Common.AlgoGame, boxValue: any, pressCallback?: Function, releaseCallback?: Function) {
             super(game);
@@ -131,6 +223,9 @@ module Common {
             
             this.initBox(game, boxValue);
             this._state = BoxState.ACTIVE;
+            this._notifierSprite = this.createSeparator();
+            this._blinker = new Blinker(game, this._notifierSprite);
+            this._blinker.setEndCallback(function(){this._notifierSprite.alpha = 0}.bind(this));
             
             game.add.existing(this);
         }
@@ -168,6 +263,12 @@ module Common {
             this._boxText = boxKeyText;
         }
         
+        private createSeparator(): Phaser.Sprite {
+            var seprator: Phaser.Sprite =  this.game.add.sprite(0,0, Constants.GAME_GENERAL_ATTLAS, "separator_arrow.png", this);
+            seprator.alpha = 0;
+            return seprator;
+        }
+        
         protected setBoxTextPosition(box: Phaser.Sprite, boxText: Phaser.Text) {
             boxText.x = box.width/2 - boxText.width/2;
             boxText.y = box.height/2 - boxText.height/2;
@@ -197,7 +298,12 @@ module Common {
         protected getBoxFrames(): string[] {
             throw "Method not implemented [getBoxFrames]";
         }
-
+        
+        public blink(): void {
+            this._notifierSprite.x = this._box.width/2 - this._notifierSprite.width/2;
+            this._notifierSprite.y = this._box.y - this._notifierSprite.height - 5;
+            this._blinker.blink();
+        }
         
         public setBoxIndex(boxIndex: number): void {
             this._boxIndex = boxIndex;
@@ -320,8 +426,8 @@ module Common {
                 
                 boxes.push(boxContainer);
                 
-                var boxIndexText: Phaser.Text = this._game.add.text(boxContainer.x + boxContainer.width/2,  boxContainer.y + boxContainer.height + 10 , "" + (index + 1), Constants.GAME_AREA_INDEX_TEXT);
-                boxIndexText.anchor.x = 0.7;
+                var boxIndexText: Phaser.Text = this._game.add.text(0,  boxContainer.y + boxContainer.height + 10 , "" + (index + 1), Constants.GAME_AREA_INDEX_TEXT);
+                boxIndexText.x = boxContainer.x + boxContainer.width/2 - boxIndexText.width/2;                
                 this._boxLine.add(boxIndexText);
                 this._boxIndexes.push(boxIndexText);
             }
@@ -356,6 +462,10 @@ module Common {
             boxContainer.setState(selectType);
         }
         
+        public blinkBox(boxIndex: number): void {
+            this._boxes[boxIndex].blink();
+        }
+        
         public hideBoxesOutOf(from: number, to: number): void {
           
           for(var i = 0; i< this._boxes.length; ++i) {
@@ -385,31 +495,32 @@ module Common {
             for(var flag of flags) {
                 var flagSprite = this.createSpriteForFlag(flag.position, flag.level);
                 var anchor = this._boxIndexes[flag.index];
-                flagSprite.x = this.getXPosition(anchor, flag.position);
+                flagSprite.x = this.getXPosition(anchor, flag.position, flagSprite);
                 flagSprite.y = this.getYPosition(anchor, flag.level);
                 this._flags.push(flagSprite);
             }
         }
         
-        private getXPosition(anchor: Phaser.Text, position: FlagPosition): number {
+        protected getXPosition(anchor: any, position: FlagPosition, target: any): number {
             switch(position) {
                 case FlagPosition.CENTER:
-                    return anchor.x + anchor.width/2 + this._boxLine.x - 13; 
+                    return anchor.x + anchor.width/2 - target.width/2 + this._boxLine.x; 
                 case FlagPosition.LEFT:
-                    return anchor.x - this._boxSpace/2 + this._boxLine.x - 20;
+                    return anchor.x - this._boxSpace/2 + this._boxLine.x;
                 case FlagPosition.RIGHT:
                     return anchor.x + anchor.width + this._boxSpace/2 + this._boxLine.x;
             }
             throw `Unknown position for flag [${position}]`;
         }
         
-        private getYPosition(anchor: Phaser.Text, level: FlagLevel): number {
+        protected getYPosition(anchor: any, level: FlagLevel): number {
             switch(level) {
                 case FlagLevel.TOP:
-                case FlagLevel.MIDDLE:
                     return anchor.y + anchor.width + 20 + this._boxLine.y;
+                case FlagLevel.MIDDLE:
+                    return anchor.y + anchor.width + 40 + this._boxLine.y;
                 case FlagLevel.BOTTOM:
-                    return anchor.y + anchor.width + 50 + this._boxLine.y;
+                    return anchor.y + anchor.width + 60 + this._boxLine.y;
             }
             throw `Unknown level for flag [${level}]`;
         }
@@ -691,9 +802,14 @@ module Common {
             );
         }
         
-        private showExtraInfo(): void {
-            this._game.dispatch(Events.GAME_BLINK_MESSAGE, this);
+        protected showExtraInfo(): void {
+            this._game.dispatch(Events.GAME_TUTORIAL_NOTIFY, this);
             this.addTimerEvents();
+            this.tutorialNotifyStep();
+        }
+        
+        protected tutorialNotifyStep(): void {
+            
         }
         
         protected onPractiseDone(): void {
@@ -712,7 +828,7 @@ module Common {
         }
         
         protected onWrongStep(isUser: boolean = true): void {
-            this._game.dispatch(Events.GAME_BLINK_MESSAGE, this);
+            this._game.dispatch(Events.GAME_TUTORIAL_NOTIFY, this);
         }
 
         protected getStagePassEvent(): string {

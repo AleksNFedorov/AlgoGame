@@ -125,13 +125,11 @@ module Graph {
     }
     
     
-    enum EdgeDirection {UPDOWNRIGHT, UPDOWN, UPDOWNLEFT, LEFTRIGHT, RIGHTLEFT}
     
     export class EdgeUI extends Phaser.Group {
         
-        private _edge: Phaser.Sprite;
-        private _arrow: Phaser.Sprite;
         private _weightText: Phaser.Text;
+        private _arrow: Common.ArrowUI;
         
         constructor(game: Common.AlgoGame, edge: GraphJS.Edge, hideWieght: boolean = false) {
             super(game);   
@@ -139,32 +137,25 @@ module Graph {
             if (hideWieght) {
                 this.hideWieght();
             }
-            
-            this._arrow.animations.add("blink", [
-                    "graph-arrow1.png",
-                    "graph-arrow2.png",
-                    "graph-arrow3.png",
-                    "graph-arrow4.png"
-                    ], 6, true);
         }
         
-        private getEdgeOrientation(edge: GraphJS.Edge): EdgeDirection {
+        private getEdgeOrientation(edge: GraphJS.Edge): Common.ArrowDirection {
             var fromNode = edge.fromNode;
             var toNode = edge.toNode;
             
             if (toNode.y > fromNode.y) {
                 if (toNode.x === fromNode.x) {
-                    return EdgeDirection.UPDOWN;
+                    return Common.ArrowDirection.UPDOWN;
                 } else if (toNode.x > fromNode.x) {
-                    return EdgeDirection.UPDOWNRIGHT;
+                    return Common.ArrowDirection.UPDOWNRIGHT;
                 } else {
-                    return EdgeDirection.UPDOWNLEFT;
+                    return Common.ArrowDirection.UPDOWNLEFT;
                 }
             } else {
                 if (toNode.x < fromNode.x) {
-                    return EdgeDirection.RIGHTLEFT;
+                    return Common.ArrowDirection.RIGHTLEFT;
                 } else {
-                    return EdgeDirection.LEFTRIGHT;
+                    return Common.ArrowDirection.LEFTRIGHT;
                 }
             }
         }
@@ -173,75 +164,39 @@ module Graph {
             this._weightText.alpha = 0;
         }
         
-        private drawEdge(edge: GraphJS.Edge, direction: EdgeDirection): void {
+        private drawEdge(edge: GraphJS.Edge, direction: Common.ArrowDirection): void {
             var fromNodePoint = GraphUI.getNodeScreenCoordinates(edge.fromNode);
             var toNodePoint = GraphUI.getNodeScreenCoordinates(edge.toNode);
-            this._edge = this.game.add.sprite(fromNodePoint.x, fromNodePoint.y, Constants.GAME_GENERAL_ATTLAS, "graphEdge.png", this);
-            this._arrow = this.game.add.sprite(toNodePoint.x, toNodePoint.y , Constants.GAME_GENERAL_ATTLAS, "graph-arrow1.png", this);
             this._weightText = this.game.add.text((fromNodePoint.x + toNodePoint.x)/2, (fromNodePoint.y + toNodePoint.y)/2, "" + edge.weight, Constants.GAME_AREA_GRAPH_WEIGHT_TEXT, this);
             this._weightText.anchor.setTo(0.5);
+            
+            this._arrow = new Common.ArrowUI(this.game, fromNodePoint, toNodePoint, direction);
+            this.add(this._arrow);
+
             switch(direction) {
-                case EdgeDirection.RIGHTLEFT:
-                    this._edge.width = toNodePoint.x - fromNodePoint.x - 59;
-                    this._edge.y += 28;
-                    this._edge.angle = -180;
-                    
-                    this._arrow.x += 67;
-                    this._arrow.y += 35;
-                    this._arrow.angle = -180;
-                    
+                case Common.ArrowDirection.RIGHTLEFT:
                     this._weightText.x -= 24;                    
-                    this._weightText.y += 14;                    
+                    this._weightText.y += 14;       
+                    this._arrow.y += 25;        
+                    this._arrow.x -= 1;        
                     break;
-                case EdgeDirection.LEFTRIGHT:
-                    this._edge.width = toNodePoint.x - fromNodePoint.x - 59;
-                    this._edge.x += 53;
-                    this._edge.y += 24;
-                    
-                    this._arrow.x += -13;
-                    this._arrow.y += 17;
-                    
+                case Common.ArrowDirection.LEFTRIGHT:
                     this._weightText.x += 20;                    
                     this._weightText.y += 14;                    
-                    
+                    this._arrow.y += 25;        
+                    this._arrow.x += 1;        
                     break;
-                case EdgeDirection.UPDOWN:
-                    this._edge.width -= 60;
-                    this._edge.x += 29;
-                    this._edge.y += 27;
-                    this._edge.angle = 90;
-                    
-                    this._arrow.x += 36;
-                    this._arrow.y += -11;
-                    this._arrow.angle = 90;
-
+                case Common.ArrowDirection.UPDOWN:
                     this._weightText.x += 8;                    
                     this._weightText.y += 26;                    
 
                     break;
-                case EdgeDirection.UPDOWNLEFT:
-                    this._edge.width -= 13;
-                    this._edge.x += 27;
-                    this._edge.y += 27;
-                    this._edge.angle = -215;
-                    
-                    this._arrow.x += 60;
-                    this._arrow.y += 9;
-                    this._arrow.angle = -215;
-
+                case Common.ArrowDirection.UPDOWNLEFT:
                     this._weightText.x += 18;                    
                     this._weightText.y += 16;                    
 
                     break;
-                case EdgeDirection.UPDOWNRIGHT:
-                    this._edge.width -= 15;
-                    this._edge.x += 27;
-                    this._edge.y += 27;
-                    this._edge.angle = 35;
-                    
-                    this._arrow.y -= 3;
-                    this._arrow.angle = 35;
-                    
+                case Common.ArrowDirection.UPDOWNRIGHT:
                     this._weightText.x += 28;                    
                     this._weightText.y += 15;                    
                     break;
@@ -250,12 +205,11 @@ module Graph {
         }
         
         public highlightEdge(): void {
-            this._arrow.animations.play("blink");
+            this._arrow.highlightArrow();
         }
         
         public stopHiglightingEdge(): void {
-            this._arrow.animations.stop("blink");
-            this._arrow.frameName = "graph-arrow1.png";
+            this._arrow.stopHiglightingArrow();
         }
 
     }

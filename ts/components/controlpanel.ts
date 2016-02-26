@@ -4,35 +4,6 @@ declare var Dictionary: any;
 
 module Common {   
     
-    class Blinker {
-        
-        private _sprite: any;
-        private _game: AlgoGame;
-        private _currentTween: Phaser.Tween;
-        
-        constructor(game: AlgoGame, sprite: any) {
-            this._sprite = sprite;
-            this._game = game;
-        }
-        
-        public blink(): void {
-            if (this._currentTween != null) {
-                this._currentTween.stop();
-            }
-            
-            this._sprite.alpha = 1;
-            this._currentTween = this._game.add.tween(this._sprite).to({alpha: 0.3}, 100, "Quart.easeOut", false, 0, 7, true);
-            this._currentTween.start();
-
-        }
-        
-        destroy(): void {
-            if (this._currentTween != null) {
-                this._currentTween.stop();
-            }
-        }
-    }
-    
     class GameMessage extends Phaser.Group implements GameUIObjectWithState {
         
         private _text: Common.Text;
@@ -139,7 +110,7 @@ module Common {
             }
             
             switch(event.type) {
-                case Events.GAME_BLINK_MESSAGE:
+                case Events.GAME_TUTORIAL_NOTIFY:
                     this._messages[0].blinkMessage();
                     break;
                 case Events.GAME_STARTED:

@@ -75,6 +75,30 @@ module Sort {
             }
         }
         
+        public showDirectionArrow(fromBoxIndex: number, toBoxIndex: number): void {
+            
+            var fromBox = this._boxIndexes[fromBoxIndex];
+            var toBox = this._boxIndexes[toBoxIndex];
+            
+            var direction: Common.ArrowDirection = fromBoxIndex > toBoxIndex ? 
+                Common.ArrowDirection.RIGHTLEFT : Common.ArrowDirection.LEFTRIGHT;
+
+            var fromPoint: Phaser.Point = new Phaser.Point(
+                fromBox.x + fromBox.width/2,
+                this.getYPosition(fromBox, Common.FlagLevel.MIDDLE)
+            );
+            
+            var toPoint: Phaser.Point = new Phaser.Point(
+                toBox.x + toBox.width/2,
+                this.getYPosition(toBox, Common.FlagLevel.MIDDLE)
+            );
+            
+            var arrow: Common.ArrowUI = new Common.ArrowUI(this._game, fromPoint, toPoint, direction);
+            var blinker = new Common.Blinker(this._game, arrow);
+            blinker.setEndCallback(function(){arrow.destroy()});
+            blinker.blink();
+        }
+        
         public hideSeparator(): void {
             throw "Method is not implemented [hideSeparator]";
         }
@@ -162,6 +186,7 @@ module Sort {
         
         private _separator: Phaser.Sprite;
         private _separatorIndex: number[] = [];
+        private _directionArrow: Phaser.Group;
         
         constructor(game: Common.AlgoGame, boxClickedCallback:Function, sequence: number[]) {
             super(game, boxClickedCallback, sequence);
@@ -180,7 +205,7 @@ module Sort {
             var indexElement = Math.floor( (nx-leftBorder)/stepWidth);
             
             this._separator.alpha = 1;
-            this._separator.y = this._boxLine.y;
+            this._separator.y = this._boxLine.y - 160;
             this._separator.x = Math.max(this._separatorIndex[indexElement], 10);
             
             this._placeToInsert = indexElement;
@@ -261,6 +286,7 @@ module Sort {
             return index;
         }
         
+        
         protected moveBox(box: Common.BoxContainer, newPosition: number): void {
             this._boxes[newPosition] = box;
             box.setBoxIndex(newPosition);
@@ -304,6 +330,11 @@ module Sort {
             super.onCorrectAction(isUser);
             var step: Step = this.getCurrentStep();
             this._boxLine.applyAction(new SortAction(step.stepNumber, step.newPosition));
+        }
+        
+        protected tutorialNotifyStep(): void {
+            var step = this.getCurrentStep();
+            this._boxLine.showDirectionArrow(step.stepNumber, step.newPosition);
         }
         
         protected destroyTempObjects():void {

@@ -178,6 +178,10 @@ module BinarySearch {
                 this._algorithm.elementToFindIndex);
         }
         
+        protected tutorialNotifyStep(): void {
+            this._boxLine.blinkBox(this.getCurrentStep().elementIndex);                    
+        }
+
         protected getScenarios(): any[] {
             return binarySearchScenarios.scenarios;
         }

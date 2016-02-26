@@ -32,6 +32,41 @@ module Common {
         LevelButton,
     }
     
+    export class Blinker {
+        
+        private _sprite: any;
+        private _game: AlgoGame;
+        private _currentTween: Phaser.Tween;
+        private _callback: Function = function(){};
+        
+        constructor(game: AlgoGame, sprite: any) {
+            this._sprite = sprite;
+            this._game = game;
+        }
+        
+        public blink(): void {
+            if (this._currentTween != null) {
+                this._currentTween.stop();
+            }
+            
+            this._sprite.alpha = 1;
+            this._currentTween = this._game.add.tween(this._sprite).to({alpha: 0.3}, 100, "Quart.easeOut", false, 0, 7, true);
+            this._currentTween.onComplete.add(this._callback);
+            this._currentTween.start();
+        }
+        
+        public setEndCallback(callback: Function): void {
+            this._callback = callback;
+        }
+        
+        destroy(): void {
+            if (this._currentTween != null) {
+                this._currentTween.stop();
+            }
+        }
+    }
+    
+    
     //Info baloon information
     export class ShowInfo {
         

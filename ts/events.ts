@@ -48,7 +48,7 @@ class Events {
     static GAME_ENABLE_ALL = Events.createEvent("EnableAll");
     
     static GAME_SHOW_MESSAGE = Events.createEvent("ShowMessage");
-    static GAME_BLINK_MESSAGE = Events.createEvent("BlinkMessage");
+    static GAME_TUTORIAL_NOTIFY = Events.createEvent("TutorialNotifyStep");
     
     //Stage info manager events
     static STAGE_CUSTOM_INFO_SHOW = Events.createEvent("ShowCustomStageInfo");

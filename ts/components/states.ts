@@ -389,6 +389,7 @@ module Common {
             this._showHelperInfoManager = new StageInfo.TutorialManager(this.algoGame);
 
             super.onCreate();        
+            
         }
         
         protected getStageType(): string {
@@ -403,6 +404,11 @@ module Common {
                     Constants.GAME_EXAM_BANNERS_ATLAS, 
                     4000));
         }
+        
+        public render(): void {
+            console.log("[" + this._game.input.x + "][" + this._game.input.y + "]");
+        }
+        
     }
     
     //State for Practise stages only

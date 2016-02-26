@@ -159,7 +159,7 @@ var Dictionary = {
               message1: "1. Find first unsorted element: 2",
               message2: "2. Drag it to the right position: 1",
               message3: "3. Find next unsorted element: 1",
-              message4: "4. Drag it to the right position: 2",
+              message4: "4. Drag it to the right position: 1",
               message5: "5. Seqeunce sorted",
           },
           {
