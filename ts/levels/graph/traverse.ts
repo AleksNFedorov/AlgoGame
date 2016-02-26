@@ -51,6 +51,11 @@ module Graph {
                 );
         }
         
+        protected tutorialNotifyStep(): void {
+            var step = this.getCurrentStep();
+            this._graphUI.blinkNode(step.stepNumber);
+        }
+        
         protected getScenarios(): any[] {
             return depthFistSearchScenarios.scenarios;
         }

@@ -194,6 +194,7 @@ module Common {
         public _stateConfig: GameConfig.StageConfig;
         
         private _levelSave: LevelSave;
+        private _lastInactivityCheckTime: number;
 
         public dispatch(eventId: string, caller: any, param?: any) {
             var newEvent: GameEvent = new GameEvent(eventId, caller, param);
@@ -205,6 +206,7 @@ module Common {
             this._game = <AlgoGame> this.game;
             this._stateConfig = this.getStateConfig(this.getStageType());
             this._levelSave = this._game.loadLevelSave(this._stateConfig.level);
+            this.flushInactivityTime();
         }
         
         protected getStageType(): string {
@@ -245,7 +247,21 @@ module Common {
                     eventToProcess.caller,
                     eventToProcess.param
                 );
+                this.flushInactivityTime();
+            } else {
+                if (this._game.time.elapsedSince(this._lastInactivityCheckTime) 
+                    >= Constants.GAME_INACTIVITY_INTERVAL) {
+                    this._game.eventBus.dispatch(
+                        Events.GAME_INACTIVITY_NOTIFY,
+                        this);
+                    
+                    this.flushInactivityTime();
+                }
             }
+        }
+        
+        private flushInactivityTime(): void {
+            this._lastInactivityCheckTime = this._game.time.time;
         }
         
         public shutdown(): void {

@@ -298,6 +298,10 @@ module Graph {
             this._nodes[index].setState(Common.BoxState.SELECTED_GREEN);
         }
         
+        public blinkNode(boxIndex: number): void {
+            this._nodes[boxIndex].blink();
+        }
+        
         public destroy(): void {
             this._graph.destroy();
             this._game = null;

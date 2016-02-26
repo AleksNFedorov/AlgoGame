@@ -8,6 +8,7 @@ class Constants {
     
     static GAME_TIME_PROGRESS_UPDATE_INTERVAL = 300;
     static GAME_AUTOSTART_INTERVAL = 3000;
+    static GAME_INACTIVITY_INTERVAL = 3000;
     static GAME_SHOW_INFO_SAVE_ID = "showInfo";
     
     //Game Menu

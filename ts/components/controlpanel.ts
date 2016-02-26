@@ -10,7 +10,7 @@ module Common {
         private _icon: Phaser.Sprite;
         private _game: AlgoGame;
         
-        private _blinker: Blinker;
+        private _playButtonBlinker: Blinker;
         
         constructor(game: AlgoGame, text: string, messageType: MessageType) {
             super(game);
@@ -19,7 +19,7 @@ module Common {
             
             this._icon = this.addIcon(messageType);
             this._text = this.addText(text, messageType);
-            this._blinker = new Blinker(game, this._icon);
+            this._playButtonBlinker = new Blinker(game, this._icon);
         }
         
         private addIcon(messageType: MessageType): Phaser.Sprite {
@@ -52,7 +52,7 @@ module Common {
         }
         
         public blinkMessage(): void {
-            this._blinker.blink();
+            this._playButtonBlinker.blink();
         }
         
         public displayMessage(): void {
@@ -60,7 +60,7 @@ module Common {
         }
         
         public destroy(): void {
-            this._blinker.destroy();
+            this._playButtonBlinker.destroy();
             super.destroy();
         }
         
@@ -110,9 +110,6 @@ module Common {
             }
             
             switch(event.type) {
-                case Events.GAME_TUTORIAL_NOTIFY:
-                    this._messages[0].blinkMessage();
-                    break;
                 case Events.GAME_STARTED:
                 case Events.GAME_CREATED:
                     this.destroyMessages();
@@ -223,13 +220,13 @@ module Common {
         protected _autoStartTimer: Phaser.Timer;
         protected _autoStartEnabled: boolean = true; 
         
-        private _blinker: Blinker;
+        private _playButtonBlinker: Blinker;
         
         constructor(game: AlgoGame) {
             super(game);
             this._autoStartTimer = game.time.create(false);
             this._autoStartTimer.start();
-            this._blinker = new Blinker(game, this._playButton);
+            this._playButtonBlinker = new Blinker(game, this._playButton);
         }
         
         protected createElements(): void {
@@ -262,6 +259,13 @@ module Common {
         dispatchEvent(event: any, param1: any) {
             super.dispatchEvent(event, param1);
             switch(event.type) {
+                case Events.GAME_INACTIVITY_NOTIFY:
+                    if (this.isNotCurrentState(Common.LevelStageState.PAUSED)
+                        && this.isNotCurrentState(Common.LevelStageState.RUNNING)
+                    ) {
+                        this._playButtonBlinker.blink();
+                    }
+                    break;
                 case Events.CONTROL_PANEL_EVENT_PLAY:
                     this._autoStartTimer.removeAll();
                     break;
@@ -276,7 +280,7 @@ module Common {
                     }
                     break;
                 case Events.GAME_STEP_ON_PAUSE:
-                    this._blinker.blink();
+                    this._playButtonBlinker.blink();
                     break;
                 case Events.GAME_DISABLE_ALL:
                     this._autoStartTimer.pause();
@@ -297,6 +301,7 @@ module Common {
             super.addEventListener(Events.GAME_END);
             super.addEventListener(Events.GAME_DISABLE_ALL);
             super.addEventListener(Events.GAME_ENABLE_ALL);
+            super.addEventListener(Events.GAME_INACTIVITY_NOTIFY);
         }
         
         destroy() {
@@ -306,7 +311,7 @@ module Common {
         
     }
     
-    export class TutorialPanel extends ControlPanel {
+    class CorePractisePanel extends ControlPanel {
         
         protected _replayButton: Button;
         protected _autoStart: Button;
@@ -316,7 +321,7 @@ module Common {
         }
         
         protected getEventsToIgnore(): string[] {
-            return [Events.GAME_STARTED];
+            return [];
         }
         
        createElements():void {
@@ -345,9 +350,6 @@ module Common {
                 case Events.STAGE_INITIALIZED:
                     this._autoStartEnabled = !this.levelSave.autoStart;
                     this.onAutostartClick();
-                    break;
-                case Events.GAME_NEW_STEP_CREATED:
-                    this.onNewStepCreatedEvent(<AlgorithmStep> param1);
                     break;
                 case Events.CONTROL_PANEL_EVENT_PLAY:
                     this._playButton.deactivate();
@@ -392,6 +394,32 @@ module Common {
             this.saveState();
         }
         
+    }
+    
+    export class TutorialPanel extends CorePractisePanel {
+        
+        constructor(game: AlgoGame) {
+            super(game);  
+        }
+        
+        protected getEventsToIgnore(): string[] {
+            return [Events.GAME_STARTED];
+        }
+        
+        dispatchEvent(event: any, param1: any) {
+            super.dispatchEvent(event, param1);
+            switch(event.type) {
+                case Events.GAME_INACTIVITY_NOTIFY:
+                    if (this._messages.length > 0) {
+                        this._messages[0].blinkMessage();
+                    }
+                    break;
+                case Events.GAME_NEW_STEP_CREATED:
+                    this.onNewStepCreatedEvent(<AlgorithmStep> param1);
+                    break;
+            }
+        }
+        
         protected onNewStepCreatedEvent(step: AlgorithmStep): void {
             for(var i=0; i<step.messageKeys.length; ++i) {
                 this._messages[i].blinkMessage();
@@ -403,17 +431,13 @@ module Common {
         }
         
     }
-    
-    export class PractisePanel extends TutorialPanel {
+
+    export class PractisePanel extends CorePractisePanel {
         
         protected _pauseButton: Button;
         
         constructor(game: AlgoGame) {
             super(game);  
-        }
-        
-        protected getEventsToIgnore(): string[] {
-            return [];
         }
         
        createElements():void {
@@ -430,13 +454,6 @@ module Common {
             this._pauseButton.deactivate();
             this._pauseButton.alpha = 0;
             
-        }
-        
-        initEventListners(): void {
-            super.initEventListners();
-            super.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
-            super.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
-            super.addEventListener(Events.GAME_END);
         }
         
         dispatchEvent(event: any, param1: any) {
@@ -456,10 +473,6 @@ module Common {
                     //Set correct info text here
                     break;
             }
-        }
-        
-        protected onNewStepCreatedEvent(step: AlgorithmStep): void {
-            //No need to blink new messages
         }
         
         protected getAutostartInterval(): number {

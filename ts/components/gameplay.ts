@@ -751,17 +751,18 @@ module Common {
     
     export class TutorialGamePlay<T extends GamePlayAction, A extends Algorithm> extends CoreGamePlay<T, A> {
         
-        protected _extraRemindTimer: Phaser.Timer;
         private _settings: any
         private _tutorialIteration: number = 0;
         private _scenarios: any[];
         
         constructor(game: Common.AlgoGame) {
             super(game);
-            this._extraRemindTimer = game.time.create(false);
-            this._extraRemindTimer.start();
             this._scenarios = this.getScenarios();
-            
+        }
+        
+        protected initEventListners(): void {
+            super.initEventListners();
+            this.addEventListener(Events.GAME_INACTIVITY_NOTIFY);
         }
         
         protected onInit(): void {
@@ -778,16 +779,6 @@ module Common {
             return this._scenarios[scenarioIndex];
         }
 
-        protected startGame(): void {
-            super.startGame();
-            this.addTimerEvents();
-        }
-        
-        protected boxClicked(action: T, isUser:boolean = true) {
-            this.addTimerEvents();
-            super.boxClicked(action, isUser);
-        }
-
         protected checkStepAllowed(isUser: boolean): boolean {
             if (this.isNotCurrentState(Common.LevelStageState.RUNNING)) {
                 this._game.dispatch(Events.GAME_STEP_ON_PAUSE, this);
@@ -797,34 +788,21 @@ module Common {
             return true;
         }
         
-        private addTimerEvents(): void {
-            this._extraRemindTimer.removeAll();
-            this._extraRemindTimer.repeat(
-                Constants.EXTRA_HELP_SHOW_INTERVAL,
-                0,
-                this.showExtraInfo,
-                this
-            );
+        dispatchEvent(event: any, param1: any) {
+            super.dispatchEvent(event, param1);
+            switch(event.type) {
+                case Events.GAME_INACTIVITY_NOTIFY:
+                    if (this._algorithmStep != null) {
+                        this.tutorialNotifyStep();
+                    }
+                    break;
+            }
         }
         
-        protected showExtraInfo(): void {
-            this._game.dispatch(Events.GAME_TUTORIAL_NOTIFY, this);
-            this.addTimerEvents();
-            this.tutorialNotifyStep();
-        }
-        
-        protected tutorialNotifyStep(): void {
-            
-        }
-        
-        protected onPractiseDone(): void {
-            this._extraRemindTimer.stop();
-            super.onPractiseDone();
-        }
-        
+        protected tutorialNotifyStep(): void {}
+
         protected onLastStep(isUser: boolean): void {
             super.onLastStep(isUser);
-            this._extraRemindTimer.removeAll();
             if (isUser) {
                 this._game.dispatch(Events.GAME_SHOW_MESSAGE, 
                 this, 
@@ -833,7 +811,7 @@ module Common {
         }
         
         protected onWrongStep(isUser: boolean = true): void {
-            this._game.dispatch(Events.GAME_TUTORIAL_NOTIFY, this);
+            this._game.dispatch(Events.GAME_INACTIVITY_NOTIFY, this);
         }
 
         protected getStagePassEvent(): string {
@@ -854,11 +832,6 @@ module Common {
         
         protected setStagePassed(passed: boolean): void {
             this.levelSave.tutorialPassed = passed;
-        }
-        
-        destroy(): void {
-            super.destroy();
-            this._extraRemindTimer.destroy();
         }
     }
     
