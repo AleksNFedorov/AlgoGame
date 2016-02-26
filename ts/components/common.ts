@@ -32,41 +32,7 @@ module Common {
         LevelButton,
     }
     
-    export class Blinker {
-        
-        private _sprite: any;
-        private _game: AlgoGame;
-        private _currentTween: Phaser.Tween;
-        private _callback: Function = function(){};
-        
-        constructor(game: AlgoGame, sprite: any) {
-            this._sprite = sprite;
-            this._game = game;
-        }
-        
-        public blink(): void {
-            if (this._currentTween != null) {
-                this._currentTween.stop();
-            }
-            
-            this._sprite.alpha = 1;
-            this._currentTween = this._game.add.tween(this._sprite).to({alpha: 0.3}, 200, "Quart.easeOut", false, 0, 7, true);
-            this._currentTween.onComplete.add(this._callback);
-            this._currentTween.start();
-        }
-        
-        public setEndCallback(callback: Function): void {
-            this._callback = callback;
-        }
-        
-        destroy(): void {
-            if (this._currentTween != null) {
-                this._currentTween.stop();
-            }
-        }
-    }
-    
-    
+
     //Info baloon information
     export class ShowInfo {
         
@@ -302,6 +268,7 @@ module Common {
             for(var eventId of this._listeners.list) {
                 this.removeEventListener(eventId);
             }
+            this._listeners.removeAll();
         }
 
         getCallbackForEventId(eventId: string, param?: any) {
@@ -455,4 +422,63 @@ module Common {
             this._callback = callback;
         }
     }
+    
+    export class Blinker extends GameEventComponent {
+        
+        private _sprite: any;
+        private _currentTween: Phaser.Tween;
+        private _callback: Function = function(){};
+        private _destroyOnComplete: boolean = false;
+        
+        constructor(game: AlgoGame, sprite: any, destroyOnComplete: boolean = false) {
+            super(game);
+            this._sprite = sprite;
+            this._destroyOnComplete = destroyOnComplete;
+        }
+        
+        protected initEventListners(): void {
+            this.addEventListener(Events.GAME_CORRECT_STEP_DONE);
+            this.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
+            this.addEventListener(Events.GAME_WRONG_STEP_DONE);
+        }
+        
+        public dispatchEvent(event: any, param1: any) {
+            this.onComplete();       
+        }
+
+        public blink(): void {
+        
+            this.stopTween();
+
+            this._sprite.alpha = 1;
+            this._currentTween = this._game.add.tween(this._sprite).to({alpha: 0.3}, 200, "Quart.easeOut", false, 0, 3, true);
+            this._currentTween.onComplete.add(this.onComplete.bind(this));
+            this._currentTween.start();
+        }
+        
+        private onComplete(): void {
+            this._callback();
+            if (this._destroyOnComplete) {
+                this.destroy()
+            } else {
+                this.stopTween();
+            }
+        }
+        
+        public setEndCallback(callback: Function): void {
+            this._callback = callback;
+        }
+        
+        private stopTween(): void {
+            if (this._currentTween != null) {
+                this._currentTween.stop();
+            }
+        }
+        
+        destroy(): void {
+            super.destroy();
+            this.stopTween();
+        }
+    }
+    
 }

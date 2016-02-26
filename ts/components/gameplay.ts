@@ -241,8 +241,6 @@ module Common {
                 "" + value, 
                 JSON.parse(JSON.stringify(this.getTextStyle())));
 
-            this.setBoxTextPosition(box, boxKeyText);
-            
             box.inputEnabled = true;
             boxKeyText.inputEnabled = true;
 
@@ -261,6 +259,8 @@ module Common {
             
             this._box = box;
             this._boxText = boxKeyText;
+            
+            this.updateBoxTextPosition();
         }
         
         private createSeparator(): Phaser.Sprite {
@@ -269,9 +269,9 @@ module Common {
             return seprator;
         }
         
-        protected setBoxTextPosition(box: Phaser.Sprite, boxText: Phaser.Text) {
-            boxText.x = box.width/2 - boxText.width/2;
-            boxText.y = box.height/2 - boxText.height/2;
+        protected updateBoxTextPosition() {
+            this._boxText.x = this._box.width/2 - this._boxText.width/2;
+            this._boxText.y = this._box.height/2 - this._boxText.height/2;
         }
         
         protected getTextStyle(): any {
@@ -305,6 +305,11 @@ module Common {
             this._blinker.blink();
         }
         
+        public setBoxText(text: string): void {
+            this._boxText.text = text;
+            this.updateBoxTextPosition()
+        }
+
         public setBoxIndex(boxIndex: number): void {
             this._boxIndex = boxIndex;
         } 
@@ -324,10 +329,10 @@ module Common {
             return Constants.CIRCLE_BOX_FRAMES;
         }
         
-        protected setBoxTextPosition(box: Phaser.Sprite, boxText: Phaser.Text) {
-            super.setBoxTextPosition(box, boxText);
-            boxText.x -= 2;
-            boxText.y += 2;
+        protected updateBoxTextPosition() {
+            super.updateBoxTextPosition();
+            this._boxText.x -= 2;
+            this._boxText.y += 2;
         }
 
     }
@@ -354,9 +359,9 @@ module Common {
             return Constants.CONTROL_PANEL_MESSAGE_STYLE_MED;
         }
         
-        protected setBoxTextPosition(box: Phaser.Sprite, boxText: Phaser.Text) {
-            super.setBoxTextPosition(box, boxText);
-            boxText.y += 3;
+        protected updateBoxTextPosition() {
+            super.updateBoxTextPosition();
+            this._boxText.y += 3;
         }
 
     }

@@ -63,6 +63,7 @@ module Sort {
             this._dragging = true;
             this._placeToInsert = index;
             this._boxes[index].alpha = 0.5;
+            this.move(null, this._game.input.x, this._game.input.y);
         }
         
         protected onBoxClickReleased(index: number): void {
@@ -94,7 +95,7 @@ module Sort {
             );
             
             var arrow: Common.ArrowUI = new Common.ArrowUI(this._game, fromPoint, toPoint, direction);
-            var blinker = new Common.Blinker(this._game, arrow);
+            var blinker = new Common.Blinker(this._game, arrow, true);
             blinker.setEndCallback(function(){arrow.destroy()});
             blinker.blink();
         }

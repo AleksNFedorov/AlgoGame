@@ -213,8 +213,7 @@ module Graph {
         public updateNodeWeight(step: DjikstraStep): void {
             this._edgeWitghtText[step.edge.id].stopHiglightingEdge();
             var node = this._nodes[step.stepNumber];
-            var nodeText: Phaser.Text = <Phaser.Text>node.children[1];
-            nodeText.text = "" + step.weight;
+            node.setBoxText("" + step.weight);
         }
 
         protected drawEdge(edge: GraphJS.Edge): EdgeUI {

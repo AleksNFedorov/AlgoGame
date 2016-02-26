@@ -405,10 +405,6 @@ module Common {
                     4000));
         }
         
-        public render(): void {
-            console.log("[" + this._game.input.x + "][" + this._game.input.y + "]");
-        }
-        
     }
     
     //State for Practise stages only
