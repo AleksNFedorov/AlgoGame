@@ -230,46 +230,18 @@ module Common {
         private _practiseProgress: ProgressBar;
         private _examProgress: ProgressBar;
         
+        private _buttons: LevelButton[] = [];
+        
         constructor(game: AlgoGame) {
             super(game);
             
             this._levelLocker = new LevelLocker(game);
             
             this.createLevelButtons();
+            this.createProgressBars();
             
-            this._openProgress = new ProgressBar(game, "progressOrangeMed", "Open levels", false);
-            this._tutorialProgress = new ProgressBar(game, "progressBlueMed", "Tutorial passed", false);
-            this._practiseProgress = new ProgressBar(game, "progressYellowMed", "Practise passed", false);
-            this._examProgress = new ProgressBar(game, "progressGreenMed", "Exam passed", false);
-
-            var totalLevels = this._levelLocker.levelInfos.length;
-            var openLevels = this._levelLocker.levelsOpen;
-            var examPassed = this._levelLocker.examsPassed;
-            var practisesPassed = this._levelLocker.practisesPassed;
-            var tutorialsPassed = this._levelLocker.tutorialsPassed;
-
-            this._openProgress.setMaxValue(totalLevels);
-            this._tutorialProgress.setMaxValue(totalLevels);
-            this._practiseProgress.setMaxValue(totalLevels);
-            this._examProgress.setMaxValue(totalLevels);
-            
-            this._openProgress.setValue(openLevels, openLevels + "/" + totalLevels);
-            this._tutorialProgress.setValue(tutorialsPassed, tutorialsPassed + "/" + totalLevels);
-            this._practiseProgress.setValue(practisesPassed, practisesPassed + "/" + totalLevels);
-            this._examProgress.setValue(examPassed, examPassed + "/" + totalLevels);
-
-
-            this._openProgress.y = 640;
-            this._openProgress.x = 5;
-
-            this._tutorialProgress.y = 640;
-            this._tutorialProgress.x = 612;
-
-            this._practiseProgress.y = 720;
-            this._practiseProgress.x = 5;
-
-            this._examProgress.y = 720;
-            this._examProgress.x = 612;
+            this.addGameElement(Common.GameElements.MainMenuButton, this._buttons[0]);
+            this.addGameElement(Common.GameElements.MainMenuProgress, this._openProgress);
 /*
             Facebook test button
             
@@ -287,6 +259,53 @@ module Common {
                 }, function(response){});
             }
 */
+        }
+        
+        public destroy(): void {
+            super.destroy();
+            for(var button of this._buttons) {
+                button.destroy();
+            }
+            this._openProgress.destroy();
+            this._tutorialProgress.destroy();
+            this._practiseProgress.destroy();
+            this._examProgress.destroy();
+        }
+        
+        
+        private createProgressBars(): void {
+            this._openProgress = new ProgressBar(this._game, "progressOrangeMed", "Open levels", false);
+            this._tutorialProgress = new ProgressBar(this._game, "progressBlueMed", "Tutorial passed", false);
+            this._practiseProgress = new ProgressBar(this._game, "progressYellowMed", "Practise passed", false);
+            this._examProgress = new ProgressBar(this._game, "progressGreenMed", "Exam passed", false);
+
+            var totalLevels = this._levelLocker.levelInfos.length;
+            var openLevels = this._levelLocker.levelsOpen;
+            var examPassed = this._levelLocker.examsPassed;
+            var practisesPassed = this._levelLocker.practisesPassed;
+            var tutorialsPassed = this._levelLocker.tutorialsPassed;
+
+            this._openProgress.setMaxValue(totalLevels);
+            this._tutorialProgress.setMaxValue(totalLevels);
+            this._practiseProgress.setMaxValue(totalLevels);
+            this._examProgress.setMaxValue(totalLevels);
+            
+            this._openProgress.setValue(openLevels, openLevels + "/" + totalLevels);
+            this._tutorialProgress.setValue(tutorialsPassed, tutorialsPassed + "/" + totalLevels);
+            this._practiseProgress.setValue(practisesPassed, practisesPassed + "/" + totalLevels);
+            this._examProgress.setValue(examPassed, examPassed + "/" + totalLevels);
+
+            this._openProgress.y = 640;
+            this._openProgress.x = 5;
+
+            this._tutorialProgress.y = 640;
+            this._tutorialProgress.x = 612;
+
+            this._practiseProgress.y = 720;
+            this._practiseProgress.x = 5;
+
+            this._examProgress.y = 720;
+            this._examProgress.x = 612;
         }
         
         private createLevelButtons(): void {
@@ -319,11 +338,12 @@ module Common {
                     graphsY += stepConstant;
                 }
 
-                this.createLevelButton(levelInfo, x, y);
+                var newButton = this.createLevelButton(levelInfo, x, y);
+                this._buttons.push(newButton);
             }
         }
         
-        private createLevelButton(levelInfo: LevelInfo, x:number, y:number): void {
+        private createLevelButton(levelInfo: LevelInfo, x:number, y:number): LevelButton {
             var levelName = Dictionary[levelInfo.levelName].short;
             var levelStats = levelInfo.practiseDone;
             var buttonSettings = this.getButtonSettings(levelInfo);
@@ -342,7 +362,7 @@ module Common {
                 levelButton.deactivate();
             }
             
-            this.addGameElement(GameElements.LevelButton, levelButton);
+            return levelButton;
         }
         
         private createButtonClickCallback(levelInfo: LevelInfo): Function {

@@ -53,6 +53,7 @@ class LevelMenuState extends Common.State {
 
     private _levelButtonsPanel: Common.LevelButtonsPanel;
     private _background: Common.BackgroundGraphics;
+    private _infoManager: StageInfo.Manager;
 
     public shutdown(): void {
         super.shutdown();
@@ -64,6 +65,7 @@ class LevelMenuState extends Common.State {
         this._background = new Common.BackgroundGraphics(this.algoGame);
         this.drawBackground();
         this._levelButtonsPanel = new Common.LevelButtonsPanel(this.algoGame);
+        this._showHelperInfoManager = new StageInfo.MenuManager(this.algoGame);
         super.onCreate();
     }
     

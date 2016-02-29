@@ -69,7 +69,7 @@ module Common {
             
             var workGroup = this._groups[type];
             
-            var showTween = this._game.add.tween(workGroup).to({alpha: 1}, 10000, "Quart.easeOut", false, 0, 0, true);
+            var showTween = this._game.add.tween(workGroup).to({alpha: 1}, 1000, "Quart.easeOut", false, 0, 0, true);
             showTween.start();
         }
         

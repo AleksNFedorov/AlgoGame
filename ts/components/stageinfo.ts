@@ -162,7 +162,7 @@ module StageInfo {
             this._requestedShowWidget.destroy();
             infoToShow.hideCallback();
 
-            if (this._infoToShowIndex) {
+            if (this._infoToShowIndex != null) {
                 this._infoSave.gameInfoSaves[this._levelStageType] = this._infoToShowIndex;
                 this._game.store.set(Constants.GAME_SHOW_INFO_SAVE_ID, this._infoSave);
                 this.createAndSendShowInfoRequest();
@@ -221,6 +221,16 @@ module StageInfo {
         }
     }
     
+    export class MenuManager extends Manager {
+        
+        constructor(game: Common.AlgoGame) {
+            super(game, LevelStageType.MENU,[
+                    new Common.ShowInfo(Common.GameElements.MainMenuButton),
+                    new Common.ShowInfo(Common.GameElements.MainMenuProgress),
+                ]);
+        }
+    }
+    
     export class TutorialManager extends Manager {
         
         private _practiseInfo: Common.ShowInfo;
@@ -242,8 +252,6 @@ module StageInfo {
         initEventListners(): void {
             super.initEventListners();
             this.addEventListener(Events.GAME_TUTORIAL_DONE);
-            // this.addEventListener(Events.GAME_PRACTISE_DONE);
-            // this.addEventListener(Events.GAME_EXAM_DONE);
         }
 
         dispatchEvent(event: any, param: any) {

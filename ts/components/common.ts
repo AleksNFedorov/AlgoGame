@@ -14,6 +14,8 @@ module Common {
         All game elements, element id should be here to show description info for it.
     */
     export enum GameElements {
+        MainMenuButton,
+        MainMenuProgress,
         MenuButtonMenu,
         MenuButtonDescription,
         MenuButtonObjectives,
@@ -29,7 +31,6 @@ module Common {
         ControlPanelButtonAutoStart,
         ControlPanelText,
         GameArea,
-        LevelButton,
     }
     
 

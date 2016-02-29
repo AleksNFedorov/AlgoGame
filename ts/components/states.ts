@@ -186,6 +186,8 @@ module Common {
     export class State extends Phaser.State {
         
         protected _game: AlgoGame;
+        protected _showHelperInfoManager: StageInfo.Manager;
+        
         private _levelStageState: LevelStageState = LevelStageState.UNKNOWN;
         private _eventsToProcess: Phaser.LinkedList = new Phaser.LinkedList();
         private _pausedByModalWindow: boolean = false;
@@ -265,6 +267,7 @@ module Common {
         }
         
         public shutdown(): void {
+            this._showHelperInfoManager.destroy();
             this.removeEventListener(Events.GAME_CREATED);
             this.removeEventListener(Events.GAME_STARTED);
             this.removeEventListener(Events.GAME_END);
@@ -350,7 +353,6 @@ module Common {
         protected _controlPanel: GameComponentContainer;
         protected _progressPanel: GameComponentContainer;
         protected _gamePlay: CoreGamePlay<GamePlayAction, Algorithm>;
-        protected _showHelperInfoManager: StageInfo.Manager;
         
         public shutdown(): void {
             super.shutdown();
@@ -361,7 +363,6 @@ module Common {
             this._controlPanel.destroy();
             this._progressPanel.destroy();
             this._gamePlay.destroy();
-            this._showHelperInfoManager.destroy();
             this._menu = null;
             this.removeEventListener(Events.STAGE_INFO_ALL_INFO_SHOWED);
         }
