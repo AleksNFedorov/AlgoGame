@@ -40,8 +40,7 @@ class Preload extends Phaser.State {
 
     private _onLoadComplete() {
         console.log("Preload complete");
-        // this.game.state.start("menu");
-        this.game.state.start("djikstraTutorial");
+        this.game.state.start("menu");
     }
     
     public shutdown(): void {

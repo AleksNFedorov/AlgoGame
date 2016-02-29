@@ -3,15 +3,14 @@ var globalConfig = {
         binarySearch: {
             tutorial: {
                 stageName: "binarySearchTutorial",
-                stepsToPass: 2,
-                stepTime: 5000,
+                stepsToPass: 9,
                 menu: {
                     MenuButtonDescription: "http://wiki.roblox.com/index.php?title=Binary_search",
                 },
             },
             practise: {
                 stageName: "binarySearchPractise",
-                stepsToPass: 5,
+                stepsToPass: 30,
                 stepTime: 5000,
                 menu: {
                     MenuButtonDescription: "http://wiki.roblox.com/index.php?title=Binary_search",
@@ -43,15 +42,15 @@ var globalConfig = {
         insertionSort: {
             tutorial: {
                 stageName: "insertionSortTutorial",
-                stepsToPass: 20,
+                stepsToPass: 9,
                 menu: {
                     MenuButtonDescription: "http://jackson-.github.io/2014/10/07/Sowhatexactlyisinsertionsort.html",
                 },
             },
             practise: {
                 stageName: "insertionSortPractise",
-                stepsToPass: 40,
-                stepTime: 6000,
+                stepsToPass: 30,
+                stepTime: 5000,
                 menu: {
                     MenuButtonDescription: "http://jackson-.github.io/2014/10/07/Sowhatexactlyisinsertionsort.html",
                 },
@@ -65,8 +64,8 @@ var globalConfig = {
             },
             exam: {
                 stageName: "insertionSortExam",
-                stepsToPass: 5,
-                stepTime: 4000,
+                stepsToPass: 20,
+                stepTime: 5000,
                 menu: {
                     MenuButtonDescription: "http://jackson-.github.io/2014/10/07/Sowhatexactlyisinsertionsort.html",
                 },
@@ -80,18 +79,18 @@ var globalConfig = {
             }
         },
         selectionSort: {
-            // dependsOn:"insertionSort",
+            dependsOn:"insertionSort",
             tutorial: {
                 stageName: "selectionSortTutorial",
-                stepsToPass: 20,
+                stepsToPass: 8,
                 menu: {
                     MenuButtonDescription: "https://matse-hamburg.wikispaces.com/Selectionsort",
                 },
             },
             practise: {
                 stageName: "selectionSortPractise",
-                stepsToPass: 40,
-                stepTime: 6000,
+                stepsToPass: 30,
+                stepTime: 5000,
                 menu: {
                     MenuButtonDescription: "https://matse-hamburg.wikispaces.com/Selectionsort",
                 },
@@ -105,7 +104,7 @@ var globalConfig = {
             },
             exam: {
                 stageName: "selectionSortExam",
-                stepsToPass: 6,
+                stepsToPass: 20,
                 stepTime: 5000,
                 menu: {
                     MenuButtonDescription: "https://matse-hamburg.wikispaces.com/Selectionsort",
@@ -120,18 +119,18 @@ var globalConfig = {
             }
         },
         mergeSort: {
-            // dependsOn:"selectionSort",
+            dependsOn:"selectionSort",
             tutorial: {
                 stageName: "mergeSortTutorial",
-                stepsToPass: 20,
+                stepsToPass: 15,
                 menu: {
                     MenuButtonDescription: "https://matse-hamburg.wikispaces.com/Selectionsort",
                 },
             },
             practise: {
                 stageName: "mergeSortPractise",
-                stepsToPass: 50,
-                stepTime: 6000,
+                stepsToPass: 30,
+                stepTime: 5000,
                 menu: {
                     MenuButtonDescription: "http://www.personal.kent.edu/~rmuhamma/Algorithms/MyAlgorithms/Sorting/mergeSort.htm",
                 },
@@ -160,18 +159,18 @@ var globalConfig = {
             }
         },
         quickSort: {
-            // dependsOn: "mergeSort",
+            dependsOn: "mergeSort",
             tutorial: {
                 stageName: "quickSortTutorial",
-                stepsToPass: 1,
+                stepsToPass: 10,
                 menu: {
                     MenuButtonDescription: "https://matse-hamburg.wikispaces.com/Selectionsort",
                 },
             },
             practise: {
                 stageName: "quickSortPractise",
-                stepsToPass: 50,
-                stepTime: 8000,
+                stepsToPass: 30,
+                stepTime: 6000,
                 menu: {
                     MenuButtonDescription: "http://www.mayankacademy.com/cs101/quick_sort/",
                 },
@@ -186,7 +185,7 @@ var globalConfig = {
             exam: {
                 stageName: "quickSortExam",
                 stepsToPass: 10,
-                stepTime: 4000,
+                stepTime: 5000,
                 menu: {
                     MenuButtonDescription: "http://www.mayankacademy.com/cs101/quick_sort/",
                 },
@@ -203,7 +202,7 @@ var globalConfig = {
         debthFirst: {
             tutorial: {
                 stageName: "debthFirstTutorial",
-                stepsToPass: 50,
+                stepsToPass: 12,
                 menu: {
                     MenuButtonDescription: "https://www.cs.drexel.edu/~introcs/F2K/lectures/7.2_AI/Formal3.html",
                 },
@@ -217,8 +216,8 @@ var globalConfig = {
             },
             practise: {
                 stageName: "debthFirstPractise",
-                stepsToPass: 50,
-                stepTime: 3000,
+                stepsToPass: 30,
+                stepTime: 2000,
                 menu: {
                     MenuButtonDescription: "https://www.cs.drexel.edu/~introcs/F2K/lectures/7.2_AI/Formal3.html",
                 },
@@ -232,7 +231,7 @@ var globalConfig = {
             },
             exam: {
                 stageName: "debthFirstExam",
-                stepsToPass: 10,
+                stepsToPass: 20,
                 stepTime: 2000,
                 menu: {
                     MenuButtonDescription: "https://www.cs.drexel.edu/~introcs/F2K/lectures/7.2_AI/Formal3.html",
@@ -247,10 +246,10 @@ var globalConfig = {
             }
         },
         djikstra: {
-            // dependsOn: "debthFirst",
+            dependsOn: "debthFirst",
             tutorial: {
                 stageName: "djikstraTutorial",
-                stepsToPass: 50,
+                stepsToPass: 10,
                 menu: {
                     MenuButtonDescription: "https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm",
                 },
@@ -264,7 +263,7 @@ var globalConfig = {
             },
             practise: {
                 stageName: "djikstraPractise",
-                stepsToPass: 50,
+                stepsToPass: 30,
                 stepTime: 5000,
                 menu: {
                     MenuButtonDescription: "https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm",
