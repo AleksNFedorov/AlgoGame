@@ -80,7 +80,7 @@ var globalConfig = {
             }
         },
         selectionSort: {
-            dependsOn:"insertionSort",
+            // dependsOn:"insertionSort",
             tutorial: {
                 stageName: "selectionSortTutorial",
                 stepsToPass: 20,
