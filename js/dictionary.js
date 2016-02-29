@@ -1,13 +1,19 @@
 var Dictionary = {
     
-    WinHeadLine: "Win",
-    WinSubHeadLine: "Win subheadline",
+    statusUpdate: {
+        WinHeadLine: "Win",
+        WinSubHeadLine: "Win subheadline",
+        
+        FailHeadLine: "Fail",
+        FailSubHeadLine: "Fail subheadline",
     
-    FailHeadLine: "Fail",
-    FailSubHeadLine: "Fail subheadline",
-
-    ComputerWinHeadLine: "Computer win",
-    ComputerWinSubHeadLine: "computer win subheadline",
+        ComputerWinHeadLine: "Computer win",
+        ComputerWinSubHeadLine: "computer win subheadline",
+        
+        ComputerTurnHeadLine: "Computer turn",
+        ComputerTurnSubHeadLine: "Computer turn sub headline",
+        
+    },
 
     StageInit: {
         type: "info",

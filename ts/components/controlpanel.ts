@@ -295,15 +295,6 @@ module Common {
             return Constants.GAME_AUTOSTART_INTERVAL;
         }
         
-        initEventListners(): void {
-            super.initEventListners();
-            super.addEventListener(Events.CONTROL_PANEL_EVENT_PLAY);
-            super.addEventListener(Events.GAME_END);
-            super.addEventListener(Events.GAME_DISABLE_ALL);
-            super.addEventListener(Events.GAME_ENABLE_ALL);
-            super.addEventListener(Events.GAME_INACTIVITY_NOTIFY);
-        }
-        
         destroy() {
            super.destroy(); 
            this._autoStartTimer.destroy();
@@ -409,6 +400,11 @@ module Common {
         dispatchEvent(event: any, param1: any) {
             super.dispatchEvent(event, param1);
             switch(event.type) {
+                case Events.GAME_CREATED:
+                    this._game.dispatch(
+                        Events.GAME_INACTIVITY_NOTIFY, 
+                        this);
+                    break;
                 case Events.GAME_INACTIVITY_NOTIFY:
                     if (this._messages.length > 0) {
                         this._messages[0].blinkMessage();

@@ -237,7 +237,9 @@ module Graph {
             this.init(nodes);
             
             this._graph.y = Constants.GAME_AREA_Y;
-            this._graph.x = game.width/2 - (columns * GraphUI.STEP_X)/2;
+            this._graph.x = game.width/2 - ((columns - 1) * GraphUI.STEP_X + this._nodes[0].width) / 2;
+            
+            console.log(`Graph widht is ${this._graph.width}`);
             
             this._nodes[nodeToFind.id].setState(Common.BoxState.SELECTED_ORANGE);
         }

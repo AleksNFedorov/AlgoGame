@@ -34,7 +34,7 @@ class Constants {
     static GAME_AREA_BOX_WIDTH = 53;
     static GAME_AREA_MARGIN = 40;
     static GAME_AREA_X = 0;
-    static GAME_AREA_Y = 150;
+    static GAME_AREA_Y = 200;
     static GAME_AREA_LINE_Y = 480;
 
     //Banners
@@ -56,7 +56,9 @@ class Constants {
     static EXTRA_HELP_MESSAGE_KEY = "tutorialExtraHelp";
     
     //iterationStatus panel
-    static GAME_STATUS_Y = 210;
+    //Shows status massages in a blinking mode (Win, Fail, Computer win)
+    //Y position
+    static GAME_STATUS_Y = 120;
 
     static STATUS_TEXT_WIN = { 
         font: "bold 30px Open Sans", 

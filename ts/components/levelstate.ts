@@ -237,10 +237,10 @@ module Common {
             
             this.createLevelButtons();
             
-            this._openProgress = new ProgressBar(game, "progressOrangeMed", "Open", false);
-            this._tutorialProgress = new ProgressBar(game, "progressBlueMed", "Tutorial", false);
-            this._practiseProgress = new ProgressBar(game, "progressYellowMed", "Practise", false);
-            this._examProgress = new ProgressBar(game, "progressGreenMed", "Exam", false);
+            this._openProgress = new ProgressBar(game, "progressOrangeMed", "Open levels", false);
+            this._tutorialProgress = new ProgressBar(game, "progressBlueMed", "Tutorial passed", false);
+            this._practiseProgress = new ProgressBar(game, "progressYellowMed", "Practise passed", false);
+            this._examProgress = new ProgressBar(game, "progressGreenMed", "Exam passed", false);
 
             var totalLevels = this._levelLocker.levelInfos.length;
             var openLevels = this._levelLocker.levelsOpen;
@@ -259,10 +259,10 @@ module Common {
             this._examProgress.setValue(examPassed, examPassed + "/" + totalLevels);
 
 
-            this._openProgress.y = 650;
+            this._openProgress.y = 640;
             this._openProgress.x = 5;
 
-            this._tutorialProgress.y = 650;
+            this._tutorialProgress.y = 640;
             this._tutorialProgress.x = 612;
 
             this._practiseProgress.y = 720;
