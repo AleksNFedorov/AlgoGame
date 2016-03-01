@@ -138,17 +138,18 @@ module Common {
         
         private loadLevelAssets(): void {
             
-            var levelAttlasName = this._level;
-            var levelAttlasPath = Constants.GAME_ASSETS_PATH + "levels/" + levelAttlasName + ".png";
-            var levelAttlasJSONPath = Constants.GAME_ASSETS_PATH  + "levels/" +  levelAttlasName + ".json";
+            // var levelAttlasName = this._level;
+            // var levelAttlasPath = Constants.GAME_ASSETS_PATH + "levels/" + levelAttlasName + ".png";
+            // var levelAttlasJSONPath = Constants.GAME_ASSETS_PATH  + "levels/" +  levelAttlasName + ".json";
             
-            this.game.load.atlas(levelAttlasName,
-                levelAttlasPath,
-                levelAttlasJSONPath,
-                Phaser.Loader.TEXTURE_ATLAS_JSON_ARRAY);
+            // this.game.load.atlas(levelAttlasName,
+            //     levelAttlasPath,
+            //     levelAttlasJSONPath,
+            //     Phaser.Loader.TEXTURE_ATLAS_JSON_ARRAY);
               
-            this.game.load.start();                
-            console.log("Level preloading started");
+            // this.game.load.start();                
+            // console.log("Level preloading started");
+            this.onLoadComplete();
         }
     }
     

@@ -2,6 +2,7 @@
 
 ENV_FOLDER="$PATH_TO_ENV_FOLDER/$1"
 TIMESTAMP=$(date +%s)
+VERSION=$TIMESTAMP
 
 echo "Compiller path $PATH_TO_TYPESCRIPT_COMPILER"
 echo "Dest folder $ENV_FOLDER"
@@ -25,13 +26,12 @@ if [ $1 = "dev" ];then
     
     #Replace CDN placeholder with actual value
     sed -i -- "s/{CDN}//g" $ENV_FOLDER/js/constants.js
-    
+    sed -i -- "s/{VERSION}/$VERSION/g" $ENV_FOLDER/js/menuState.js
+
     echo "Dev build finished"
 elif [ $1 = "prod" ] || [ $1 = "stg" ]; then
 
-    GAME_FILE="game.$TIMESTAMP.min.js"
-    GAME_RELEASE_JS=$ENV_FOLDER/js/$GAME_FILE
-
+    GAME_RELEASE_JS=$ENV_FOLDER/js/game.$VERSION.min.js
     #Combine all scenario file paths into one string
     SCENARIOS=""
     for file in $ENV_FOLDER/js/scenarios/*
@@ -57,11 +57,8 @@ elif [ $1 = "prod" ] || [ $1 = "stg" ]; then
         echo "Replacing CDN with $PROD_CDN in $GAME_RELEASE_JS"
         sed -i -- "s/{CDN}/http:\/\/uswest-23f4.kxcdn.com\//g" $GAME_RELEASE_JS
     fi
+    sed -i -- "s/{VERSION}/$VERSION/g" $GAME_RELEASE_JS
     
-    #Setting release file to index.html. Need to avoid unwanted caching
-    echo "Setting game release to $GAME_FILE in $ENV_FOLDER/index.html"
-    sed -i -- "s/{GAME_FILE_JS}/$GAME_FILE/g" $ENV_FOLDER/index.html
-
     #Remove joined source files
     rm $ENV_FOLDER/js/game.js         
     rm $ENV_FOLDER/js/config.js         
@@ -74,6 +71,20 @@ fi
 #Move assets
 echo "Moving assets..."
 cp -R -u $PATH_TO_SOURCE/../../assets $ENV_FOLDER/
+
+for FILE in $ENV_FOLDER/assets/images/*
+    do
+     VERSION_STRING=".$VERSION."
+     NEW_FILE="${FILE/./$VERSION_STRING}"
+     mv $FILE $NEW_FILE;
+    done
+
+
+#Setting release file to index.html. Need to avoid unwanted caching
+echo "Updating version in $ENV_FOLDER/index.html"
+sed -i -- "s/{VERSION}/$VERSION/g" $ENV_FOLDER/index.html
+
+
 
 
 if [ $1 = "dev" ];then
