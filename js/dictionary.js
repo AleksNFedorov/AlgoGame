@@ -90,14 +90,14 @@ var Dictionary = {
     //Element info messages
     MainMenuButton: "Press \nto begin level",
     MainMenuProgress: "Game progress",
-    MenuButtonDescription: "Algorithm description",
+    MenuButtonDescription: "Algorithm descripion",
     ControlPanelText: "Check game\nmessages here",
     ControlPanelButtonPlay: "Press to\nbegin playing",
     ProgressBarStep: "Time till next step",
     ProgressBarComplete: "Fill it to open\nnext stage",
-    MenuButtonExam: "Test your skills\nin Exam mode",
-    MenuButtonPractise: "Train your skills",
-    MenuButtonTutorial: "Learn algorithm",
+    MenuButtonExam: "Exam mode",
+    MenuButtonPractise: "Practise mode",
+    MenuButtonTutorial: "Tutorial mode",
     
     stageNames: {
         tutorial: "(tutorial)",
@@ -124,7 +124,7 @@ var Dictionary = {
     },
     quickSort: {
         short: "Quick",
-        full: "Quicksort"
+        full: "Quick sort"
     },
     debthFirst: {
         short: "Depth-first",
@@ -176,74 +176,74 @@ var Dictionary = {
           {
               message1: "1. Move next unsorted element to the right position",
               message2: "2. Drag 2 in front of 3",
-              message3: "1. Move next unsorted element to the right position",
+              message1: "1. Move next unsorted element to the right position",
               message4: "4. Drag 1 in front of 2",
-              message5: "5. Sequence sorted",
+              message5: "5. Seqeunce sorted",
           },
           {
               message1: "1. Move next unsorted element to the right position",
               message2: "2. Drag 2 in front of 3",
-              message3: "1. Move next unsorted element to the right position",
+              message1: "1. Move next unsorted element to the right position",
               message4: "4. Drag 1 in front of 2",
-              message5: "1. Move next unsorted element to the right position",
+              message1: "1. Move next unsorted element to the right position",
               message6: "6. Drag 1 in front of 2",
-              message7: "1. Move next unsorted element to the right position",
+              message1: "1. Move next unsorted element to the right position",
               message8: "8. Drag 6 in front of 15",
-              message9: "1. Move next unsorted element to the right position",
+              message1: "1. Move next unsorted element to the right position",
               message10: "10. Drag 4 in front of 6",
-              message11: "11. Sequence sorted",
+              message11: "11. Seqeunce sorted",
           },
         ],
         selectionSort: [
           {
-              message1: "1. Swap next unsorted (3) with the right smallest one (1)",
+              message1: "1. Swap current element (3) with the smallest one",
               message2: "2. Drag 3 to 1",
               message3: "3. Elements 2,3,4 already sorted",
-              message4: "4. Swap next unsorted (7) with the right smallest one (5)",
+              message4: "4. Swap 7 with the next minimum: 5",
               message5: "5. Drag 7 to 5",
-              message6: "6. Sequence sorted",
+              message6: "6. Seqeunce sorted",
           },
           {
-              message1: "1. Swap next unsorted (3) with the right smallest one (1)",
+              message1: "1. Swap current (3) with the next minimum (1)",
               message2: "2. Drag 3 to 1 at position 3",
-              message3: "3. Swap next unsorted (2) with the right smallest one (1)",
+              message3: "3. Swap current (2) with the next minimum (1)",
               message4: "4. Drag 2 to 1 at position 4",
-              message5: "5. Swap next unsorted (3) with the right smallest one (2)",
+              message5: "5. Swap current (3) with the next minimum (2)",
               message6: "6. Drag 3 to 2",
-              message7: "7. Swap next unsorted (15) with the right smallest one (4)",
+              message7: "7. Swap current (15) with the next minimum (4)",
               message8: "8. Drag 15 to 4",
-              message9: "9. Sequence sorted",
+              message9: "9. Seqeunce sorted",
           },
         ],
         mergeSort: [
           {
-              message1: "1. Recursively divide sequence on pairs (3,2)(1)|(4,7)(6,5)",
+              message1: "1. Recrusively divide on pairs (3,2)(1)|(4,7)(6,5)",
               message2: "2. Sort pair (3,2)",
-              message3: "3. Drag 2 in front of 3",
+              message3: "3. Drag 2 to position 1",
               message4: "4. Merge (2,3) and (1)",
-              message5: "5. Drag 1 in front of 2",
+              message5: "5. Drag 1 to position 1",
               message6: "6. Pair (4,7) already sorted",
               message7: "7. Sort pair (6,5)",
-              message8: "8. Drag 6 in front of 5",
+              message8: "8. Drag 5 to position 6",
               message9: "9. Merge (4,7) and (5,6)",
-              message10: "10. Drag 5 in front of 7",
-              message11: "11. Drag 6 in front of 7",
+              message10: "10. Drag 5 to position 5",
+              message11: "11. Drag 6 to position 6",
               message12: "12. Sorted!",
           },
           {
-              message1: "1. Recursively divide sequence on pairs (3,2)(1)|(1,15)(6,4)",
+              message1: "1. Recrusively divide on pairs (3,2)(1)|(1,15)(6,4)",
               message2: "2. Sort pair (3,2)",
-              message3: "3. Drag 2 in front of 3",
+              message3: "3. Drag 2 to position 1",
               message4: "4. Merge (2,3) and (1)",
-              message5: "5. Drag 1 in front of 2",
+              message5: "5. Drag 1 to position 1",
               message6: "6. Pair (1,15) already sorted",
               message7: "7. Sort pair (6,4)",
-              message8: "8. Drag 4 in front of 6",
+              message8: "8. Drag 4 to position 6",
               message9: "9. Merge (1,15) and (4,6)",
-              message10: "10. Drag 4 in front of 15",
-              message11: "11. Drag 6 in front of 15",
+              message10: "10. Drag 4 to position 5",
+              message11: "11. Drag 6 to position 6",
               message12: "12. Merge (1,2,3) and (1,4,6,15)",
-              message13: "13. Drag 1 in front of 2",
+              message13: "13. Drag 1 at position 4 to position 2",
               message14: "14. Sorted!",
           },
         ],
@@ -251,10 +251,10 @@ var Dictionary = {
           {
               message1: "1. Pivot: 3, Move all >= Pivot to the right side",
               message2: "2. Drag 8 on 3",
-              message3: "3. Apply quicksort to the left side: (3,2,1)",
+              message3: "3. Apply quick sort to the left side: (3,2,1)",
               message4: "4. Pivot: 2, Move all >= Pivot to the right side",
               message5: "5. Drag 3 on 1",
-              message6: "6. Apply quicksort to the right side: (8,7,6,5)",
+              message6: "6. Apply quick sort to the right side: (8,7,6,5)",
               message7: "7. Pivot: 7, Move all >= Pivot to the right side",
               message8: "8. Drag 8 on 5",
               message9: "9. Drag 7 on 6",
@@ -264,7 +264,7 @@ var Dictionary = {
               message1: "1. Pivot: 1, Move all >= Pivot to the right side",
               message2: "2. Drag 3 on 1 at position 4",
               message3: "3. Drag 2 on 1 at position 3",
-              message4: "4. Apply quicksort to the right side: (2,3,15,6,4)",
+              message4: "4. Apply quick sort to the right side: (2,3,15,6,4)",
               message5: "5. Pivot: 15, Move all >= Pivot to the right side",
               message6: "6. Drag 15 on 4",
               message7: "7. Sorted!",
@@ -275,10 +275,10 @@ var Dictionary = {
               message1: "1. Element to find: 3",
               message2: "2. Click top node: 0",
               
-              message3: "3. Recursively iterate over children",
-              message4: "4. Click right child 1",
+              message3: "3. Recursivelly iterate over all children",
+              message4: "4. Click right child: 1",
               
-              message5: "5. Recursively iterate over children of node 1",
+              message5: "5. Recursivelly iterate over all children of node 1",
               message6: "6. Click node 2",
               
               message7: "7. Click left node of 0",
@@ -287,12 +287,12 @@ var Dictionary = {
           },
           {
               message1: "1. Element to find: 2",
-              message2: "2. Click top node 0",
+              message2: "2. Click top node: 0",
               
-              message3: "3. Recursively iterate over all children",
-              message4: "4. Click right child 1",
+              message3: "3. Recursivelly iterate over all children",
+              message4: "4. Click right child: 1",
               
-              message5: "5. Recursively iterate over all children of node 1",
+              message5: "5. Recursivelly iterate over all children of node 1",
               message6: "6. Click node 4",
               
               message7: "7. Click node 3",
@@ -305,18 +305,18 @@ var Dictionary = {
         djikstraSearch: [
           {
               message1: "1. Find the cheapest route from green to orange node",
-              message2: "2. Click node (blinking arrow) and set price: 10",
+              message2: "2. Click node (blinkig arrow) and set price: 10",
               
               message3: "3. Click next node and set price: 4",
               
-              message4: "4. Update price for the next node: 10 > 9",
+              message4: "4. Update price for next node: 10 > 9",
               message5: "5. Click node and set price: 9",
               
               message6: "5. The cheapest route cost: 9",
           },
           {
               message1: "1. Find the cheapest route from green to orange node",
-              message2: "2. Click node (blinking arrow) and set price 3",
+              message2: "2. Click node (blinkig arrow) and set price 3",
               
               message3: "3. Click next node and set price: 13 (3 + 10)",
               
@@ -333,4 +333,3 @@ var Dictionary = {
         ],
     },
 };
-

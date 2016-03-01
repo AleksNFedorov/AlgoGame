@@ -464,7 +464,8 @@ module Graph {
                 && step.weight === action.weight;
         }
         
-        protected onCorrectAction(): void {
+        protected onCorrectAction(isUser): void {
+            super.onCorrectAction(isUser);
             var step: DjikstraStep = this.getCurrentStep();
             this._graphUI.updateNodeWeight(step);
         }

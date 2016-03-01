@@ -142,5 +142,21 @@ module Sort {
         protected createAlgorithm(config: any): MergeSortAlgorithm {
             return new MergeSortAlgorithm(config);
         }
+        
+        protected onInit(): void {
+            super.onInit();
+
+            var flags: Common.FlagLocationInfo[] = [];
+
+            for(var index of this._algorithm.getSortingPairs()) {
+                flags.push(new Common.FlagLocationInfo(
+                    index,
+                    Common.FlagPosition.LEFT,
+                    Common.FlagLevel.MIDDLE
+                    ));
+            }
+            this._boxLine.showFlags(flags);
+            
+        }
     }
 }

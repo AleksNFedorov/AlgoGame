@@ -1,8 +1,8 @@
 var depthFistSearchScenarios = {
     scenarios: [
         {
-            columns:4,
-            rows:3,
+            columns:5,
+            rows:5,
             finalMessage: "scenarios.depthFirstSearch.0.message9",
             steps: [
                 {
@@ -54,8 +54,8 @@ var depthFistSearchScenarios = {
             }
         },
         {
-            columns:4,
-            rows:3,
+            columns:5,
+            rows:5,
             finalMessage: "scenarios.depthFirstSearch.1.message9",
             steps: [
                 {

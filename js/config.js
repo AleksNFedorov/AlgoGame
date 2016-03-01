@@ -19,7 +19,7 @@ var globalConfig = {
                     minSeqNumber: 1,
                     maxSeqNumber: 20,
                     minElementsInSeq: 7,
-                    maxElementsInSeq: 10,
+                    maxElementsInSeq: 14,
                     sorted: true
                 }
             },
