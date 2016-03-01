@@ -10,7 +10,7 @@ var globalConfig = {
             },
             practise: {
                 stageName: "binarySearchPractise",
-                stepsToPass: 30,
+                stepsToPass: 20,
                 stepTime: 5000,
                 menu: {
                     MenuButtonDescription: "http://wiki.roblox.com/index.php?title=Binary_search",
@@ -25,7 +25,7 @@ var globalConfig = {
             },
             exam: {
                 stageName: "binarySearchExam",
-                stepsToPass: 20,
+                stepsToPass: 10,
                 stepTime: 3000,
                 menu: {
                     MenuButtonDescription: "http://wiki.roblox.com/index.php?title=Binary_search",        
@@ -49,7 +49,7 @@ var globalConfig = {
             },
             practise: {
                 stageName: "insertionSortPractise",
-                stepsToPass: 30,
+                stepsToPass: 20,
                 stepTime: 5000,
                 menu: {
                     MenuButtonDescription: "http://jackson-.github.io/2014/10/07/Sowhatexactlyisinsertionsort.html",
@@ -64,7 +64,7 @@ var globalConfig = {
             },
             exam: {
                 stageName: "insertionSortExam",
-                stepsToPass: 20,
+                stepsToPass: 10,
                 stepTime: 5000,
                 menu: {
                     MenuButtonDescription: "http://jackson-.github.io/2014/10/07/Sowhatexactlyisinsertionsort.html",
@@ -216,7 +216,7 @@ var globalConfig = {
             },
             practise: {
                 stageName: "debthFirstPractise",
-                stepsToPass: 30,
+                stepsToPass: 20,
                 stepTime: 2000,
                 menu: {
                     MenuButtonDescription: "https://www.cs.drexel.edu/~introcs/F2K/lectures/7.2_AI/Formal3.html",
@@ -231,7 +231,7 @@ var globalConfig = {
             },
             exam: {
                 stageName: "debthFirstExam",
-                stepsToPass: 20,
+                stepsToPass: 10,
                 stepTime: 2000,
                 menu: {
                     MenuButtonDescription: "https://www.cs.drexel.edu/~introcs/F2K/lectures/7.2_AI/Formal3.html",

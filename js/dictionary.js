@@ -94,7 +94,7 @@ var Dictionary = {
     ControlPanelText: "Check game\nmessages here",
     ControlPanelButtonPlay: "Press to\nbegin playing",
     ProgressBarStep: "Time till next step",
-    ProgressBarComplete: "Fill it to open\nnext stage",
+    ProgressBarComplete: "Fill to open\nnext stage",
     MenuButtonExam: "Exam mode",
     MenuButtonPractise: "Practise mode",
     MenuButtonTutorial: "Tutorial mode",
