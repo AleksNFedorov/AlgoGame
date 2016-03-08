@@ -93,7 +93,7 @@ var Dictionary = {
     MenuButtonDescription: "Algorithm descripion",
     ControlPanelText: "Check game\nmessages here",
     ControlPanelButtonPlay: "Press to\nbegin playing",
-    ProgressBarStep: "Time till next step",
+    ProgressBarStep: "Do step faster\nthen computer",
     ProgressBarComplete: "Fill to open\nnext stage",
     MenuButtonExam: "Exam mode",
     MenuButtonPractise: "Practise mode",

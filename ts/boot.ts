@@ -1,8 +1,9 @@
 class Boot extends Phaser.State {
     
+    private _correctOrientation: boolean = true;
+    
     init(): void {
         this.game.forceSingleUpdate = true;
-        this.game.renderer.renderSession.roundPixels = true;
     }
 
     preload() {
@@ -14,27 +15,16 @@ class Boot extends Phaser.State {
         
         this.game.stage.backgroundColor = Constants.GAME_BACKGROUND;
 
+	    this.game.renderer.renderSession.roundPixels = false;		
+	    Phaser.Canvas.setImageRenderingCrisp(this.game.canvas); 
+	    Phaser.Canvas.setSmoothingEnabled(this.game.context, false);  
+
         this.input.maxPointers = 1;
-
-        // this.scale.setGameSize(window.innerWidth, window.innerHeight);
-        // if(this.game.device.desktop) {
-        //   var height = window.innerHeight - 70;
-        //   var scale = height / Constants.GAME_HEIGHT;
-        //   this.scale.setGameSize(Constants.GAME_WIDTH * scale, window.innerHeight - 70);
-        // } else {
-        //   this.scale.setGameSize(window.innerWidth, window.innerHeight);
-        // }
-
-        this.scale.minWidth = 800;
-        this.scale.minHeight = 600;
-        this.scale.maxWidth = 1024;
-        this.scale.maxHeight = 786;
-        // this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-        // this.scale.pageAlignHorizontally = true;
-        // this.scale.pageAlignVertically = true;
-        // this.scale.setScreenSize(true);        
+        this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        this.game.scale.setMinMax(480, 260, Constants.GAME_WIDTH, Constants.GAME_HEIGHT);
+        this.game.scale.pageAlignHorizontally = true;
         
-        // this.scale.pageAlignHorizontally = true;
+        this.game.scale.refresh();        
 
         this.game.state.start("preload");
     }

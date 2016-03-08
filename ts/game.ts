@@ -6,7 +6,7 @@ class Game extends Common.AlgoGame {
     
     constructor() {
         
-        super(Constants.GAME_WIDTH, Constants.GAME_HEIGHT, Phaser.CANVAS, 'game');
+        super(Constants.GAME_WIDTH, Constants.GAME_HEIGHT, Phaser.CANVAS, '');
 
         this.state.add("boot", Boot);
         this.state.add("preload", Preload);

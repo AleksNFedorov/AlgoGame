@@ -1,3 +1,4 @@
+
 /// <reference path="../lib/phaser.d.ts" />
 /// <reference path="../lib/gameconfig.d.ts" />
 
@@ -196,7 +197,7 @@ module Common {
         private _store: SecureSaver = new SecureSaver();
         private _config: GameConfig.Config = globalConfig;
 
-        constructor(gameWidth: number, gameHeight: number, mode: number, tag: string) {
+        constructor(gameWidth: any, gameHeight: any, mode: number, tag: string) {
             super(gameWidth, gameHeight, mode, tag, null, false, false);
             this._eventBus = new EventBusClass();
         }

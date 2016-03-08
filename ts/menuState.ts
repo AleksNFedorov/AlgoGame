@@ -87,7 +87,7 @@ class LevelMenuState extends Common.State {
         var headerGroup = this.game.add.group();
         var icon = this.game.add.sprite(0,4, Constants.MAIN_MENU_ATTLAS, iconName, headerGroup);
         var text = this.game.add.text(45,0, type.toUpperCase(), Constants.MENU_HEADER_TEXT_STYLE, headerGroup);
-        
+
         headerGroup.x = x - headerGroup.width / 2;
         headerGroup.y = y;
     }
