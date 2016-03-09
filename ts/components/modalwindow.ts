@@ -1,5 +1,6 @@
 /// <reference path="./common.ts" />
 
+declare var FB: any;
 declare var Dictionary: any;
 
 module GameModal {
@@ -15,10 +16,11 @@ module GameModal {
     
     export class ModalWindow extends Common.GameEventComponent {
         
-        private _windowConfigs: ModalConfig[] = [];
+        protected _windowConfigs: ModalConfig[] = [];
         
-        private _activeWindow: Phaser.Group;
-        private _delayTimer: Phaser.Timer;
+        protected _activeWindow: Phaser.Group;
+        protected _delayTimer: Phaser.Timer;
+        protected _facebookButtonBlinker: Common.Blinker;
         
         constructor(game: Common.AlgoGame) {
             super(game)
@@ -40,13 +42,10 @@ module GameModal {
                     if (!isUserAction) {
                         break;
                     }
-                case Events.GAME_TUTORIAL_DONE:
-                case Events.GAME_EXAM_DONE:
-                case Events.MENU_EVENT_SHOW_LEVEL_OBJECTIVES:
-                    this.show(event.type);
-                    break;
                 default:
-                    break;
+                    if (this._windowConfigs[event.type] != null) {
+                        this.show(event.type);
+                    }
             }
         }
         
@@ -59,7 +58,7 @@ module GameModal {
             this.showModalWindow(modalId);
         }
         
-        private showModalWindow(windowId: string): void {
+        protected showModalWindow(windowId: string): void {
         
             var config = this._windowConfigs[windowId];
             
@@ -104,17 +103,48 @@ module GameModal {
                 Constants.PROGRESS_BAR_TEXT);
                 
             gameText.y = playButton.y + playButton.height/2 - gameText.height/2;                
+            var facebookButton = this.createFacebookButton();
+            facebookButton.x = 50;
+            facebookButton.y = windowGroup.height - 25 - facebookButton.height;
             
             windowGroup.add(contentImage);
             windowGroup.add(gameText);
             windowGroup.add(playButton);
+            windowGroup.add(facebookButton);
             
             windowGroup.x = 50;
             windowGroup.y = 50;
 
             this._activeWindow = windowGroup;
             
+            this._facebookButtonBlinker.blink();
+            
             this._delayTimer.add(config.delay, playButton.activate, playButton);
+        }
+        
+        protected facebookCallback(response: any) : void {
+            if (response && !response.error_message) {
+                this._game.dispatch(Events.FACEBOOK_SHARE, this);
+            }
+        }
+        
+        protected createFacebookButton(): Phaser.Sprite {
+            var facebookButton = this._game.add.sprite(0,0, 
+                Constants.GAME_GENERAL_ATTLAS, "facebook-button.png");
+
+            this._facebookButtonBlinker = new Common.Blinker(this._game, facebookButton);
+            
+            var callback = this.facebookCallback.bind(this);
+            facebookButton.inputEnabled = true;
+            facebookButton.events.onInputDown.add(function() {
+               FB.ui({
+                        method: 'share',
+                        href: 'http://algo.ninja'
+                    }, 
+                callback)
+            });
+
+            return facebookButton;
         }
         
         protected onShow(): void {
@@ -130,9 +160,71 @@ module GameModal {
         
         destroy(): void {
             super.destroy();
+            if (this._facebookButtonBlinker != null) {
+                this._facebookButtonBlinker.destroy();
+            }
             this._delayTimer.destroy();
             this._windowConfigs = null;
         }
     }
+    
+    export class SocialShareWindow extends ModalWindow {
+        
+        constructor(game: Common.AlgoGame) {
+            super(game);
+        }
+        
+        protected showModalWindow(windowId: string): void {
+        
+            var config = this._windowConfigs[windowId];
+            
+            var windowGroup = this._game.add.group();
+            
+            var graphics = this._game.add.graphics(0, 0);
+            graphics.lineStyle(0);
+            graphics.beginFill(Constants.GAME_BACKGROUND_SEPARATOR, 1);
+            graphics.drawRect(0, 0, this._game.width - 100, this._game.height - 100);
+            graphics.endFill();
+            
+            windowGroup.add(this._game.add.sprite(0,0, graphics.generateTexture()));
+            graphics.destroy();
+            
+            var contentImage: Phaser.Sprite;
+            
+            if (config.imageAtlas) {
+                contentImage = this._game.add.sprite(0,0, config.imageAtlas, config.contentImageId);
+            } else {
+                contentImage = this._game.add.sprite(0,0, config.contentImageId);
+            }
+            
+            contentImage.x = windowGroup.width/2 - contentImage.width/2;
+            contentImage.y = 40;
+            
+            var facebookButton = this.createFacebookButton();
+            facebookButton.x = windowGroup.width/2 - facebookButton.width/2;
+            facebookButton.y = contentImage.y + contentImage.height + 20;
+            
+            windowGroup.add(contentImage);
+            windowGroup.add(facebookButton);
+            
+            windowGroup.x = 50;
+            windowGroup.y = 50;
+
+            contentImage.inputEnabled = true;
+            contentImage.events.onInputDown.add(this.onHide.bind(this));
+
+
+            this._activeWindow = windowGroup;
+            
+            this._facebookButtonBlinker.blink();
+        }
+        
+        protected facebookCallback(response: any) : void {
+            if (response && !response.error_message) {
+                this._game.dispatch(Events.FACEBOOK_SHARE, this);
+                this.onHide();
+            }
+        }
+    }    
 }
 

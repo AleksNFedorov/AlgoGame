@@ -53,11 +53,13 @@ class LevelMenuState extends Common.State {
     private _levelButtonsPanel: Common.LevelButtonsPanel;
     private _background: Common.BackgroundGraphics;
     private _infoManager: StageInfo.Manager;
+    private _modalWindow: GameModal.ModalWindow;
 
     public shutdown(): void {
         super.shutdown();
         this._background.destroy();
         this._levelButtonsPanel.destroy();
+        this._modalWindow.destroy();
     }
 
     create(): void {
@@ -65,6 +67,10 @@ class LevelMenuState extends Common.State {
         this.drawBackground();
         this._levelButtonsPanel = new Common.LevelButtonsPanel(this.algoGame);
         this._showHelperInfoManager = new StageInfo.MenuManager(this.algoGame);
+        
+        this._modalWindow = new GameModal.SocialShareWindow(this.algoGame);
+        this.initModalWindows();
+        
         super.onCreate();
     }
     
@@ -104,6 +110,15 @@ class LevelMenuState extends Common.State {
     
     protected loadLevelSave(): Common.LevelSave {
         return new Common.LevelSave();
+    }
+    
+    private initModalWindows(): void {
+        this._modalWindow.registerWindow(
+            new GameModal.ModalConfig(
+                Events.SHARE_REQUIRED, 
+                "shareFacebook.png", 
+                Constants.GAME_EXAM_BANNERS_ATLAS, 
+                4000));
     }
 }
 

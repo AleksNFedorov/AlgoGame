@@ -12,6 +12,7 @@ declare module GameConfig {
     
     export class LevelConfig {
         dependsOn: string;
+        freeToPlay: boolean;
         tutorial: StageConfig;
         practise: StageConfig;
         exam: StageConfig;

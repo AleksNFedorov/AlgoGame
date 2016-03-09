@@ -1,6 +1,7 @@
 var globalConfig = {
     levelConfigs: {
         binarySearch: {
+            freeToPlay: true,
             tutorial: {
                 stageName: "binarySearchTutorial",
                 stepsToPass: 9,
@@ -40,6 +41,7 @@ var globalConfig = {
             }
         },
         insertionSort: {
+            freeToPlay: true,
             tutorial: {
                 stageName: "insertionSortTutorial",
                 stepsToPass: 9,
@@ -79,6 +81,7 @@ var globalConfig = {
             }
         },
         selectionSort: {
+            freeToPlay: false,
             dependsOn:"insertionSort",
             tutorial: {
                 stageName: "selectionSortTutorial",
@@ -119,6 +122,7 @@ var globalConfig = {
             }
         },
         mergeSort: {
+            freeToPlay: false,
             dependsOn:"selectionSort",
             tutorial: {
                 stageName: "mergeSortTutorial",
@@ -159,6 +163,7 @@ var globalConfig = {
             }
         },
         quickSort: {
+            freeToPlay: false,
             dependsOn: "mergeSort",
             tutorial: {
                 stageName: "quickSortTutorial",
@@ -200,6 +205,7 @@ var globalConfig = {
         },
         // Graphs
         debthFirst: {
+            freeToPlay: true,
             tutorial: {
                 stageName: "debthFirstTutorial",
                 stepsToPass: 12,
@@ -246,6 +252,7 @@ var globalConfig = {
             }
         },
         djikstra: {
+            freeToPlay: false,
             dependsOn: "debthFirst",
             tutorial: {
                 stageName: "djikstraTutorial",

@@ -31,6 +31,7 @@ module Common {
         
         public levelEnabled: boolean = false;
         public stateToStart: string;
+        public freeToPlay: boolean = false;
         
         constructor(levelName: string, levelSave: LevelSave) {
             this._levelSave = levelSave;
@@ -167,6 +168,7 @@ module Common {
             var levelPractiseConfig: GameConfig.StageConfig = levelConfig.practise;
 
             var levelInfo: LevelInfo = new LevelInfo(levelName, levelSave);
+            levelInfo.freeToPlay = levelConfig.freeToPlay;
             levelInfo.stateToStart = levelName + "Preload";
             
             if (levelConfig.dependsOn != null) {
@@ -242,23 +244,6 @@ module Common {
             
             this.addGameElement(Common.GameElements.MainMenuButton, this._buttons[0]);
             this.addGameElement(Common.GameElements.MainMenuProgress, this._openProgress);
-/*
-            Facebook test button
-            
-            var facebookButton = new Common.Button(this._game, [12,2,82,2, 6]);
-
-            facebookButton.x = 300;
-            facebookButton.y = 50;
-            facebookButton.scale.setTo(0.3);
-            this._game.add.existing(facebookButton);
-            
-            facebookButton.callback = function() {
-               FB.ui( {
-                    method: 'share',
-                    href: 'http://algo.ninja'
-                }, function(response){});
-            }
-*/
         }
         
         public destroy(): void {
@@ -367,8 +352,13 @@ module Common {
         
         private createButtonClickCallback(levelInfo: LevelInfo): Function {
             return function() {
-                console.log("Starting new level " + levelInfo.stateToStart);
-                this._game.state.start(levelInfo.stateToStart, true, false, levelInfo.levelName);
+                var socialSignals = this._game.gameSave.facebookPosts;
+                if (!levelInfo.freeToPlay && socialSignals < 1) {
+                    this._game.dispatch(Events.SHARE_REQUIRED, this);
+                } else {
+                    console.log("Starting new level " + levelInfo.stateToStart);
+                    this._game.state.start(levelInfo.stateToStart, true, false, levelInfo.levelName);
+                }
             }.bind(this);
         }
         

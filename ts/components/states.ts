@@ -198,6 +198,8 @@ module Common {
         
         private _levelSave: LevelSave;
         private _lastInactivityCheckTime: number;
+        
+        private debugText: Phaser.Text;
 
         public dispatch(eventId: string, caller: any, param?: any) {
             var newEvent: GameEvent = new GameEvent(eventId, caller, param);
@@ -239,6 +241,8 @@ module Common {
             this.addEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
             this.addEventListener(Events.MODAL_WINDOW_DISPLAYING);
             this.addEventListener(Events.MODAL_WINDOW_HIDE);
+            this.addEventListener(Events.FACEBOOK_SHARE);
+            this.addEventListener(Events.TWITTER_SHARE);
         }
         
         public update(): void {
@@ -261,6 +265,7 @@ module Common {
                     this.flushInactivityTime();
                 }
             }
+            
         }
         
         private flushInactivityTime(): void {
@@ -276,6 +281,8 @@ module Common {
             this.removeEventListener(Events.CONTROL_PANEL_EVENT_PAUSE);
             this.removeEventListener(Events.MODAL_WINDOW_DISPLAYING);
             this.removeEventListener(Events.MODAL_WINDOW_HIDE);
+            this.removeEventListener(Events.FACEBOOK_SHARE);
+            this.removeEventListener(Events.TWITTER_SHARE);
         }
         
         dispatchEvent(event: any, param1: any) {
@@ -311,6 +318,16 @@ module Common {
                         this._pausedByModalWindow = false;
                     }
                     break;
+                case Events.FACEBOOK_SHARE:
+                    var gameSave: GameSave = this._game.gameSave;
+                    gameSave.facebookPosts++;
+                    this._game.saveGame();
+                    break;
+                case Events.TWITTER_SHARE:
+                    var gameSave: GameSave = this._game.gameSave;
+                    gameSave.twitterPosts++;
+                    this._game.saveGame();
+                    break;
             }
         }
         
@@ -333,6 +350,7 @@ module Common {
         public saveState(): void  {
           this._game.store.set(this.stateConfig.level, this._levelSave);
         }
+        
         
         public get algoGame(): AlgoGame {
             return this._game;

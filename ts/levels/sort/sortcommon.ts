@@ -50,6 +50,7 @@ module Sort {
         }
         
         private move(pointer: any, x: number, y: number): void {
+            console.log(`Pointer ${x} ${y}`);
             if (this._dragging) {
                 this.updateSeparator(x, y);
             }

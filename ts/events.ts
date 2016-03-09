@@ -56,6 +56,11 @@ class Events {
     static STAGE_INFO_SHOW = Events.createEvent("ShowStageInfo");
     static STAGE_INFO_ALL_INFO_SHOWED = Events.createEvent("AllInfoShowed");
     
+    //Social
+    static FACEBOOK_SHARE = Events.createEvent("fcbShr");
+    static SHARE_REQUIRED = Events.createEvent("shrReq");
+    static TWITTER_SHARE = Events.createEvent("twtshare");
+    
     private static createEvent(eventId: string): string {
         if (!eventId || 0 === eventId.length) {
             throw "Empty event id";

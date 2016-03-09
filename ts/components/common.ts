@@ -93,6 +93,17 @@ module Common {
         }
     }
     
+    //Save for game-wide parameters
+    export class GameSave {
+        public facebookPosts: number;
+        public twitterPosts: number;
+        
+        public init():void {
+            this.facebookPosts = this.facebookPosts || 0;
+            this.twitterPosts = this.twitterPosts || 0;
+        }
+    }
+    
     class SecureSaver {
         
         public set(key: string, value: any): void {
@@ -196,10 +207,12 @@ module Common {
         private _eventBus:EventBusClass;
         private _store: SecureSaver = new SecureSaver();
         private _config: GameConfig.Config = globalConfig;
+        private _gameSave: GameSave;
 
         constructor(gameWidth: any, gameHeight: any, mode: number, tag: string) {
             super(gameWidth, gameHeight, mode, tag, null, false, false);
             this._eventBus = new EventBusClass();
+            this._gameSave = this.loadGameSave();
         }
         
         public dispatch(eventId: string, caller: any, param?: any): void {
@@ -219,6 +232,14 @@ module Common {
             return this._config;
         }
         
+        protected loadGameSave(): GameSave {
+            var save: GameSave = this.store.get("game")
+                            || new GameSave();
+            save.init = new GameSave().init;
+            save.init();
+            return save;                            
+        }
+        
         public loadLevelSave(level: string): LevelSave {
             var save: LevelSave = this.store.get(level)
                             || new LevelSave();
@@ -227,6 +248,14 @@ module Common {
             return save;                            
         }
         
+        public get gameSave(): GameSave {
+            return this._gameSave;
+        }
+        
+        public saveGame(): void {
+          this.store.set("game", this._gameSave);
+        }
+
         public get levelStageState(): LevelStageState {
             var state: State = this.currentState;
             return state.levelStageState;
