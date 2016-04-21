@@ -81,7 +81,7 @@ var globalConfig = {
             }
         },
         selectionSort: {
-            freeToPlay: false,
+            freeToPlay: true,
             dependsOn:"insertionSort",
             tutorial: {
                 stageName: "selectionSortTutorial",
@@ -122,7 +122,7 @@ var globalConfig = {
             }
         },
         mergeSort: {
-            freeToPlay: false,
+            freeToPlay: true,
             dependsOn:"selectionSort",
             tutorial: {
                 stageName: "mergeSortTutorial",
@@ -163,7 +163,7 @@ var globalConfig = {
             }
         },
         quickSort: {
-            freeToPlay: false,
+            freeToPlay: true,
             dependsOn: "mergeSort",
             tutorial: {
                 stageName: "quickSortTutorial",
@@ -252,7 +252,7 @@ var globalConfig = {
             }
         },
         djikstra: {
-            freeToPlay: false,
+            freeToPlay: true,
             dependsOn: "debthFirst",
             tutorial: {
                 stageName: "djikstraTutorial",
