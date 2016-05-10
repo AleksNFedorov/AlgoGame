@@ -1,4 +1,5 @@
 /// <reference path="./common.ts" />
+/// <reference path="./captainup.ts" />
 
 module Common {   
     
@@ -569,7 +570,8 @@ module Common {
 
         protected _algorithm: A;
         protected _algorithmStep: AlgorithmStep;
-        
+        protected _captainUp: CaptainUp.Core;
+
         constructor(game: Common.AlgoGame) {
             super(game);
         }
@@ -722,6 +724,7 @@ module Common {
         destroy(): void {
             super.destroy();
             this.destroyTempObjects();
+            this._captainUp.destroy();
         }
         
         protected destroyTempObjects():void {
@@ -758,6 +761,7 @@ module Common {
         constructor(game: Common.AlgoGame) {
             super(game);
             this._scenarios = this.getScenarios();
+            this._captainUp = new CaptainUp.Tutorial(game);
         }
         
         protected initEventListners(): void {
@@ -842,6 +846,7 @@ module Common {
         
         constructor(game: Common.AlgoGame) {
             super(game);
+            this._captainUp = new CaptainUp.Practice(game);
             
             this._gameStepTimer = this._game.time.create(false);
             this._gameStepTimer.start();
@@ -957,6 +962,7 @@ module Common {
         
         constructor(game: Common.AlgoGame) {
             super(game);
+            this._captainUp = new CaptainUp.Exam(game);
         }
 
         protected initEventListners(): void {

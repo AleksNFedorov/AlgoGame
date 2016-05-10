@@ -28,10 +28,12 @@ class Events {
     //General game play events
     static GAME_CREATED = Events.createEvent("GameCreated");
     static GAME_STARTED = Events.createEvent("GameStarted");
+    //Only for logging purpose, see EventLogger
     static GAME_END_BY_USER = Events.createEvent("GameEndByUser");
     static GAME_END = Events.createEvent("GameEnd");
     static GAME_NEW_STEP_CREATED = Events.createEvent("GameNewStepCreated");
     static GAME_CORRECT_STEP_DONE = Events.createEvent("GameCorrectStepDone");
+    //Only for logging purpose, see EventLogger
     static GAME_CORRECT_STEP_DONE_BY_USER = Events.createEvent("GameCorrectStepDoneByUser");
     static GAME_WRONG_STEP_DONE = Events.createEvent("GameWrongStepDone");
     //when player attempts to make second step during one step iteration

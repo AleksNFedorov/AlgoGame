@@ -90,7 +90,7 @@ var Dictionary = {
     //Element info messages
     MainMenuButton: "Press \nto begin level",
     MainMenuProgress: "Game progress",
-    MenuButtonDescription: "Algorithm descripion",
+    MenuButtonDescription: "Algorithm description",
     ControlPanelText: "Check game\nmessages here",
     ControlPanelButtonPlay: "Press to\nbegin playing",
     ProgressBarStep: "Do step faster\nthen computer",

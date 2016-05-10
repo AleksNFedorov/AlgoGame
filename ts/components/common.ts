@@ -511,5 +511,4 @@ module Common {
             this.stopTween();
         }
     }
-    
 }
